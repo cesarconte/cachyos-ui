@@ -35,6 +35,11 @@ target_link_libraries(cachyosui PUBLIC
     KF6::CoreAddons
 )
 
+set_target_properties(cachyosuiplugin PROPERTIES
+    PREFIX "lib"
+    OUTPUT_NAME "cachyosuiplugin"
+)
+
 # QML Module installation
 install(TARGETS cachyosui
     LIBRARY DESTINATION ${KDE_INSTALL_LIBDIR}
