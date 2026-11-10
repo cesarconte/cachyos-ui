@@ -16,6 +16,9 @@ qt_add_qml_module(cachyosui
         controls/CachyButton.qml
         controls/CachySegmentedControl.qml
         controls/CachyTrafficLights.qml
+        controls/CachyTextField.qml
+        controls/CachyProgressBar.qml
+        controls/CachyDivider.qml
 )
 
 target_include_directories(cachyosui PUBLIC

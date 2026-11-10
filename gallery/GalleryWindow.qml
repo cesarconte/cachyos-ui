@@ -13,8 +13,8 @@ CachyWindow {
     id: root
 
     title: "Ajustes del Sistema - CachyOS UI"
-    width: 860
-    height: 580
+    width: 880
+    height: 620
     showTrafficLights: false // Botones integrados en la barra lateral estilo macOS
 
     property int activeNavIndex: 0
@@ -29,7 +29,7 @@ CachyWindow {
             // =========================================================
             Rectangle {
                 id: sidebar
-                Layout.preferredWidth: 230
+                Layout.preferredWidth: 235
                 Layout.fillHeight: true
                 // Translucidez real Liquid Glass sobre KWin Wayland Blur
                 color: CachyTheme.isDark ? Qt.rgba(0.10, 0.10, 0.12, 0.50) : Qt.rgba(0.95, 0.95, 0.97, 0.65)
@@ -50,13 +50,25 @@ CachyWindow {
                 ColumnLayout {
                     anchors.fill: parent
                     anchors.margins: 14
-                    spacing: 14
+                    spacing: 12
 
                     // Botones de semáforo vectoriales oficiales macOS Golden Gate
                     CachyTrafficLights {
                         Layout.topMargin: 4
-                        Layout.bottomMargin: 6
+                        Layout.bottomMargin: 4
                         window: root
+                    }
+
+                    // Campo de búsqueda en sidebar
+                    CachyTextField {
+                        Layout.fillWidth: true
+                        isSearch: true
+                        placeholderText: "Buscar ajustes..."
+                    }
+
+                    CachyDivider {
+                        Layout.fillWidth: true
+                        inset: 4
                     }
 
                     // Navegación de la barra lateral
@@ -176,7 +188,7 @@ CachyWindow {
                 ColumnLayout {
                     anchors.fill: parent
                     anchors.margins: 24
-                    spacing: 20
+                    spacing: 16
 
                     // Cabecera de contenido
                     RowLayout {
@@ -217,7 +229,7 @@ CachyWindow {
                         Layout.fillWidth: true
 
                         contentItem: ColumnLayout {
-                            spacing: 16
+                            spacing: 14
 
                             Text {
                                 text: "Parámetros de Refracción & Vidrio"
@@ -238,6 +250,7 @@ CachyWindow {
                                 }
 
                                 CachySlider {
+                                    id: dispSlider
                                     Layout.fillWidth: true
                                     from: 0
                                     to: 100
@@ -250,31 +263,29 @@ CachyWindow {
                                 spacing: 16
 
                                 Text {
-                                    text: "Saturación de Fondo (120%)"
+                                    text: "Saturación de Fondo"
                                     Layout.preferredWidth: 170
                                     font.pixelSize: 12
                                     color: CachyTheme.textSecondary
                                 }
 
-                                CachySlider {
+                                CachyProgressBar {
                                     Layout.fillWidth: true
-                                    from: 0
-                                    to: 100
-                                    value: 85
+                                    value: dispSlider.value / 100.0
                                 }
                             }
                         }
                     }
 
-                    // Tarjeta 2: Botones de Acción
+                    // Tarjeta 2: Entradas de Texto y Botones
                     CachyCard {
                         Layout.fillWidth: true
 
                         contentItem: ColumnLayout {
-                            spacing: 16
+                            spacing: 14
 
                             Text {
-                                text: "Controles y Acciones del Sistema"
+                                text: "Entradas de Datos & Focus Rings"
                                 font.pixelSize: 13
                                 font.weight: Font.DemiBold
                                 color: CachyTheme.textPrimary
@@ -284,17 +295,32 @@ CachyWindow {
                                 Layout.fillWidth: true
                                 spacing: 12
 
+                                CachyTextField {
+                                    Layout.fillWidth: true
+                                    placeholderText: "Nombre de perfil o parámetro personalizado..."
+                                    text: "CachyOS Liquid Profile"
+                                }
+
+                                CachyButton {
+                                    text: "Aplicar"
+                                    primary: true
+                                }
+                            }
+
+                            CachyDivider {
+                                Layout.fillWidth: true
+                            }
+
+                            RowLayout {
+                                Layout.fillWidth: true
+                                spacing: 12
+
                                 CachyButton {
                                     text: "Guardar Ajustes"
-                                    primary: true
                                 }
 
                                 CachyButton {
                                     text: "Restablecer"
-                                }
-
-                                CachyButton {
-                                    text: "Ayuda"
                                     flat: true
                                 }
 
