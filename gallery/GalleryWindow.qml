@@ -48,84 +48,11 @@ CachyWindow {
                     anchors.margins: 14
                     spacing: 14
 
-                    // Botones de semáforo integrados en la cabecera
-                    Row {
-                        id: trafficLights
-                        spacing: 8
+                    // Botones de semáforo vectoriales oficiales macOS Golden Gate
+                    CachyTrafficLights {
                         Layout.topMargin: 4
                         Layout.bottomMargin: 6
-
-                        property bool hovered: lightsHover.hovered
-                        HoverHandler { id: lightsHover }
-
-                        // Cerrar
-                        Rectangle {
-                            width: 13
-                            height: 13
-                            radius: 6.5
-                            color: trafficLights.hovered ? "#FF5F56" : (CachyTheme.isDark ? Qt.rgba(1, 1, 1, 0.35) : Qt.rgba(0, 0, 0, 0.25))
-                            border.width: 0.5
-                            border.color: Qt.rgba(0, 0, 0, 0.20)
-                            Behavior on color { ColorAnimation { duration: 150 } }
-
-                            Text {
-                                anchors.centerIn: parent
-                                text: "✕"
-                                font.pixelSize: 8
-                                font.bold: true
-                                color: Qt.rgba(0, 0, 0, 0.7)
-                                visible: trafficLights.hovered
-                            }
-                            TapHandler { onTapped: root.close() }
-                        }
-
-                        // Minimizar
-                        Rectangle {
-                            width: 13
-                            height: 13
-                            radius: 6.5
-                            color: trafficLights.hovered ? "#FFBD2E" : (CachyTheme.isDark ? Qt.rgba(1, 1, 1, 0.35) : Qt.rgba(0, 0, 0, 0.25))
-                            border.width: 0.5
-                            border.color: Qt.rgba(0, 0, 0, 0.20)
-                            Behavior on color { ColorAnimation { duration: 150 } }
-
-                            Text {
-                                anchors.centerIn: parent
-                                anchors.verticalCenterOffset: -1
-                                text: "–"
-                                font.pixelSize: 10
-                                font.bold: true
-                                color: Qt.rgba(0, 0, 0, 0.7)
-                                visible: trafficLights.hovered
-                            }
-                            TapHandler { onTapped: root.showMinimized() }
-                        }
-
-                        // Maximizar / Zoom
-                        Rectangle {
-                            width: 13
-                            height: 13
-                            radius: 6.5
-                            color: trafficLights.hovered ? "#27C93F" : (CachyTheme.isDark ? Qt.rgba(1, 1, 1, 0.35) : Qt.rgba(0, 0, 0, 0.25))
-                            border.width: 0.5
-                            border.color: Qt.rgba(0, 0, 0, 0.20)
-                            Behavior on color { ColorAnimation { duration: 150 } }
-
-                            Text {
-                                anchors.centerIn: parent
-                                text: "+"
-                                font.pixelSize: 10
-                                font.bold: true
-                                color: Qt.rgba(0, 0, 0, 0.7)
-                                visible: trafficLights.hovered
-                            }
-                            TapHandler {
-                                onTapped: {
-                                    if (root.visibility === Window.Maximized) root.showNormal();
-                                    else root.showMaximized();
-                                }
-                            }
-                        }
+                        window: root
                     }
 
                     // Navegación de la barra lateral

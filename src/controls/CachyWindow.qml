@@ -58,94 +58,14 @@ Window {
                 Layout.preferredHeight: 44
                 visible: root.showTrafficLights
 
-                Row {
-                    id: trafficLights
+                CachyTrafficLights {
                     anchors.left: parent.left
                     anchors.leftMargin: 16
                     anchors.verticalCenter: parent.verticalCenter
-                    spacing: 8
-
-                    property bool hovered: lightsHover.hovered
-
-                    HoverHandler {
-                        id: lightsHover
-                    }
-
-                    // Close Button (Red)
-                    Rectangle {
-                        width: 12
-                        height: 12
-                        radius: 6
-                        color: root.closable ? CachyTheme.closeButton : CachyTheme.textMuted
-                        opacity: root.closable ? 1.0 : 0.4
-
-                        Text {
-                            anchors.centerIn: parent
-                            text: "✕"
-                            font.pixelSize: 8
-                            font.bold: true
-                            color: Qt.rgba(0, 0, 0, 0.6)
-                            visible: trafficLights.hovered && root.closable
-                        }
-
-                        TapHandler {
-                            enabled: root.closable
-                            onTapped: root.close()
-                        }
-                    }
-
-                    // Minimize Button (Yellow)
-                    Rectangle {
-                        width: 12
-                        height: 12
-                        radius: 6
-                        color: root.minimizable ? CachyTheme.minimizeButton : CachyTheme.textMuted
-                        opacity: root.minimizable ? 1.0 : 0.4
-
-                        Text {
-                            anchors.centerIn: parent
-                            anchors.verticalCenterOffset: -1
-                            text: "–"
-                            font.pixelSize: 10
-                            font.bold: true
-                            color: Qt.rgba(0, 0, 0, 0.6)
-                            visible: trafficLights.hovered && root.minimizable
-                        }
-
-                        TapHandler {
-                            enabled: root.minimizable
-                            onTapped: root.showMinimized()
-                        }
-                    }
-
-                    // Maximize / Zoom Button (Green)
-                    Rectangle {
-                        width: 12
-                        height: 12
-                        radius: 6
-                        color: root.maximizable ? CachyTheme.maximizeButton : CachyTheme.textMuted
-                        opacity: root.maximizable ? 1.0 : 0.4
-
-                        Text {
-                            anchors.centerIn: parent
-                            text: "+"
-                            font.pixelSize: 10
-                            font.bold: true
-                            color: Qt.rgba(0, 0, 0, 0.6)
-                            visible: trafficLights.hovered && root.maximizable
-                        }
-
-                        TapHandler {
-                            enabled: root.maximizable
-                            onTapped: {
-                                if (root.visibility === Window.Maximized) {
-                                    root.showNormal();
-                                } else {
-                                    root.showMaximized();
-                                }
-                            }
-                        }
-                    }
+                    window: root
+                    closable: root.closable
+                    minimizable: root.minimizable
+                    maximizable: root.maximizable
                 }
 
                 // Window Title (Centered)
