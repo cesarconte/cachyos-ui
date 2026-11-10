@@ -13,6 +13,7 @@ import CachyOS.UI
 Window {
     id: root
 
+    visible: true
     flags: Qt.Window | Qt.FramelessWindowHint
     color: "transparent"
 
