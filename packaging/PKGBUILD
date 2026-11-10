@@ -1,0 +1,34 @@
+# Maintainer: Cesar <cesar@cachyos.local>
+pkgname=cachyos-ui
+pkgver=0.1.0
+pkgrel=1
+pkgdesc="Unified macOS Golden Gate pixel-perfect UI framework & Liquid Glass design system for CachyOS"
+arch=('x86_64')
+url="https://github.com/cachyos/cachyos-ui"
+license=('GPL-3.0-or-later')
+depends=(
+    'qt6-base>=6.7.0'
+    'qt6-declarative>=6.7.0'
+    'kwindowsystem>=6.0.0'
+    'kcoreaddons>=6.0.0'
+)
+makedepends=(
+    'cmake>=3.22'
+    'extra-cmake-modules>=6.0.0'
+    'qt6-shadertools>=6.7.0'
+    'gcc'
+)
+source=("$pkgname-$pkgver.tar.gz")
+sha256sums=('SKIP')
+
+build() {
+    cmake -B build -S "$pkgname-$pkgver" \
+        -DCMAKE_BUILD_TYPE=Release \
+        -DCMAKE_INSTALL_PREFIX=/usr \
+        -DKDE_INSTALL_USE_QT_SYS_PATHS=ON
+    cmake --build build -j$(nproc)
+}
+
+package() {
+    DESTDIR="$pkgdir" cmake --install build
+}

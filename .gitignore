@@ -1,0 +1,9 @@
+build/
+.cache/
+compile_commands.json
+*.user
+*.kdev4
+.directory
+*~
+*.orig
+*.rej
