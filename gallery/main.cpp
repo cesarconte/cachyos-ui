@@ -6,6 +6,9 @@
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 #include <QQuickWindow>
+#include <QtPlugin>
+
+Q_IMPORT_PLUGIN(CachyOS_UIPlugin)
 
 int main(int argc, char *argv[])
 {
@@ -17,6 +20,9 @@ int main(int argc, char *argv[])
     app.setOrganizationName(QStringLiteral("CachyOS"));
 
     QQmlApplicationEngine engine;
+    engine.addImportPath(QStringLiteral(":/"));
+    engine.addImportPath(QStringLiteral("qrc:/"));
+
     QObject::connect(
         &engine,
         &QQmlApplicationEngine::objectCreationFailed,
@@ -24,7 +30,7 @@ int main(int argc, char *argv[])
         []() { QCoreApplication::exit(-1); },
         Qt::QueuedConnection);
 
-    engine.loadFromModule("CachyOS.UI.Gallery", "GalleryWindow");
+    engine.load(QUrl(QStringLiteral("qrc:/CachyOS/UI/Gallery/GalleryWindow.qml")));
 
     return app.exec();
 }

@@ -15,7 +15,6 @@ T.Button {
 
     property bool primary: false
     property bool destructive: false
-    property bool flat: false
     property string iconName: ""
 
     implicitWidth: Math.max(84, contentRow.implicitWidth + (CachyTheme.spacingMedium * 2))

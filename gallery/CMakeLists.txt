@@ -11,6 +11,7 @@ qt_add_qml_module(cachyos-ui-gallery
 
 target_link_libraries(cachyos-ui-gallery PRIVATE
     cachyosui
+    cachyosuiplugin
     Qt6::Core
     Qt6::Gui
     Qt6::Qml
