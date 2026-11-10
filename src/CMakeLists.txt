@@ -1,4 +1,4 @@
-add_library(cachyosui STATIC)
+add_library(cachyosui SHARED)
 
 qt_add_qml_module(cachyosui
     URI CachyOS.UI

@@ -6,9 +6,6 @@
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 #include <QQuickWindow>
-#include <QtPlugin>
-
-Q_IMPORT_PLUGIN(CachyOS_UIPlugin)
 
 int main(int argc, char *argv[])
 {
@@ -22,6 +19,7 @@ int main(int argc, char *argv[])
     app.setOrganizationName(QStringLiteral("CachyOS"));
 
     QQmlApplicationEngine engine;
+    engine.addImportPath(QStringLiteral("/home/cesar/Proyectos/cachyos-ui/build/src"));
     engine.addImportPath(QStringLiteral(":/"));
     engine.addImportPath(QStringLiteral("qrc:/"));
 
