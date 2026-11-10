@@ -71,7 +71,7 @@ Window {
 
                 CachyTrafficLights {
                     anchors.left: parent.left
-                    anchors.leftMargin: 16
+                    anchors.leftMargin: CachyTheme.marginWindow
                     anchors.verticalCenter: parent.verticalCenter
                     window: root
                     closable: root.closable
