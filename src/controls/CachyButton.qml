@@ -17,7 +17,12 @@ T.Button {
     property bool destructive: false
     property string iconName: ""
 
-    implicitWidth: Math.max(84, contentRow.implicitWidth + (CachyTheme.spacingMedium * 2))
+    leftPadding: 16
+    rightPadding: 16
+    topPadding: 6
+    bottomPadding: 6
+
+    implicitWidth: Math.max(84, (contentItem ? contentItem.implicitWidth : 0) + leftPadding + rightPadding)
     implicitHeight: 32
 
     scale: control.pressed ? 0.96 : (btnHover.hovered ? 1.01 : 1.0)
@@ -29,7 +34,7 @@ T.Button {
         radius: CachyTheme.radiusSmall
         color: {
             if (control.flat) {
-                return btnHover.hovered ? CachyTheme.withAlpha(CachyTheme.accentColor, 0.12) : "transparent";
+                return btnHover.hovered ? CachyTheme.withAlpha(CachyTheme.accentColor, 0.15) : "transparent";
             }
             if (control.destructive) {
                 return control.pressed ? Qt.darker("#FF3B30", 1.15) : "#FF3B30";
@@ -46,7 +51,7 @@ T.Button {
 
         border.width: control.flat ? 0 : 1
         border.color: (control.primary || control.destructive)
-            ? Qt.rgba(1, 1, 1, 0.20)
+            ? Qt.rgba(1, 1, 1, 0.22)
             : CachyTheme.specularBorder
 
         Behavior on color {
@@ -54,24 +59,19 @@ T.Button {
         }
     }
 
-    contentItem: RowLayout {
-        id: contentRow
-        anchors.centerIn: parent
-        spacing: CachyTheme.spacingSmall
-
-        Text {
-            text: control.text
-            color: {
-                if (!control.enabled) return CachyTheme.textMuted;
-                if (control.primary || control.destructive) return "#FFFFFF";
-                if (control.flat) return CachyTheme.isDark ? "#409CFF" : CachyTheme.accentColor;
-                return CachyTheme.textPrimary;
-            }
-            font.pixelSize: 13
-            font.weight: control.primary ? Font.DemiBold : Font.Normal
-            horizontalAlignment: Text.AlignHCenter
-            verticalAlignment: Text.AlignVCenter
+    contentItem: Text {
+        text: control.text
+        color: {
+            if (!control.enabled) return CachyTheme.textMuted;
+            if (control.primary || control.destructive) return "#FFFFFF";
+            if (control.flat) return CachyTheme.isDark ? "#409CFF" : CachyTheme.accentColor;
+            return CachyTheme.textPrimary;
         }
+        font.pixelSize: 13
+        font.weight: control.primary ? Font.DemiBold : Font.Normal
+        horizontalAlignment: Text.AlignHCenter
+        verticalAlignment: Text.AlignVCenter
+        elide: Text.ElideRight
     }
 
     HoverHandler {
