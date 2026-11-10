@@ -5,6 +5,7 @@
 
 #include "cachywindowblur.h"
 #include <KWindowEffects>
+#include <QPainterPath>
 #include <QQuickItem>
 
 CachyWindowBlur::CachyWindowBlur(QObject *parent)
@@ -22,6 +23,8 @@ CachyWindowBlur::CachyWindowBlur(QObject *parent)
 
     if (m_window) {
         connect(m_window, &QQuickWindow::visibleChanged, this, &CachyWindowBlur::applyBlur);
+        connect(m_window, &QWindow::widthChanged, this, &CachyWindowBlur::applyBlur);
+        connect(m_window, &QWindow::heightChanged, this, &CachyWindowBlur::applyBlur);
         applyBlur();
     }
 }
@@ -42,8 +45,21 @@ void CachyWindowBlur::applyBlur()
         return;
     }
 
-    KWindowEffects::enableBlurBehind(m_window, m_enabled);
-    KWindowEffects::enableBackgroundContrast(m_window, m_enabled);
+    if (m_enabled && m_window->isVisible() && m_window->width() > 0 && m_window->height() > 0) {
+        const qreal radius = m_window->property("cornerRadius").isValid()
+            ? m_window->property("cornerRadius").toReal()
+            : 22.0;
+
+        QPainterPath path;
+        path.addRoundedRect(QRectF(0, 0, m_window->width(), m_window->height()), radius, radius);
+        const QRegion blurRegion(path.toFillPolygon().toPolygon());
+
+        KWindowEffects::enableBlurBehind(m_window, true, blurRegion);
+        KWindowEffects::enableBackgroundContrast(m_window, true);
+    } else {
+        KWindowEffects::enableBlurBehind(m_window, false);
+        KWindowEffects::enableBackgroundContrast(m_window, false);
+    }
 }
 
 CachyWindowBlur *CachyWindowBlur::qmlAttachedProperties(QObject *object)

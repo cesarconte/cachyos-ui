@@ -13,9 +13,9 @@ CachyWindow {
     id: root
 
     title: "Ajustes del Sistema - CachyOS UI"
-    width: 820
-    height: 560
-    showTrafficLights: false // Implementamos los botones en la barra lateral integrada
+    width: 860
+    height: 580
+    showTrafficLights: false // Botones integrados en la barra lateral estilo macOS
 
     property int activeNavIndex: 0
 
@@ -31,29 +31,29 @@ CachyWindow {
                 id: sidebar
                 Layout.preferredWidth: 230
                 Layout.fillHeight: true
-                color: CachyTheme.isDark ? Qt.rgba(0.14, 0.14, 0.16, 0.65) : Qt.rgba(0.92, 0.92, 0.94, 0.75)
-                border.width: 0
+                // Translucidez real Liquid Glass sobre KWin Wayland Blur
+                color: CachyTheme.isDark ? Qt.rgba(0.10, 0.10, 0.12, 0.50) : Qt.rgba(0.95, 0.95, 0.97, 0.65)
 
-                // Línea divisoria vertical sutil de 1px a la derecha
+                // Borde divisor derecho sutil de 1px
                 Rectangle {
                     anchors.top: parent.top
                     anchors.bottom: parent.bottom
                     anchors.right: parent.right
                     width: 1
-                    color: CachyTheme.isDark ? Qt.rgba(1, 1, 1, 0.08) : Qt.rgba(0, 0, 0, 0.08)
+                    color: CachyTheme.isDark ? Qt.rgba(1, 1, 1, 0.10) : Qt.rgba(0, 0, 0, 0.10)
                 }
 
                 ColumnLayout {
                     anchors.fill: parent
                     anchors.margins: 14
-                    spacing: 12
+                    spacing: 14
 
-                    // Botones de semáforo macOS integrados en la barra lateral
+                    // Botones de semáforo integrados en la cabecera
                     Row {
                         id: trafficLights
                         spacing: 8
                         Layout.topMargin: 4
-                        Layout.bottomMargin: 8
+                        Layout.bottomMargin: 6
 
                         property bool hovered: lightsHover.hovered
                         HoverHandler { id: lightsHover }
@@ -63,9 +63,9 @@ CachyWindow {
                             width: 13
                             height: 13
                             radius: 6.5
-                            color: trafficLights.hovered ? "#FF5F56" : (CachyTheme.isDark ? Qt.rgba(1, 1, 1, 0.25) : Qt.rgba(0, 0, 0, 0.20))
+                            color: trafficLights.hovered ? "#FF5F56" : (CachyTheme.isDark ? Qt.rgba(1, 1, 1, 0.35) : Qt.rgba(0, 0, 0, 0.25))
                             border.width: 0.5
-                            border.color: Qt.rgba(0, 0, 0, 0.15)
+                            border.color: Qt.rgba(0, 0, 0, 0.20)
                             Behavior on color { ColorAnimation { duration: 150 } }
 
                             Text {
@@ -84,9 +84,9 @@ CachyWindow {
                             width: 13
                             height: 13
                             radius: 6.5
-                            color: trafficLights.hovered ? "#FFBD2E" : (CachyTheme.isDark ? Qt.rgba(1, 1, 1, 0.25) : Qt.rgba(0, 0, 0, 0.20))
+                            color: trafficLights.hovered ? "#FFBD2E" : (CachyTheme.isDark ? Qt.rgba(1, 1, 1, 0.35) : Qt.rgba(0, 0, 0, 0.25))
                             border.width: 0.5
-                            border.color: Qt.rgba(0, 0, 0, 0.15)
+                            border.color: Qt.rgba(0, 0, 0, 0.20)
                             Behavior on color { ColorAnimation { duration: 150 } }
 
                             Text {
@@ -106,9 +106,9 @@ CachyWindow {
                             width: 13
                             height: 13
                             radius: 6.5
-                            color: trafficLights.hovered ? "#27C93F" : (CachyTheme.isDark ? Qt.rgba(1, 1, 1, 0.25) : Qt.rgba(0, 0, 0, 0.20))
+                            color: trafficLights.hovered ? "#27C93F" : (CachyTheme.isDark ? Qt.rgba(1, 1, 1, 0.35) : Qt.rgba(0, 0, 0, 0.25))
                             border.width: 0.5
-                            border.color: Qt.rgba(0, 0, 0, 0.15)
+                            border.color: Qt.rgba(0, 0, 0, 0.20)
                             Behavior on color { ColorAnimation { duration: 150 } }
 
                             Text {
@@ -128,7 +128,7 @@ CachyWindow {
                         }
                     }
 
-                    // Lista de secciones estilo macOS
+                    // Navegación de la barra lateral
                     ColumnLayout {
                         Layout.fillWidth: true
                         spacing: 4
@@ -156,7 +156,7 @@ CachyWindow {
 
                                 color: isSelected
                                     ? CachyTheme.accentColor
-                                    : (isHovered ? (CachyTheme.isDark ? Qt.rgba(1, 1, 1, 0.08) : Qt.rgba(0, 0, 0, 0.05)) : "transparent")
+                                    : (isHovered ? (CachyTheme.isDark ? Qt.rgba(1, 1, 1, 0.10) : Qt.rgba(0, 0, 0, 0.06)) : "transparent")
 
                                 Behavior on color { ColorAnimation { duration: 120 } }
 
@@ -189,15 +189,15 @@ CachyWindow {
 
                     Item { Layout.fillHeight: true }
 
-                    // Perfil de usuario inferior estilo macOS
+                    // Perfil de usuario inferior
                     RowLayout {
                         Layout.fillWidth: true
                         spacing: 10
 
                         Rectangle {
-                            width: 32
-                            height: 32
-                            radius: 16
+                            width: 34
+                            height: 34
+                            radius: 17
                             color: CachyTheme.accentColor
 
                             Text {
@@ -205,7 +205,7 @@ CachyWindow {
                                 text: "C"
                                 color: "#FFFFFF"
                                 font.bold: true
-                                font.pixelSize: 14
+                                font.pixelSize: 15
                             }
                         }
 
@@ -215,13 +215,13 @@ CachyWindow {
 
                             Text {
                                 text: "Cesar"
-                                font.pixelSize: 12
+                                font.pixelSize: 13
                                 font.weight: Font.DemiBold
                                 color: CachyTheme.textPrimary
                             }
                             Text {
                                 text: "CachyOS BORE Linux"
-                                font.pixelSize: 10
+                                font.pixelSize: 11
                                 color: CachyTheme.textSecondary
                             }
                         }
@@ -230,18 +230,18 @@ CachyWindow {
             }
 
             // =========================================================
-            // 2. MAIN CONTENT AREA (macOS Content Surface)
+            // 2. MAIN CONTENT AREA (macOS Satin Surface)
             // =========================================================
             Rectangle {
                 id: mainContent
                 Layout.fillWidth: true
                 Layout.fillHeight: true
-                color: CachyTheme.isDark ? Qt.rgba(0.11, 0.11, 0.13, 0.94) : Qt.rgba(0.97, 0.97, 0.98, 0.96)
+                color: CachyTheme.isDark ? Qt.rgba(0.12, 0.12, 0.14, 0.94) : Qt.rgba(0.97, 0.97, 0.98, 0.96)
 
                 ColumnLayout {
                     anchors.fill: parent
                     anchors.margins: 24
-                    spacing: 16
+                    spacing: 20
 
                     // Cabecera de contenido
                     RowLayout {
@@ -249,7 +249,7 @@ CachyWindow {
 
                         ColumnLayout {
                             Layout.fillWidth: true
-                            spacing: 2
+                            spacing: 3
 
                             Text {
                                 text: "Aspecto & Vidrio Líquido"
@@ -281,102 +281,96 @@ CachyWindow {
                     CachyCard {
                         Layout.fillWidth: true
 
-                        content: [
-                            ColumnLayout {
-                                anchors.fill: parent
-                                spacing: 14
+                        contentItem: ColumnLayout {
+                            spacing: 16
+
+                            Text {
+                                text: "Parámetros de Refracción & Vidrio"
+                                font.pixelSize: 13
+                                font.weight: Font.DemiBold
+                                color: CachyTheme.textPrimary
+                            }
+
+                            RowLayout {
+                                Layout.fillWidth: true
+                                spacing: 16
 
                                 Text {
-                                    text: "Parámetros de Refracción & Vidrio"
-                                    font.pixelSize: 13
-                                    font.weight: Font.DemiBold
-                                    color: CachyTheme.textPrimary
+                                    text: "Displacement (Refracción)"
+                                    Layout.preferredWidth: 170
+                                    font.pixelSize: 12
+                                    color: CachyTheme.textSecondary
                                 }
 
-                                RowLayout {
+                                CachySlider {
                                     Layout.fillWidth: true
-                                    spacing: 16
-
-                                    Text {
-                                        text: "Displacement (Refracción)"
-                                        Layout.preferredWidth: 160
-                                        font.pixelSize: 12
-                                        color: CachyTheme.textSecondary
-                                    }
-
-                                    CachySlider {
-                                        Layout.fillWidth: true
-                                        from: 0
-                                        to: 100
-                                        value: 65
-                                    }
-                                }
-
-                                RowLayout {
-                                    Layout.fillWidth: true
-                                    spacing: 16
-
-                                    Text {
-                                        text: "Saturación de Fondo (120%)"
-                                        Layout.preferredWidth: 160
-                                        font.pixelSize: 12
-                                        color: CachyTheme.textSecondary
-                                    }
-
-                                    CachySlider {
-                                        Layout.fillWidth: true
-                                        from: 0
-                                        to: 100
-                                        value: 85
-                                    }
+                                    from: 0
+                                    to: 100
+                                    value: 65
                                 }
                             }
-                        ]
+
+                            RowLayout {
+                                Layout.fillWidth: true
+                                spacing: 16
+
+                                Text {
+                                    text: "Saturación de Fondo (120%)"
+                                    Layout.preferredWidth: 170
+                                    font.pixelSize: 12
+                                    color: CachyTheme.textSecondary
+                                }
+
+                                CachySlider {
+                                    Layout.fillWidth: true
+                                    from: 0
+                                    to: 100
+                                    value: 85
+                                }
+                            }
+                        }
                     }
 
                     // Tarjeta 2: Botones de Acción
                     CachyCard {
                         Layout.fillWidth: true
 
-                        content: [
-                            ColumnLayout {
-                                anchors.fill: parent
-                                spacing: 14
+                        contentItem: ColumnLayout {
+                            spacing: 16
 
-                                Text {
-                                    text: "Controles y Acciones del Sistema"
-                                    font.pixelSize: 13
-                                    font.weight: Font.DemiBold
-                                    color: CachyTheme.textPrimary
+                            Text {
+                                text: "Controles y Acciones del Sistema"
+                                font.pixelSize: 13
+                                font.weight: Font.DemiBold
+                                color: CachyTheme.textPrimary
+                            }
+
+                            RowLayout {
+                                Layout.fillWidth: true
+                                spacing: 12
+
+                                CachyButton {
+                                    text: "Guardar Ajustes"
+                                    primary: true
                                 }
 
-                                RowLayout {
-                                    Layout.fillWidth: true
-                                    spacing: 10
+                                CachyButton {
+                                    text: "Restablecer"
+                                }
 
-                                    CachyButton {
-                                        text: "Guardar Ajustes"
-                                        primary: true
-                                    }
+                                CachyButton {
+                                    text: "Ayuda"
+                                    flat: true
+                                }
 
-                                    CachyButton {
-                                        text: "Restablecer"
-                                    }
+                                Item { Layout.fillWidth: true }
 
-                                    CachyButton {
-                                        text: "Ayuda"
-                                        flat: true
-                                    }
-
-                                    Item { Layout.fillWidth: true }
-
-                                    CachyButton {
-                                        text: "Descartar"
-                                        destructive: true
-                                    }
+                                CachyButton {
+                                    text: "Descartar"
+                                    destructive: true
                                 }
                             }
-                        ]
+                        }
                     }
 
                     Item { Layout.fillHeight: true }

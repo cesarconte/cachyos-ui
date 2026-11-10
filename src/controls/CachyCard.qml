@@ -6,29 +6,30 @@
 pragma ComponentBehavior: Bound
 
 import QtQuick
-import QtQuick.Layouts
+import QtQuick.Templates as T
 import CachyOS.UI
 
-Item {
+T.Control {
     id: root
 
-    property alias radius: cardBg.radius
-    property alias color: cardBg.color
-    property alias border: cardBg.border
-    default property alias content: container.data
-
+    property alias radius: bgRect.radius
+    property alias color: bgRect.color
+    property alias border: bgRect.border
     property bool interactive: false
-    property bool hovered: hoverHandler.hovered
     signal clicked()
 
-    implicitWidth: container.implicitWidth + (CachyTheme.spacingMedium * 2)
-    implicitHeight: container.implicitHeight + (CachyTheme.spacingMedium * 2)
+    leftPadding: CachyTheme.spacingMedium
+    rightPadding: CachyTheme.spacingMedium
+    topPadding: CachyTheme.spacingMedium
+    bottomPadding: CachyTheme.spacingMedium
 
-    Rectangle {
-        id: cardBg
-        anchors.fill: parent
+    implicitWidth: Math.max(120, (contentItem ? contentItem.implicitWidth : 0) + leftPadding + rightPadding)
+    implicitHeight: Math.max(40, (contentItem ? contentItem.implicitHeight : 0) + topPadding + bottomPadding)
+
+    background: Rectangle {
+        id: bgRect
         radius: CachyTheme.radiusMedium
-        color: root.interactive && root.hovered
+        color: root.interactive && hoverHandler.hovered
             ? CachyTheme.cardBackgroundHover
             : CachyTheme.cardBackground
         border.width: 1
@@ -36,12 +37,6 @@ Item {
 
         Behavior on color {
             ColorAnimation { duration: CachyTheme.animFast }
-        }
-
-        Item {
-            id: container
-            anchors.fill: parent
-            anchors.margins: CachyTheme.spacingMedium
         }
 
         HoverHandler {

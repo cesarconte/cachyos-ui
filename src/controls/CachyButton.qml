@@ -64,7 +64,7 @@ T.Button {
             color: {
                 if (!control.enabled) return CachyTheme.textMuted;
                 if (control.primary || control.destructive) return "#FFFFFF";
-                if (control.flat) return CachyTheme.accentColor;
+                if (control.flat) return CachyTheme.isDark ? "#409CFF" : CachyTheme.accentColor;
                 return CachyTheme.textPrimary;
             }
             font.pixelSize: 13

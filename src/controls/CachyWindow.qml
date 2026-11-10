@@ -31,7 +31,7 @@ Window {
         id: windowSurface
         anchors.fill: parent
         radius: root.cornerRadius
-        color: CachyTheme.windowBackground
+        color: "transparent"
         border.width: 1
         border.color: CachyTheme.specularBorder
         clip: true
