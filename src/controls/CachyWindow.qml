@@ -17,6 +17,11 @@ Window {
     flags: Qt.Window | Qt.FramelessWindowHint
     color: "transparent"
 
+    width: CachyTheme.windowWidthUtility
+    height: CachyTheme.windowHeightUtility
+    minimumWidth: CachyTheme.windowWidthDialog
+    minimumHeight: 400
+
     property bool showTrafficLights: true
     property bool closable: true
     property bool minimizable: true

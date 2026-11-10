@@ -46,6 +46,18 @@ class CachyTheme : public QObject
     Q_PROPERTY(int spacingLarge READ spacingLarge CONSTANT)
     Q_PROPERTY(int spacingHuge READ spacingHuge CONSTANT)
 
+    // Standard Window & Container Metrics (macOS Golden Gate canonical sizing)
+    Q_PROPERTY(int windowWidthUtility READ windowWidthUtility CONSTANT)
+    Q_PROPERTY(int windowHeightUtility READ windowHeightUtility CONSTANT)
+    Q_PROPERTY(int windowWidthSettings READ windowWidthSettings CONSTANT)
+    Q_PROPERTY(int windowHeightSettings READ windowHeightSettings CONSTANT)
+    Q_PROPERTY(int windowWidthDialog READ windowWidthDialog CONSTANT)
+    Q_PROPERTY(int windowHeightDialog READ windowHeightDialog CONSTANT)
+    Q_PROPERTY(int marginWindow READ marginWindow CONSTANT)
+    Q_PROPERTY(int marginCard READ marginCard CONSTANT)
+    Q_PROPERTY(int titleBarHeight READ titleBarHeight CONSTANT)
+    Q_PROPERTY(int trafficLightMargin READ trafficLightMargin CONSTANT)
+
     Q_PROPERTY(int animFast READ animFast CONSTANT)
     Q_PROPERTY(int animNormal READ animNormal CONSTANT)
 
@@ -78,6 +90,18 @@ public:
     int spacingMedium() const { return 12; }
     int spacingLarge() const { return 16; }
     int spacingHuge() const { return 24; }
+
+    // Standard Window Sizing & Margins
+    int windowWidthUtility() const { return 540; }
+    int windowHeightUtility() const { return 620; }
+    int windowWidthSettings() const { return 880; }
+    int windowHeightSettings() const { return 640; }
+    int windowWidthDialog() const { return 440; }
+    int windowHeightDialog() const { return 320; }
+    int marginWindow() const { return 18; }
+    int marginCard() const { return 14; }
+    int titleBarHeight() const { return 44; }
+    int trafficLightMargin() const { return 16; }
 
     int animFast() const { return 180; }
     int animNormal() const { return 260; }
