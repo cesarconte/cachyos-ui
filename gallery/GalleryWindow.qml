@@ -14,7 +14,7 @@ CachyWindow {
 
     title: "Ajustes del Sistema - CachyOS UI"
     width: 880
-    height: 620
+    height: 640
     showTrafficLights: false // Botones integrados en la barra lateral estilo macOS
 
     property int activeNavIndex: 0
@@ -59,7 +59,7 @@ CachyWindow {
                         window: root
                     }
 
-                    // Campo de búsqueda en sidebar
+                    // Campo de búsqueda en sidebar con botón de borrado rápido ✕
                     CachyTextField {
                         Layout.fillWidth: true
                         isSearch: true
@@ -224,7 +224,7 @@ CachyWindow {
                         currentIndex: 3
                     }
 
-                    // Tarjeta 1: Sliders de Vidrio y Audio
+                    // Tarjeta 1: Sliders Continuos de Vidrio (Displacement y Saturación independientes)
                     CachyCard {
                         Layout.fillWidth: true
 
@@ -232,7 +232,7 @@ CachyWindow {
                             spacing: 14
 
                             Text {
-                                text: "Parámetros de Refracción & Vidrio"
+                                text: "Parámetros de Refracción & Vidrio (Sliders Continuos)"
                                 font.pixelSize: 13
                                 font.weight: Font.DemiBold
                                 color: CachyTheme.textPrimary
@@ -250,7 +250,6 @@ CachyWindow {
                                 }
 
                                 CachySlider {
-                                    id: dispSlider
                                     Layout.fillWidth: true
                                     from: 0
                                     to: 100
@@ -263,21 +262,23 @@ CachyWindow {
                                 spacing: 16
 
                                 Text {
-                                    text: "Saturación de Fondo"
+                                    text: "Saturación de Fondo (120%)"
                                     Layout.preferredWidth: 170
                                     font.pixelSize: 12
                                     color: CachyTheme.textSecondary
                                 }
 
-                                CachyProgressBar {
+                                CachySlider {
                                     Layout.fillWidth: true
-                                    value: dispSlider.value / 100.0
+                                    from: 0
+                                    to: 100
+                                    value: 85
                                 }
                             }
                         }
                     }
 
-                    // Tarjeta 2: Entradas de Texto y Botones
+                    // Tarjeta 2: Entradas de Datos, Focus Rings y Botón de Limpieza
                     CachyCard {
                         Layout.fillWidth: true
 
@@ -285,7 +286,7 @@ CachyWindow {
                             spacing: 14
 
                             Text {
-                                text: "Entradas de Datos & Focus Rings"
+                                text: "Entradas de Texto con Focus Ring y Borrado Rápido (✕)"
                                 font.pixelSize: 13
                                 font.weight: Font.DemiBold
                                 color: CachyTheme.textPrimary
@@ -296,9 +297,11 @@ CachyWindow {
                                 spacing: 12
 
                                 CachyTextField {
+                                    id: sampleInput
                                     Layout.fillWidth: true
-                                    placeholderText: "Nombre de perfil o parámetro personalizado..."
+                                    placeholderText: "Escribe un valor o presiona la ✕ para borrar..."
                                     text: "CachyOS Liquid Profile"
+                                    showClearButton: true
                                 }
 
                                 CachyButton {
@@ -311,24 +314,31 @@ CachyWindow {
                                 Layout.fillWidth: true
                             }
 
+                            // Barra de progreso independiente con animación de tarea
                             RowLayout {
                                 Layout.fillWidth: true
-                                spacing: 12
+                                spacing: 14
 
-                                CachyButton {
-                                    text: "Guardar Ajustes"
+                                Text {
+                                    text: progressToggle.checked ? "Compilación de Shaders (Indeterminada):" : "Optimización de Kernel BORE (78%):"
+                                    font.pixelSize: 12
+                                    color: CachyTheme.textSecondary
+                                    Layout.preferredWidth: 260
+                                }
+
+                                CachyProgressBar {
+                                    id: demoProgress
+                                    Layout.fillWidth: true
+                                    value: 0.78
+                                    indeterminate: progressToggle.checked
                                 }
 
                                 CachyButton {
-                                    text: "Restablecer"
+                                    id: progressToggle
+                                    text: checked ? "Fijar (78%)" : "Pulsar"
+                                    checkable: true
+                                    checked: false
                                     flat: true
-                                }
-
-                                Item { Layout.fillWidth: true }
-
-                                CachyButton {
-                                    text: "Descartar"
-                                    destructive: true
                                 }
                             }
                         }
