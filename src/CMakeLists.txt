@@ -41,7 +41,23 @@ set_target_properties(cachyosuiplugin PROPERTIES
 )
 
 # QML Module installation
+set(CACHYOS_QML_DIR "lib/qt6/qml/CachyOS/UI")
+
 install(TARGETS cachyosui
     LIBRARY DESTINATION ${KDE_INSTALL_LIBDIR}
     ARCHIVE DESTINATION ${KDE_INSTALL_LIBDIR}
+)
+
+install(TARGETS cachyosuiplugin
+    LIBRARY DESTINATION ${CACHYOS_QML_DIR}
+)
+
+install(FILES
+    ${CMAKE_CURRENT_BINARY_DIR}/qmldir
+    ${CMAKE_CURRENT_BINARY_DIR}/cachyosui.qmltypes
+    DESTINATION ${CACHYOS_QML_DIR}
+)
+
+install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/controls
+    DESTINATION ${CACHYOS_QML_DIR}
 )

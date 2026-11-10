@@ -24,6 +24,7 @@ Window {
     property alias windowTitle: titleLabel.text
     property alias contentData: contentArea.data
     property int cornerRadius: CachyTheme.radiusWindow
+    property color backgroundColor: "transparent"
 
     CachyWindowBlur.enabled: true
 
@@ -42,6 +43,15 @@ Window {
             }
         }
 
+        // Fondo redondeado si se especifica backgroundColor
+        Rectangle {
+            id: backgroundRect
+            anchors.fill: parent
+            radius: root.cornerRadius
+            color: root.backgroundColor
+            visible: root.backgroundColor !== "transparent"
+        }
+
         ColumnLayout {
             anchors.fill: parent
             spacing: 0
@@ -50,6 +60,7 @@ Window {
             Item {
                 id: titleBar
                 Layout.fillWidth: true
+                Layout.minimumWidth: 0
                 Layout.preferredHeight: 44
                 visible: root.showTrafficLights
 
@@ -79,6 +90,7 @@ Window {
             Item {
                 id: contentArea
                 Layout.fillWidth: true
+                Layout.minimumWidth: 0
                 Layout.fillHeight: true
             }
         }
