@@ -27,14 +27,9 @@ Window {
 
     CachyWindowBlur.enabled: true
 
-    Rectangle {
+    Item {
         id: windowSurface
         anchors.fill: parent
-        radius: root.cornerRadius
-        color: "transparent"
-        border.width: 1
-        border.color: CachyTheme.specularBorder
-        clip: true
 
         // Drag Handler to drag the window by titlebar or empty space
         DragHandler {
@@ -86,6 +81,17 @@ Window {
                 Layout.fillWidth: true
                 Layout.fillHeight: true
             }
+        }
+
+        // Borde exterior especular continuo de 1px sobre las 4 esquinas redondeadas
+        Rectangle {
+            id: specularRim
+            anchors.fill: parent
+            radius: root.cornerRadius
+            color: "transparent"
+            border.width: 1
+            border.color: CachyTheme.specularBorder
+            z: 100
         }
     }
 }

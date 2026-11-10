@@ -33,6 +33,10 @@ CachyWindow {
                 Layout.fillHeight: true
                 // Translucidez real Liquid Glass sobre KWin Wayland Blur
                 color: CachyTheme.isDark ? Qt.rgba(0.10, 0.10, 0.12, 0.50) : Qt.rgba(0.95, 0.95, 0.97, 0.65)
+                topLeftRadius: root.cornerRadius
+                bottomLeftRadius: root.cornerRadius
+                topRightRadius: 0
+                bottomRightRadius: 0
 
                 // Borde divisor derecho sutil de 1px
                 Rectangle {
@@ -164,6 +168,10 @@ CachyWindow {
                 Layout.fillWidth: true
                 Layout.fillHeight: true
                 color: CachyTheme.isDark ? Qt.rgba(0.12, 0.12, 0.14, 0.94) : Qt.rgba(0.97, 0.97, 0.98, 0.96)
+                topLeftRadius: 0
+                bottomLeftRadius: 0
+                topRightRadius: root.cornerRadius
+                bottomRightRadius: root.cornerRadius
 
                 ColumnLayout {
                     anchors.fill: parent

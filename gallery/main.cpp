@@ -15,6 +15,8 @@ int main(int argc, char *argv[])
     // Force Wayland backend on CachyOS
     qputenv("QT_QPA_PLATFORM", "wayland;xcb");
 
+    QQuickWindow::setDefaultAlphaBuffer(true);
+
     QGuiApplication app(argc, argv);
     app.setApplicationName(QStringLiteral("cachyos-ui-gallery"));
     app.setOrganizationName(QStringLiteral("CachyOS"));
