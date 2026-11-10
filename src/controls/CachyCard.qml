@@ -18,10 +18,10 @@ T.Control {
     property bool interactive: false
     signal clicked()
 
-    leftPadding: CachyTheme.spacingMedium
-    rightPadding: CachyTheme.spacingMedium
-    topPadding: CachyTheme.spacingMedium
-    bottomPadding: CachyTheme.spacingMedium
+    leftPadding: CachyTheme.marginCard
+    rightPadding: CachyTheme.marginCard
+    topPadding: CachyTheme.marginCard
+    bottomPadding: CachyTheme.marginCard
 
     implicitWidth: Math.max(120, (contentItem ? contentItem.implicitWidth : 0) + leftPadding + rightPadding)
     implicitHeight: Math.max(40, (contentItem ? contentItem.implicitHeight : 0) + topPadding + bottomPadding)

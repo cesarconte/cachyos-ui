@@ -28,7 +28,20 @@ En Qt Quick (`RowLayout` y `ColumnLayout`), el valor de `Layout.minimumWidth` de
 
 ---
 
-## 2. Tokens Centralizados en `CachyTheme` (Cero Dimensiones Hardcodeadas)
+## 2. Estructura Universal de Ventanas (`CachyWindow`)
+
+Toda ventana del sistema comparte estrictamente la misma arquitectura física:
+1. **Contorno Exterior Specular (1 px):** Delineado continuo sobre las esquinas de 22 px (`CachyTheme.radiusWindow`) con `CachyTheme.specularBorder`.
+2. **Desenfoque Wayland (KWin):** Activado por defecto mediante `CachyWindowBlur` con `QRegion` vectorial redondeada para evitar esquinas en ángulo recto.
+3. **Barra de Título Canónica (44 px):**
+   - **Semáforo izquierdo:** Situado a `CachyTheme.marginWindow` (18 px) del borde izquierdo.
+   - **Título central:** Centrado geométricamente en la ventana.
+   - **Acciones derechas (`headerActions`):** Contenedor anclado a `CachyTheme.marginWindow` (18 px) del borde derecho.
+4. **Área de Contenido:** Con `contentPadded: true`, el contenido queda automáticamente protegido con un margen perimetral exacto de 18 px (`CachyTheme.marginWindow`) a izquierda, derecha y fondo, garantizando alineación vertical estricta 1:1 con el semáforo y las herramientas superiores.
+
+---
+
+## 3. Tokens Centralizados en `CachyTheme` (Cero Dimensiones Hardcodeadas)
 
 Todas las aplicaciones deben recurrir a los tokens métricos provistos por el singleton `CachyTheme`:
 
@@ -41,9 +54,9 @@ Todas las aplicaciones deben recurrir a los tokens métricos provistos por el si
 | `windowWidthDialog` | `440` | Ancho base para modales y diálogos de confirmación |
 | `windowHeightDialog` | `320` | Alto base para modales y diálogos |
 | `marginWindow` | `18` | Margen perimetral continuo entre el borde de la ventana y los componentes |
-| `marginCard` | `14` | Padding interno dentro de tarjetas `CachyCard` |
+| `marginCard` | `14` | Padding interno universal dentro de tarjetas `CachyCard` |
 | `titleBarHeight` | `44` | Altura estándar de la barra de título / botones de semáforo estilo macOS |
-| `trafficLightMargin` | `16` | Distancia desde el borde izquierdo de la ventana al primer botón del semáforo |
+| `trafficLightMargin` | `18` | Distancia desde el borde izquierdo de la ventana al primer botón del semáforo |
 
 ### Radios de Esquina Canónicos
 - `radiusWindow: 22` (Esquinas de ventana curvada continua estilo macOS Sonoma / Sequoia).
@@ -53,7 +66,15 @@ Todas las aplicaciones deben recurrir a los tokens métricos provistos por el si
 
 ---
 
-## 3. Replicación Pixel-Perfect macOS Golden Gate / Liquid Glass
+## 4. Tarjetas y Contenedores Universales (`CachyCard`)
+- **Padding interno universal:** 14 px (`CachyTheme.marginCard`) aplicado automáticamente a los cuatro costados (`leftPadding`, `rightPadding`, `topPadding`, `bottomPadding`).
+- **Radio de curvatura:** 12 px (`CachyTheme.radiusMedium`).
+- **Borde de 1 px:** `CachyTheme.specularBorder`.
+- **Fondo Liquid Glass:** `CachyTheme.cardBackground` con transición reactiva a `CachyTheme.cardBackgroundHover` en tarjetas interactivas.
+
+---
+
+## 5. Replicación Pixel-Perfect macOS Golden Gate / Liquid Glass
 
 1. **Semáforo Vectorial Oficial (`CachyTrafficLights`):**
    - 14 px de diámetro, 8 px de espacio entre círculos, situado a 16 px del borde izquierdo.

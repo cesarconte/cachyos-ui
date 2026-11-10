@@ -28,8 +28,11 @@ Window {
     property bool maximizable: true
     property alias windowTitle: titleLabel.text
     property alias contentData: contentArea.data
+    property alias headerActions: headerTrailingArea.data
     property int cornerRadius: CachyTheme.radiusWindow
     property color backgroundColor: "transparent"
+    property int contentMargin: CachyTheme.marginWindow
+    property bool contentPadded: false
 
     CachyWindowBlur.enabled: true
 
@@ -66,12 +69,12 @@ Window {
                 id: titleBar
                 Layout.fillWidth: true
                 Layout.minimumWidth: 0
-                Layout.preferredHeight: 44
+                Layout.preferredHeight: CachyTheme.titleBarHeight
                 visible: root.showTrafficLights
 
                 CachyTrafficLights {
                     anchors.left: parent.left
-                    anchors.leftMargin: CachyTheme.marginWindow
+                    anchors.leftMargin: root.contentMargin
                     anchors.verticalCenter: parent.verticalCenter
                     window: root
                     closable: root.closable
@@ -89,6 +92,15 @@ Window {
                     font.weight: Font.DemiBold
                     elide: Text.ElideRight
                 }
+
+                // Header Trailing Actions (Alineadas simétricamente en el extremo derecho)
+                Item {
+                    id: headerTrailingArea
+                    anchors.right: parent.right
+                    anchors.rightMargin: root.contentMargin
+                    anchors.verticalCenter: parent.verticalCenter
+                    height: parent.height
+                }
             }
 
             // Client Content Area
@@ -97,6 +109,10 @@ Window {
                 Layout.fillWidth: true
                 Layout.minimumWidth: 0
                 Layout.fillHeight: true
+                Layout.leftMargin: root.contentPadded ? root.contentMargin : 0
+                Layout.rightMargin: root.contentPadded ? root.contentMargin : 0
+                Layout.bottomMargin: root.contentPadded ? root.contentMargin : 0
+                Layout.topMargin: (root.contentPadded && !root.showTrafficLights) ? root.contentMargin : 0
             }
         }
 
