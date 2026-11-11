@@ -23,16 +23,17 @@ bool CachyTheme::isDark() const
 
 QColor CachyTheme::windowBackground() const
 {
+    // Translucent Liquid Glass material for macOS Golden Gate with KWin Wayland blur
     return isDark()
-        ? QColor::fromRgbF(0.11, 0.11, 0.13, 0.88)
-        : QColor::fromRgbF(0.96, 0.96, 0.97, 0.90);
+        ? QColor::fromRgbF(0.12, 0.12, 0.15, 0.40)
+        : QColor::fromRgbF(0.96, 0.97, 1.00, 0.45);
 }
 
 QColor CachyTheme::cardBackground() const
 {
     return isDark()
         ? QColor::fromRgbF(1.0, 1.0, 1.0, 0.08)
-        : QColor::fromRgbF(1.0, 1.0, 1.0, 0.65);
+        : QColor::fromRgbF(1.0, 1.0, 1.0, 0.55);
 }
 
 QColor CachyTheme::cardBackgroundHover() const
