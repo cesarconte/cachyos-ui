@@ -191,10 +191,13 @@ CachyWindow {
                         Layout.fillWidth: true
                         spacing: 12
 
-                        Text {
-                            text: "◌"
-                            font.pixelSize: 15
-                            color: CachyTheme.textSecondary
+                        Rectangle {
+                            width: 14
+                            height: 14
+                            radius: 7
+                            color: "transparent"
+                            border.width: 1.5
+                            border.color: CachyTheme.textSecondary
                         }
 
                         CachySlider {
@@ -208,10 +211,13 @@ CachyWindow {
                             }
                         }
 
-                        Text {
-                            text: "◙"
-                            font.pixelSize: 15
+                        Rectangle {
+                            width: 14
+                            height: 14
+                            radius: 7
                             color: CachyTheme.textSecondary
+                            border.width: 1.5
+                            border.color: CachyTheme.textSecondary
                         }
                     }
 

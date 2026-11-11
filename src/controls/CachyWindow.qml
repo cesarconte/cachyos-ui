@@ -214,6 +214,7 @@ Window {
                             anchors.left: parent.left
                             anchors.leftMargin: root.hasSidebar ? 14 : root.contentMargin
                             anchors.verticalCenter: parent.verticalCenter
+                            height: parent.height
                             spacing: 12
 
                             CachyTrafficLights {
