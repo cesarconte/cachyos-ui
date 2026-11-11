@@ -24,12 +24,19 @@ Window {
     minimumHeight: 400
 
     property bool showTrafficLights: true
+    property bool showTitleBarDivider: true
     property bool closable: true
     property bool minimizable: true
     property bool maximizable: true
     property bool resizable: true
     property alias windowTitle: titleLabel.text
     default property alias contentData: contentHost.data
+    property alias sidebar: sidebarHost.data
+    property alias sidebarHeaderActions: sidebarHeaderTrailingArea.data
+    property int sidebarWidth: 240
+    property bool sidebarVisible: true
+    readonly property bool hasSidebar: sidebarHost.children.length > 0 && root.sidebarVisible
+
     property alias headerLeading: headerLeadingArea.data
     property alias headerCenter: headerCenterArea.data
     property alias headerActions: headerTrailingArea.data
@@ -44,6 +51,20 @@ Window {
     Item {
         id: windowSurface
         anchors.fill: parent
+
+        // Full-window squircle mask for edge-to-edge sidebars & content (macOS 27 Golden Gate)
+        Item {
+            id: windowMask
+            anchors.fill: parent
+            visible: false
+            layer.enabled: true
+
+            Rectangle {
+                anchors.fill: parent
+                radius: root.cornerRadius
+                color: "white"
+            }
+        }
 
         // 1. Translucent Liquid Glass Background (macOS Golden Gate)
         Rectangle {
@@ -61,171 +82,220 @@ Window {
             radius: root.cornerRadius
             color: "transparent"
             gradient: Gradient {
-                GradientStop { position: 0.0; color: Qt.rgba(1, 1, 1, 0.16) }
+                GradientStop { position: 0.0; color: Qt.rgba(1, 1, 1, 0.16 * (1.0 - CachyTheme.glassOpacity * 0.4)) }
                 GradientStop { position: 0.35; color: Qt.rgba(1, 1, 1, 0.04) }
                 GradientStop { position: 0.75; color: Qt.rgba(1, 1, 1, 0.01) }
                 GradientStop { position: 1.0; color: Qt.rgba(1, 1, 1, 0.06) }
             }
         }
 
-        ColumnLayout {
+        // Masked interior container so edge-to-edge sidebars and content respect 20px squircle corners
+        Item {
+            id: interiorClippedContainer
             anchors.fill: parent
-            spacing: 0
-
-            // =================================================================
-            // 3. macOS Titlebar (44px Golden Gate)
-            // =================================================================
-            Item {
-                id: titleBar
-                Layout.fillWidth: true
-                Layout.minimumWidth: 0
-                Layout.preferredHeight: root.showTrafficLights ? CachyTheme.titleBarHeight : 0
-                visible: root.showTrafficLights
-                z: 10
-
-                // Titlebar Drag Handler (moves the frameless window)
-                DragHandler {
-                    id: windowDrag
-                    target: null
-                    cursorShape: Qt.ClosedHandCursor
-                    onActiveChanged: {
-                        if (active) {
-                            root.startSystemMove();
-                        }
-                    }
-                }
-
-                // Double tap on titlebar to maximize / restore
-                TapHandler {
-                    enabled: root.maximizable
-                    onDoubleTapped: {
-                        if (root.visibility === Window.Maximized) {
-                            root.showNormal();
-                        } else {
-                            root.showMaximized();
-                        }
-                    }
-                }
-
-                // Leading: Traffic Lights + Optional Leading Area (e.g. chevrons < >)
-                Row {
-                    id: leadingRow
-                    anchors.left: parent.left
-                    anchors.leftMargin: root.contentMargin
-                    anchors.verticalCenter: parent.verticalCenter
-                    spacing: 12
-
-                    CachyTrafficLights {
-                        id: trafficLights
-                        anchors.verticalCenter: parent.verticalCenter
-                        window: root
-                        closable: root.closable
-                        minimizable: root.minimizable
-                        maximizable: root.maximizable
-                    }
-
-                    Item {
-                        id: headerLeadingArea
-                        anchors.verticalCenter: parent.verticalCenter
-                        height: parent.height
-                        width: childrenRect.width
-                    }
-                }
-
-                // Center: Window Title or Custom Center Item (e.g. Siri Orb Pill, File Name)
-                Item {
-                    id: headerCenterContainer
-                    anchors.centerIn: parent
-                    height: parent.height
-                    width: Math.max(60, parent.width - (leadingRow.width + headerTrailingArea.width + 48))
-
-                    Item {
-                        id: headerCenterArea
-                        anchors.fill: parent
-                    }
-
-                    Text {
-                        id: titleLabel
-                        anchors.centerIn: parent
-                        text: root.title
-                        color: CachyTheme.textPrimary
-                        font.pixelSize: 13
-                        font.weight: Font.DemiBold
-                        elide: Text.ElideMiddle
-                        visible: headerCenterArea.children.length === 0
-                        width: parent.width
-                        horizontalAlignment: Text.AlignHCenter
-                    }
-                }
-
-                // Trailing: Header Actions (Flush at 18px from right edge)
-                Item {
-                    id: headerTrailingArea
-                    anchors.right: parent.right
-                    anchors.rightMargin: root.contentMargin
-                    anchors.verticalCenter: parent.verticalCenter
-                    height: parent.height
-                    width: childrenRect.width
-                }
-
-                // Titlebar Bottom Hairline Separator (1px Specular Border)
-                Rectangle {
-                    anchors.left: parent.left
-                    anchors.right: parent.right
-                    anchors.bottom: parent.bottom
-                    height: 1
-                    color: CachyTheme.specularBorder
-                }
+            layer.enabled: true
+            layer.effect: MultiEffect {
+                maskEnabled: true
+                maskSource: windowMask
             }
 
-            // =================================================================
-            // 4. Client Content Area (Auto-contained with 22px bottom squircle mask)
-            // =================================================================
-            Item {
-                id: contentArea
-                Layout.fillWidth: true
-                Layout.minimumWidth: 0
-                Layout.fillHeight: true
-                Layout.leftMargin: root.contentPadded ? root.contentMargin : 0
-                Layout.rightMargin: root.contentPadded ? root.contentMargin : 0
-                Layout.bottomMargin: root.contentPadded ? root.contentMargin : 0
-                Layout.topMargin: (root.contentPadded && !root.showTrafficLights) ? root.contentMargin : 0
+            RowLayout {
+                anchors.fill: parent
+                spacing: 0
 
-                // Mask that preserves square top corners against titlebar and clips bottom corners
-                Item {
-                    id: contentMask
-                    anchors.fill: parent
-                    visible: false
-                    layer.enabled: true
+                // =============================================================
+                // A. Edge-to-Edge Golden Gate Sidebar (when sidebar is populated)
+                // =============================================================
+                Rectangle {
+                    id: sidebarPane
+                    visible: root.hasSidebar
+                    Layout.preferredWidth: root.hasSidebar ? root.sidebarWidth : 0
+                    Layout.fillHeight: true
+                    color: CachyTheme.sidebarBackground
 
-                    Rectangle {
+                    ColumnLayout {
                         anchors.fill: parent
-                        radius: root.cornerRadius
-                        color: "white"
+                        spacing: 0
 
-                        // Top rectangle to keep top corners flush with 44px titlebar
-                        Rectangle {
-                            anchors.top: parent.top
-                            anchors.left: parent.left
-                            anchors.right: parent.right
-                            height: root.cornerRadius
-                            color: "white"
+                        // Sidebar 44px Top Header (Traffic Lights on left, Sidebar Actions on right)
+                        Item {
+                            Layout.fillWidth: true
+                            Layout.preferredHeight: root.showTrafficLights ? CachyTheme.titleBarHeight : 0
+                            visible: root.showTrafficLights
+
+                            DragHandler {
+                                target: null
+                                cursorShape: Qt.ClosedHandCursor
+                                onActiveChanged: if (active) root.startSystemMove()
+                            }
+
+                            CachyTrafficLights {
+                                anchors.left: parent.left
+                                anchors.leftMargin: root.contentMargin
+                                anchors.verticalCenter: parent.verticalCenter
+                                window: root
+                                closable: root.closable
+                                minimizable: root.minimizable
+                                maximizable: root.maximizable
+                            }
+
+                            Item {
+                                id: sidebarHeaderTrailingArea
+                                anchors.right: parent.right
+                                anchors.rightMargin: 12
+                                anchors.verticalCenter: parent.verticalCenter
+                                height: parent.height
+                                width: childrenRect.width
+                            }
                         }
+
+                        // Sidebar Content Host
+                        Item {
+                            id: sidebarHost
+                            Layout.fillWidth: true
+                            Layout.fillHeight: true
+                        }
+                    }
+
+                    // Full-height 1px Hard Divider on right edge of sidebar
+                    Rectangle {
+                        anchors.top: parent.top
+                        anchors.bottom: parent.bottom
+                        anchors.right: parent.right
+                        width: 1
+                        color: CachyTheme.hardDividerColor
                     }
                 }
 
-                Item {
-                    id: maskedContentWrapper
-                    anchors.fill: parent
-                    layer.enabled: true
-                    layer.effect: MultiEffect {
-                        maskEnabled: true
-                        maskSource: contentMask
+                // =============================================================
+                // B. Main Window Column (44px Titlebar/Toolbar + Content Area)
+                // =============================================================
+                ColumnLayout {
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+                    spacing: 0
+
+                    // 3. macOS Titlebar / Toolbar (44px Golden Gate)
+                    Item {
+                        id: titleBar
+                        Layout.fillWidth: true
+                        Layout.minimumWidth: 0
+                        Layout.preferredHeight: root.showTrafficLights ? CachyTheme.titleBarHeight : 0
+                        visible: root.showTrafficLights
+                        z: 10
+
+                        // Titlebar Drag Handler (moves the frameless window)
+                        DragHandler {
+                            id: windowDrag
+                            target: null
+                            cursorShape: Qt.ClosedHandCursor
+                            onActiveChanged: {
+                                if (active) {
+                                    root.startSystemMove();
+                                }
+                            }
+                        }
+
+                        // Double tap on titlebar to maximize / restore
+                        TapHandler {
+                            enabled: root.maximizable
+                            onDoubleTapped: {
+                                if (root.visibility === Window.Maximized) {
+                                    root.showNormal();
+                                } else {
+                                    root.showMaximized();
+                                }
+                            }
+                        }
+
+                        // Leading: Traffic Lights (if no sidebar) + Optional Leading Area (e.g. chevrons < >)
+                        Row {
+                            id: leadingRow
+                            anchors.left: parent.left
+                            anchors.leftMargin: root.hasSidebar ? 14 : root.contentMargin
+                            anchors.verticalCenter: parent.verticalCenter
+                            spacing: 12
+
+                            CachyTrafficLights {
+                                id: trafficLights
+                                visible: !root.hasSidebar
+                                anchors.verticalCenter: parent.verticalCenter
+                                window: root
+                                closable: root.closable
+                                minimizable: root.minimizable
+                                maximizable: root.maximizable
+                            }
+
+                            Item {
+                                id: headerLeadingArea
+                                anchors.verticalCenter: parent.verticalCenter
+                                height: parent.height
+                                width: childrenRect.width
+                            }
+                        }
+
+                        // Center: Window Title or Custom Center Item (e.g. Siri Orb Pill, File Name)
+                        Item {
+                            id: headerCenterContainer
+                            anchors.centerIn: parent
+                            height: parent.height
+                            width: Math.max(60, parent.width - (leadingRow.width + headerTrailingArea.width + 48))
+
+                            Item {
+                                id: headerCenterArea
+                                anchors.fill: parent
+                            }
+
+                            Text {
+                                id: titleLabel
+                                anchors.centerIn: parent
+                                text: root.title
+                                color: CachyTheme.textPrimary
+                                font.pixelSize: 13
+                                font.weight: Font.DemiBold
+                                elide: Text.ElideMiddle
+                                visible: headerCenterArea.children.length === 0
+                                width: parent.width
+                                horizontalAlignment: Text.AlignHCenter
+                            }
+                        }
+
+                        // Trailing: Header Actions (Flush at 18px from right edge)
+                        Item {
+                            id: headerTrailingArea
+                            anchors.right: parent.right
+                            anchors.rightMargin: root.contentMargin
+                            anchors.verticalCenter: parent.verticalCenter
+                            height: parent.height
+                            width: childrenRect.width
+                        }
+
+                        // Golden Gate "Hard-Style" Titlebar Bottom Divider (1px visible border)
+                        Rectangle {
+                            anchors.left: parent.left
+                            anchors.right: parent.right
+                            anchors.bottom: parent.bottom
+                            height: 1
+                            visible: root.showTitleBarDivider
+                            color: CachyTheme.hardDividerColor
+                        }
                     }
 
+                    // 4. Client Content Area
                     Item {
-                        id: contentHost
-                        anchors.fill: parent
+                        id: contentArea
+                        Layout.fillWidth: true
+                        Layout.minimumWidth: 0
+                        Layout.fillHeight: true
+                        Layout.leftMargin: root.contentPadded ? root.contentMargin : 0
+                        Layout.rightMargin: root.contentPadded ? root.contentMargin : 0
+                        Layout.bottomMargin: root.contentPadded ? root.contentMargin : 0
+                        Layout.topMargin: (root.contentPadded && !root.showTrafficLights) ? root.contentMargin : 0
+
+                        Item {
+                            id: contentHost
+                            anchors.fill: parent
+                        }
                     }
                 }
             }

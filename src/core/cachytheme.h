@@ -6,6 +6,7 @@
 #pragma once
 
 #include <QColor>
+#include <QFileSystemWatcher>
 #include <QGuiApplication>
 #include <QObject>
 #include <QPalette>
@@ -19,11 +20,15 @@ class CachyTheme : public QObject
     QML_SINGLETON
 
     Q_PROPERTY(bool isDark READ isDark NOTIFY themeChanged)
+    Q_PROPERTY(qreal glassOpacity READ glassOpacity WRITE setGlassOpacity NOTIFY themeChanged)
     Q_PROPERTY(QColor accentColor READ accentColor NOTIFY themeChanged)
     Q_PROPERTY(QColor windowBackground READ windowBackground NOTIFY themeChanged)
+    Q_PROPERTY(QColor sidebarBackground READ sidebarBackground NOTIFY themeChanged)
+    Q_PROPERTY(QColor surfacePill READ surfacePill NOTIFY themeChanged)
     Q_PROPERTY(QColor cardBackground READ cardBackground NOTIFY themeChanged)
     Q_PROPERTY(QColor cardBackgroundHover READ cardBackgroundHover NOTIFY themeChanged)
     Q_PROPERTY(QColor specularBorder READ specularBorder NOTIFY themeChanged)
+    Q_PROPERTY(QColor hardDividerColor READ hardDividerColor NOTIFY themeChanged)
     Q_PROPERTY(QColor textPrimary READ textPrimary NOTIFY themeChanged)
     Q_PROPERTY(QColor textSecondary READ textSecondary NOTIFY themeChanged)
     Q_PROPERTY(QColor textMuted READ textMuted NOTIFY themeChanged)
@@ -66,11 +71,17 @@ public:
     ~CachyTheme() override = default;
 
     bool isDark() const;
+    qreal glassOpacity() const { return m_glassOpacity; }
+    void setGlassOpacity(qreal value);
+
     QColor accentColor() const { return QColor(10, 132, 255); } // #0A84FF
     QColor windowBackground() const;
+    QColor sidebarBackground() const;
+    QColor surfacePill() const;
     QColor cardBackground() const;
     QColor cardBackgroundHover() const;
     QColor specularBorder() const;
+    QColor hardDividerColor() const;
     QColor textPrimary() const;
     QColor textSecondary() const;
     QColor textMuted() const;
@@ -83,7 +94,7 @@ public:
     int radiusSmall() const { return 8; }
     int radiusMedium() const { return 12; }
     int radiusLarge() const { return 16; }
-    int radiusWindow() const { return 22; }
+    int radiusWindow() const { return 20; } // macOS 27 Golden Gate unified corner radius (between Sequoia 12 and Tahoe 26)
 
     int spacingTiny() const { return 4; }
     int spacingSmall() const { return 8; }
@@ -115,4 +126,10 @@ Q_SIGNALS:
 
 private:
     void onColorSchemeChanged();
+    void loadSettings();
+    void saveSettings();
+
+    qreal m_glassOpacity = 0.5; // 0.0 = Glassiest, 0.5 = Medium Glassy (Golden Gate default), 1.0 = Maximum Tint
+    QFileSystemWatcher m_configWatcher;
+    QString m_configPath;
 };

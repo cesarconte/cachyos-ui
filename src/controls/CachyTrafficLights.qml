@@ -19,7 +19,7 @@ Item {
     property bool maximizable: true
 
     implicitWidth: 55 // 3 botones de 13px + 2 espaciados de 8px
-    implicitHeight: 14
+    implicitHeight: 16
 
     // HoverHandler que abarca la zona de los 3 botones como conjunto (macOS style)
     readonly property bool rowHovered: zoneHover.hovered
@@ -34,7 +34,7 @@ Item {
         spacing: 8
 
         // =====================================================================
-        // 1. CLOSE BUTTON (Red)
+        // 1. CLOSE BUTTON (Red — Golden Gate Glassy + Bouncy Expand on Click)
         // =====================================================================
         Rectangle {
             id: closeBtn
@@ -45,17 +45,39 @@ Item {
             readonly property bool isPressed: closeTap.pressed
             readonly property bool isHovered: root.rowHovered
 
+            scale: closeBtn.isPressed ? 1.18 : 1.0
+            Behavior on scale {
+                NumberAnimation {
+                    duration: closeBtn.isPressed ? 90 : 220
+                    easing.type: closeBtn.isPressed ? Easing.OutQuad : Easing.OutBack
+                    easing.overshoot: 2.2
+                }
+            }
+
             color: {
                 if (!root.closable) return CachyTheme.isDark ? Qt.rgba(1, 1, 1, 0.20) : Qt.rgba(0, 0, 0, 0.15);
-                if (closeBtn.isPressed) return Qt.darker("#FF5F56", 1.25);
+                if (closeBtn.isPressed) return Qt.lighter("#FF5F56", 1.06);
                 if (root.active || closeBtn.isHovered) return "#FF5F56";
                 return CachyTheme.isDark ? Qt.rgba(1, 1, 1, 0.25) : Qt.rgba(0, 0, 0, 0.20);
             }
 
-            border.width: 0.5
-            border.color: Qt.rgba(0, 0, 0, 0.20)
+            border.width: 0.75
+            border.color: (root.active || closeBtn.isHovered) ? Qt.rgba(1, 1, 1, 0.38) : Qt.rgba(0, 0, 0, 0.20)
 
             Behavior on color { ColorAnimation { duration: 140 } }
+
+            // Subtly glassy top-left specular crescent (macOS 27 Golden Gate)
+            Rectangle {
+                anchors.fill: parent
+                anchors.margins: 0.75
+                radius: width / 2
+                visible: root.active || closeBtn.isHovered
+                gradient: Gradient {
+                    GradientStop { position: 0.0; color: Qt.rgba(1, 1, 1, 0.42) }
+                    GradientStop { position: 0.48; color: Qt.rgba(1, 1, 1, 0.06) }
+                    GradientStop { position: 1.0; color: Qt.rgba(0, 0, 0, 0.14) }
+                }
+            }
 
             // Vector Glyphs (Exact macOS Golden Gate Stroke)
             Shape {
@@ -66,21 +88,19 @@ Item {
                 layer.samples: 4
 
                 ShapePath {
-                    strokeColor: Qt.rgba(0, 0, 0, 0.65)
+                    strokeColor: Qt.rgba(0, 0, 0, 0.68)
                     strokeWidth: 1.15
                     capStyle: ShapePath.RoundCap
 
-                    // Diagonal 1: (3.8, 3.8) -> (9.2, 9.2)
                     startX: 3.8; startY: 3.8
                     PathLine { x: 9.2; y: 9.2 }
                 }
 
                 ShapePath {
-                    strokeColor: Qt.rgba(0, 0, 0, 0.65)
+                    strokeColor: Qt.rgba(0, 0, 0, 0.68)
                     strokeWidth: 1.15
                     capStyle: ShapePath.RoundCap
 
-                    // Diagonal 2: (9.2, 3.8) -> (3.8, 9.2)
                     startX: 9.2; startY: 3.8
                     PathLine { x: 3.8; y: 9.2 }
                 }
@@ -94,7 +114,7 @@ Item {
         }
 
         // =====================================================================
-        // 2. MINIMIZE BUTTON (Yellow)
+        // 2. MINIMIZE BUTTON (Yellow — Golden Gate Glassy + Bouncy Expand)
         // =====================================================================
         Rectangle {
             id: minBtn
@@ -105,17 +125,38 @@ Item {
             readonly property bool isPressed: minTap.pressed
             readonly property bool isHovered: root.rowHovered
 
+            scale: minBtn.isPressed ? 1.18 : 1.0
+            Behavior on scale {
+                NumberAnimation {
+                    duration: minBtn.isPressed ? 90 : 220
+                    easing.type: minBtn.isPressed ? Easing.OutQuad : Easing.OutBack
+                    easing.overshoot: 2.2
+                }
+            }
+
             color: {
                 if (!root.minimizable) return CachyTheme.isDark ? Qt.rgba(1, 1, 1, 0.20) : Qt.rgba(0, 0, 0, 0.15);
-                if (minBtn.isPressed) return Qt.darker("#FFBD2E", 1.25);
+                if (minBtn.isPressed) return Qt.lighter("#FFBD2E", 1.06);
                 if (root.active || minBtn.isHovered) return "#FFBD2E";
                 return CachyTheme.isDark ? Qt.rgba(1, 1, 1, 0.25) : Qt.rgba(0, 0, 0, 0.20);
             }
 
-            border.width: 0.5
-            border.color: Qt.rgba(0, 0, 0, 0.20)
+            border.width: 0.75
+            border.color: (root.active || minBtn.isHovered) ? Qt.rgba(1, 1, 1, 0.38) : Qt.rgba(0, 0, 0, 0.20)
 
             Behavior on color { ColorAnimation { duration: 140 } }
+
+            Rectangle {
+                anchors.fill: parent
+                anchors.margins: 0.75
+                radius: width / 2
+                visible: root.active || minBtn.isHovered
+                gradient: Gradient {
+                    GradientStop { position: 0.0; color: Qt.rgba(1, 1, 1, 0.42) }
+                    GradientStop { position: 0.48; color: Qt.rgba(1, 1, 1, 0.06) }
+                    GradientStop { position: 1.0; color: Qt.rgba(0, 0, 0, 0.14) }
+                }
+            }
 
             Shape {
                 anchors.fill: parent
@@ -125,11 +166,10 @@ Item {
                 layer.samples: 4
 
                 ShapePath {
-                    strokeColor: Qt.rgba(0, 0, 0, 0.65)
+                    strokeColor: Qt.rgba(0, 0, 0, 0.68)
                     strokeWidth: 1.15
                     capStyle: ShapePath.RoundCap
 
-                    // Horizontal bar: (3.2, 6.5) -> (9.8, 6.5)
                     startX: 3.2; startY: 6.5
                     PathLine { x: 9.8; y: 6.5 }
                 }
@@ -143,7 +183,7 @@ Item {
         }
 
         // =====================================================================
-        // 3. ZOOM / FULLSCREEN BUTTON (Green)
+        // 3. ZOOM / FULLSCREEN BUTTON (Green — Golden Gate Glassy + Bouncy)
         // =====================================================================
         Rectangle {
             id: maxBtn
@@ -154,17 +194,38 @@ Item {
             readonly property bool isPressed: maxTap.pressed
             readonly property bool isHovered: root.rowHovered
 
+            scale: maxBtn.isPressed ? 1.18 : 1.0
+            Behavior on scale {
+                NumberAnimation {
+                    duration: maxBtn.isPressed ? 90 : 220
+                    easing.type: maxBtn.isPressed ? Easing.OutQuad : Easing.OutBack
+                    easing.overshoot: 2.2
+                }
+            }
+
             color: {
                 if (!root.maximizable) return CachyTheme.isDark ? Qt.rgba(1, 1, 1, 0.20) : Qt.rgba(0, 0, 0, 0.15);
-                if (maxBtn.isPressed) return Qt.darker("#27C93F", 1.25);
+                if (maxBtn.isPressed) return Qt.lighter("#27C93F", 1.06);
                 if (root.active || maxBtn.isHovered) return "#27C93F";
                 return CachyTheme.isDark ? Qt.rgba(1, 1, 1, 0.25) : Qt.rgba(0, 0, 0, 0.20);
             }
 
-            border.width: 0.5
-            border.color: Qt.rgba(0, 0, 0, 0.20)
+            border.width: 0.75
+            border.color: (root.active || maxBtn.isHovered) ? Qt.rgba(1, 1, 1, 0.38) : Qt.rgba(0, 0, 0, 0.20)
 
             Behavior on color { ColorAnimation { duration: 140 } }
+
+            Rectangle {
+                anchors.fill: parent
+                anchors.margins: 0.75
+                radius: width / 2
+                visible: root.active || maxBtn.isHovered
+                gradient: Gradient {
+                    GradientStop { position: 0.0; color: Qt.rgba(1, 1, 1, 0.42) }
+                    GradientStop { position: 0.48; color: Qt.rgba(1, 1, 1, 0.06) }
+                    GradientStop { position: 1.0; color: Qt.rgba(0, 0, 0, 0.14) }
+                }
+            }
 
             // macOS Fullscreen Two Opposite Diagonal Arrows
             Shape {
@@ -176,7 +237,7 @@ Item {
 
                 // Top-right arrow
                 ShapePath {
-                    strokeColor: Qt.rgba(0, 0, 0, 0.65)
+                    strokeColor: Qt.rgba(0, 0, 0, 0.68)
                     strokeWidth: 1.10
                     capStyle: ShapePath.RoundCap
                     joinStyle: ShapePath.RoundJoin
@@ -188,7 +249,7 @@ Item {
 
                 // Bottom-left arrow
                 ShapePath {
-                    strokeColor: Qt.rgba(0, 0, 0, 0.65)
+                    strokeColor: Qt.rgba(0, 0, 0, 0.68)
                     strokeWidth: 1.10
                     capStyle: ShapePath.RoundCap
                     joinStyle: ShapePath.RoundJoin

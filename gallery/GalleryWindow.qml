@@ -12,360 +12,293 @@ import CachyOS.UI
 CachyWindow {
     id: root
 
-    title: "Ajustes del Sistema - CachyOS UI"
-    width: 880
-    height: 640
-    showTrafficLights: false // Botones integrados en la barra lateral estilo macOS
+    title: "Liquid Glass — Ajustes del Sistema"
+    width: CachyTheme.windowWidthSettings
+    height: CachyTheme.windowHeightSettings
+    sidebarWidth: 235
 
     property int activeNavIndex: 0
 
-    contentData: [
-        RowLayout {
-            anchors.fill: parent
-            spacing: 0
+    // Golden Gate "< | >" Navigation Pill in Toolbar Leading Area
+    headerLeading: [
+        Rectangle {
+            anchors.verticalCenter: parent.verticalCenter
+            width: 58
+            height: 28
+            radius: 14
+            color: CachyTheme.surfacePill
+            border.width: 1
+            border.color: CachyTheme.specularBorder
 
-            // =========================================================
-            // 1. SIDEBAR TRANSLÚCIDA (macOS Vibrancy / Liquid Glass)
-            // =========================================================
-            Rectangle {
-                id: sidebar
-                Layout.preferredWidth: 235
-                Layout.fillHeight: true
-                // Translucidez real Liquid Glass sobre KWin Wayland Blur
-                color: CachyTheme.isDark ? Qt.rgba(0.10, 0.10, 0.12, 0.50) : Qt.rgba(0.95, 0.95, 0.97, 0.65)
-                topLeftRadius: root.cornerRadius
-                bottomLeftRadius: root.cornerRadius
-                topRightRadius: 0
-                bottomRightRadius: 0
+            Row {
+                anchors.centerIn: parent
+                spacing: 8
 
-                // Borde divisor derecho sutil de 1px
-                Rectangle {
-                    anchors.top: parent.top
-                    anchors.bottom: parent.bottom
-                    anchors.right: parent.right
-                    width: 1
-                    color: CachyTheme.isDark ? Qt.rgba(1, 1, 1, 0.10) : Qt.rgba(0, 0, 0, 0.10)
+                Text {
+                    text: "‹"
+                    color: CachyTheme.textPrimary
+                    font.pixelSize: 16
+                    font.weight: Font.Medium
                 }
+                Rectangle {
+                    width: 1
+                    height: 12
+                    anchors.verticalCenter: parent.verticalCenter
+                    color: CachyTheme.dividerColor
+                }
+                Text {
+                    text: "›"
+                    color: CachyTheme.textMuted
+                    font.pixelSize: 16
+                    font.weight: Font.Medium
+                }
+            }
+        }
+    ]
 
-                ColumnLayout {
-                    anchors.fill: parent
-                    anchors.margins: 14
-                    spacing: 12
+    // 1. Golden Gate Edge-to-Edge Sidebar with Colorful Squircle Badges & Bold Selection
+    sidebar: [
+        ColumnLayout {
+            anchors.fill: parent
+            anchors.leftMargin: 12
+            anchors.rightMargin: 12
+            anchors.bottomMargin: 14
+            spacing: 10
 
-                    // Botones de semáforo vectoriales oficiales macOS Golden Gate
-                    CachyTrafficLights {
-                        Layout.topMargin: 4
-                        Layout.bottomMargin: 4
-                        window: root
-                    }
+            CachyTextField {
+                Layout.fillWidth: true
+                isSearch: true
+                placeholderText: "Search"
+            }
 
-                    // Campo de búsqueda en sidebar con botón de borrado rápido ✕
-                    CachyTextField {
-                        Layout.fillWidth: true
-                        isSearch: true
-                        placeholderText: "Buscar ajustes..."
-                    }
+            ColumnLayout {
+                Layout.fillWidth: true
+                spacing: 3
 
-                    CachyDivider {
-                        Layout.fillWidth: true
-                        inset: 4
-                    }
+                Repeater {
+                    model: [
+                        { label: "Appearance & Glass", icon: "◐", color: "#1C1C1E" },
+                        { label: "Desktop & Dock", icon: "▭", color: "#007AFF" },
+                        { label: "Displays", icon: "☀", color: "#0A84FF" },
+                        { label: "Kity & Intelligence", icon: "✦", color: "#AF52DE" },
+                        { label: "Spotlight", icon: "⌕", color: "#8E8E93" },
+                        { label: "Notifications", icon: "🔔", color: "#FF3B30" },
+                        { label: "Sound (PipeWire)", icon: "🔊", color: "#FF2D55" },
+                        { label: "Focus", icon: "☾", color: "#5856D6" }
+                    ]
 
-                    // Navegación de la barra lateral
-                    ColumnLayout {
-                        Layout.fillWidth: true
-                        spacing: 4
+                    CachySidebarItem {
+                        required property var modelData
+                        required property int index
 
-                        Repeater {
-                            model: [
-                                { label: "Aspecto & Vidrio", icon: "🎨" },
-                                { label: "Sonido (PipeWire)", icon: "🔊" },
-                                { label: "Rendimiento CachyOS", icon: "⚡" },
-                                { label: "Pantallas & Wayland", icon: "🖥️" },
-                                { label: "Privacidad & Seguridad", icon: "🔒" }
-                            ]
-
-                            Rectangle {
-                                id: navItem
-                                Layout.fillWidth: true
-                                Layout.preferredHeight: 34
-                                radius: 8
-
-                                required property var modelData
-                                required property int index
-
-                                readonly property bool isSelected: root.activeNavIndex === index
-                                readonly property bool isHovered: navHover.hovered
-
-                                color: isSelected
-                                    ? CachyTheme.accentColor
-                                    : (isHovered ? (CachyTheme.isDark ? Qt.rgba(1, 1, 1, 0.10) : Qt.rgba(0, 0, 0, 0.06)) : "transparent")
-
-                                Behavior on color { ColorAnimation { duration: 120 } }
-
-                                RowLayout {
-                                    anchors.fill: parent
-                                    anchors.leftMargin: 10
-                                    anchors.rightMargin: 10
-                                    spacing: 10
-
-                                    Text {
-                                        text: navItem.modelData.icon
-                                        font.pixelSize: 14
-                                    }
-
-                                    Text {
-                                        text: navItem.modelData.label
-                                        font.pixelSize: 13
-                                        font.weight: navItem.isSelected ? Font.DemiBold : Font.Normal
-                                        color: navItem.isSelected ? "#FFFFFF" : CachyTheme.textPrimary
-                                        Layout.fillWidth: true
-                                        elide: Text.ElideRight
-                                    }
-                                }
-
-                                HoverHandler { id: navHover; cursorShape: Qt.PointingHandCursor }
-                                TapHandler { onTapped: root.activeNavIndex = navItem.index }
-                            }
-                        }
-                    }
-
-                    Item { Layout.fillHeight: true }
-
-                    // Perfil de usuario inferior
-                    RowLayout {
-                        Layout.fillWidth: true
-                        spacing: 10
-
-                        Rectangle {
-                            width: 34
-                            height: 34
-                            radius: 17
-                            color: CachyTheme.accentColor
-
-                            Text {
-                                anchors.centerIn: parent
-                                text: "C"
-                                color: "#FFFFFF"
-                                font.bold: true
-                                font.pixelSize: 15
-                            }
-                        }
-
-                        ColumnLayout {
-                            spacing: 1
-                            Layout.fillWidth: true
-
-                            Text {
-                                text: "Cesar"
-                                font.pixelSize: 13
-                                font.weight: Font.DemiBold
-                                color: CachyTheme.textPrimary
-                            }
-                            Text {
-                                text: "CachyOS BORE Linux"
-                                font.pixelSize: 11
-                                color: CachyTheme.textSecondary
-                            }
-                        }
+                        text: modelData.label
+                        iconGlyph: modelData.icon
+                        iconColor: modelData.color
+                        squircleIconBadge: true
+                        selected: root.activeNavIndex === index
+                        selectedHighlightColor: index === 3 ? "#9B4DCA" : (CachyTheme.isDark ? Qt.rgba(1, 1, 1, 0.14) : Qt.rgba(0, 0, 0, 0.09))
+                        onClicked: root.activeNavIndex = index
                     }
                 }
             }
 
-            // =========================================================
-            // 2. MAIN CONTENT AREA (macOS Satin Surface)
-            // =========================================================
-            Rectangle {
-                id: mainContent
+            Item { Layout.fillHeight: true }
+
+            RowLayout {
                 Layout.fillWidth: true
-                Layout.fillHeight: true
-                color: CachyTheme.isDark ? Qt.rgba(0.12, 0.12, 0.14, 0.94) : Qt.rgba(0.97, 0.97, 0.98, 0.96)
-                topLeftRadius: 0
-                bottomLeftRadius: 0
-                topRightRadius: root.cornerRadius
-                bottomRightRadius: root.cornerRadius
+                spacing: 10
+
+                Rectangle {
+                    width: 32
+                    height: 32
+                    radius: 16
+                    color: CachyTheme.accentColor
+
+                    Text {
+                        anchors.centerIn: parent
+                        text: "C"
+                        color: "#FFFFFF"
+                        font.bold: true
+                        font.pixelSize: 14
+                    }
+                }
 
                 ColumnLayout {
-                    anchors.fill: parent
-                    anchors.margins: 24
-                    spacing: 16
+                    spacing: 1
+                    Layout.fillWidth: true
 
-                    // Cabecera de contenido
+                    Text {
+                        text: "Cesar"
+                        font.pixelSize: 13
+                        font.weight: Font.Bold
+                        color: CachyTheme.textPrimary
+                    }
+                    Text {
+                        text: "macOS 27 Golden Gate UI"
+                        font.pixelSize: 11
+                        color: CachyTheme.textSecondary
+                    }
+                }
+            }
+        }
+    ]
+
+    // 2. Main Content Area (Transparent over Golden Gate Liquid Glass)
+    contentData: [
+        ColumnLayout {
+            anchors.fill: parent
+            anchors.margins: CachyTheme.marginWindow
+            spacing: 16
+
+            // Golden Gate "Choose your glass" Card (from Ars Technica Review)
+            CachyCard {
+                Layout.fillWidth: true
+
+                contentItem: ColumnLayout {
+                    spacing: 12
+
                     RowLayout {
                         Layout.fillWidth: true
 
                         ColumnLayout {
                             Layout.fillWidth: true
-                            spacing: 3
+                            spacing: 2
 
                             Text {
-                                text: "Aspecto & Vidrio Líquido"
-                                font.pixelSize: 22
+                                text: "Liquid Glass"
+                                font.pixelSize: 16
                                 font.weight: Font.Bold
                                 color: CachyTheme.textPrimary
                             }
-
                             Text {
-                                text: "Diseño nativo pixel-perfect sobre KWin 6.8 Wayland y Qt 6.12"
+                                text: "Slide from clear to tinted to reveal content beneath or add more opacity."
                                 font.pixelSize: 12
                                 color: CachyTheme.textSecondary
                             }
                         }
 
-                        CachySwitch {
-                            checked: true
+                        Text {
+                            text: CachyTheme.glassOpacity < 0.25
+                                ? "Glassiest"
+                                : (CachyTheme.glassOpacity > 0.75 ? "Maximum Tint" : "Medium Glassy (Default)")
+                            font.pixelSize: 12
+                            font.weight: Font.DemiBold
+                            color: CachyTheme.accentColor
                         }
                     }
 
-                    // Selector Segmentado macOS
-                    CachySegmentedControl {
-                        Layout.fillWidth: true
-                        model: ["Automático", "Modo Claro", "Modo Oscuro", "Liquid Glass"]
-                        currentIndex: 3
-                    }
-
-                    // Tarjeta 1: Sliders Continuos de Vidrio (Displacement y Saturación independientes)
-                    CachyCard {
-                        Layout.fillWidth: true
-
-                        contentItem: ColumnLayout {
-                            spacing: 14
-
-                            Text {
-                                text: "Parámetros de Refracción & Vidrio (Sliders Continuos)"
-                                font.pixelSize: 13
-                                font.weight: Font.DemiBold
-                                color: CachyTheme.textPrimary
-                            }
-
-                            RowLayout {
-                                Layout.fillWidth: true
-                                spacing: 16
-
-                                Text {
-                                    text: "Displacement (Refracción)"
-                                    Layout.preferredWidth: 170
-                                    font.pixelSize: 12
-                                    color: CachyTheme.textSecondary
-                                }
-
-                                CachySlider {
-                                    Layout.fillWidth: true
-                                    from: 0
-                                    to: 100
-                                    value: 65
-                                }
-                            }
-
-                            RowLayout {
-                                Layout.fillWidth: true
-                                spacing: 16
-
-                                Text {
-                                    text: "Saturación de Fondo (120%)"
-                                    Layout.preferredWidth: 170
-                                    font.pixelSize: 12
-                                    color: CachyTheme.textSecondary
-                                }
-
-                                CachySlider {
-                                    Layout.fillWidth: true
-                                    from: 0
-                                    to: 100
-                                    value: 85
-                                }
-                            }
-                        }
-                    }
-
-                    // Tarjeta 2: Entradas de Datos, Focus Rings y Botón de Limpieza
-                    CachyCard {
-                        Layout.fillWidth: true
-
-                        contentItem: ColumnLayout {
-                            spacing: 14
-
-                            Text {
-                                text: "Entradas de Texto con Focus Ring y Borrado Rápido (✕)"
-                                font.pixelSize: 13
-                                font.weight: Font.DemiBold
-                                color: CachyTheme.textPrimary
-                            }
-
-                            RowLayout {
-                                Layout.fillWidth: true
-                                spacing: 12
-
-                                CachyTextField {
-                                    id: sampleInput
-                                    Layout.fillWidth: true
-                                    placeholderText: "Escribe un valor o presiona la ✕ para borrar..."
-                                    text: "CachyOS Liquid Profile"
-                                    showClearButton: true
-                                }
-
-                                CachyButton {
-                                    text: "Aplicar"
-                                    primary: true
-                                }
-                            }
-
-                            CachyDivider {
-                                Layout.fillWidth: true
-                            }
-
-                            // Barra de progreso independiente con animación de tarea
-                            RowLayout {
-                                Layout.fillWidth: true
-                                spacing: 14
-
-                                Text {
-                                    text: progressToggle.checked ? "Compilación de Shaders (Indeterminada):" : "Optimización de Kernel BORE (78%):"
-                                    font.pixelSize: 12
-                                    color: CachyTheme.textSecondary
-                                    Layout.preferredWidth: 260
-                                }
-
-                                CachyProgressBar {
-                                    id: demoProgress
-                                    Layout.fillWidth: true
-                                    value: 0.78
-                                    indeterminate: progressToggle.checked
-                                }
-
-                                CachyButton {
-                                    id: progressToggle
-                                    text: checked ? "Fijar (78%)" : "Pulsar"
-                                    checkable: true
-                                    checked: false
-                                    flat: true
-                                }
-                            }
-                        }
-                    }
-
-                    Item { Layout.fillHeight: true }
-
-                    // Barra inferior de estado
                     RowLayout {
                         Layout.fillWidth: true
+                        spacing: 12
 
                         Text {
-                            text: "KWin Wayland Blur: Activo • C++23 • Cero WebViews • Latencia < 1ms"
-                            font.pixelSize: 11
-                            color: CachyTheme.textMuted
+                            text: "◌"
+                            font.pixelSize: 15
+                            color: CachyTheme.textSecondary
                         }
 
-                        Item { Layout.fillWidth: true }
+                        CachySlider {
+                            id: glassOpacitySlider
+                            Layout.fillWidth: true
+                            from: 0
+                            to: 100
+                            value: Math.round(CachyTheme.glassOpacity * 100)
+                            onValueChanged: {
+                                CachyTheme.glassOpacity = value / 100.0;
+                            }
+                        }
 
                         Text {
-                            text: "cachyos-ui v0.1.0"
-                            font.pixelSize: 11
-                            color: CachyTheme.textMuted
+                            text: "◙"
+                            font.pixelSize: 15
+                            color: CachyTheme.textSecondary
+                        }
+                    }
+
+                    RowLayout {
+                        Layout.fillWidth: true
+                        spacing: 8
+
+                        CachyButton {
+                            text: "Glassiest (0%)"
+                            flat: true
+                            onClicked: glassOpacitySlider.value = 0
+                        }
+                        CachyButton {
+                            text: "Medium Glassy (50%)"
+                            flat: true
+                            onClicked: glassOpacitySlider.value = 50
+                        }
+                        CachyButton {
+                            text: "Maximum Tint (100%)"
+                            flat: true
+                            onClicked: glassOpacitySlider.value = 100
                         }
                     }
                 }
             }
+
+            // Segmented Control
+            CachySegmentedControl {
+                Layout.fillWidth: true
+                model: ["Auto", "Light", "Dark", "Golden Gate Glass"]
+                currentIndex: 3
+            }
+
+            // Inputs & Progress Bar Card
+            CachyCard {
+                Layout.fillWidth: true
+
+                contentItem: ColumnLayout {
+                    spacing: 14
+
+                    Text {
+                        text: "Controles Interactivos Golden Gate"
+                        font.pixelSize: 13
+                        font.weight: Font.DemiBold
+                        color: CachyTheme.textPrimary
+                    }
+
+                    RowLayout {
+                        Layout.fillWidth: true
+                        spacing: 12
+
+                        CachyTextField {
+                            Layout.fillWidth: true
+                            placeholderText: "Search or Ask..."
+                            text: "macOS 27 Golden Gate Liquid Glass"
+                            showClearButton: true
+                        }
+
+                        CachyButton {
+                            text: "Apply"
+                            primary: true
+                        }
+                    }
+
+                    CachyDivider {
+                        Layout.fillWidth: true
+                    }
+
+                    RowLayout {
+                        Layout.fillWidth: true
+                        spacing: 14
+
+                        Text {
+                            text: "AFM 3 Core Model Status:"
+                            font.pixelSize: 12
+                            color: CachyTheme.textSecondary
+                        }
+
+                        CachyProgressBar {
+                            Layout.fillWidth: true
+                            value: 0.82
+                        }
+                    }
+                }
+            }
+
+            Item { Layout.fillHeight: true }
         }
     ]
 }
