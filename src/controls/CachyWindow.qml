@@ -25,6 +25,7 @@ Window {
 
     property bool showTrafficLights: true
     property bool showTitleBarDivider: true
+    property bool showWindowFrame: true
     property bool closable: true
     property bool minimizable: true
     property bool maximizable: true
@@ -46,7 +47,7 @@ Window {
     property int contentMargin: CachyTheme.marginWindow
     property bool contentPadded: false
 
-    CachyWindowBlur.enabled: true
+    CachyWindowBlur.enabled: root.showWindowFrame
 
     Item {
         id: windowSurface
@@ -72,7 +73,7 @@ Window {
             anchors.fill: parent
             radius: root.cornerRadius
             color: root.backgroundColor !== "transparent" ? root.backgroundColor : CachyTheme.windowBackground
-            visible: true
+            visible: root.showWindowFrame
         }
 
         // 2. Liquid Glass Internal Gloss Sheen & Specular Highlights
@@ -81,6 +82,7 @@ Window {
             anchors.fill: parent
             radius: root.cornerRadius
             color: "transparent"
+            visible: root.showWindowFrame
             gradient: Gradient {
                 GradientStop { position: 0.0; color: Qt.rgba(1, 1, 1, 0.16 * (1.0 - CachyTheme.glassOpacity * 0.4)) }
                 GradientStop { position: 0.35; color: Qt.rgba(1, 1, 1, 0.04) }
@@ -321,6 +323,7 @@ Window {
             color: "transparent"
             border.width: 1
             border.color: CachyTheme.specularBorder
+            visible: root.showWindowFrame
             z: 999998
         }
 
