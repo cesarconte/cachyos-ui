@@ -127,7 +127,7 @@ Window {
                     Item {
                         id: headerLeadingArea
                         anchors.verticalCenter: parent.verticalCenter
-                        height: 28
+                        height: parent.height
                         width: childrenRect.width
                     }
                 }
@@ -135,19 +135,13 @@ Window {
                 // Center: Window Title or Custom Center Item (e.g. Siri Orb Pill, File Name)
                 Item {
                     id: headerCenterContainer
-                    anchors.horizontalCenter: parent.horizontalCenter
-                    anchors.verticalCenter: parent.verticalCenter
+                    anchors.centerIn: parent
                     height: parent.height
-                    width: Math.min(
-                        headerCenterArea.children.length > 0 ? headerCenterArea.childrenRect.width : titleLabel.implicitWidth,
-                        Math.max(60, parent.width - (leadingRow.width + headerTrailingArea.width + 48))
-                    )
+                    width: Math.max(60, parent.width - (leadingRow.width + headerTrailingArea.width + 48))
 
                     Item {
                         id: headerCenterArea
-                        anchors.centerIn: parent
-                        height: parent.height
-                        width: childrenRect.width
+                        anchors.fill: parent
                     }
 
                     Text {
@@ -170,7 +164,7 @@ Window {
                     anchors.right: parent.right
                     anchors.rightMargin: root.contentMargin
                     anchors.verticalCenter: parent.verticalCenter
-                    height: 28
+                    height: parent.height
                     width: childrenRect.width
                 }
 
