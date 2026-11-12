@@ -35,5 +35,6 @@ find_package(KF6 ${KF_MIN_VERSION} REQUIRED COMPONENTS
 
 add_subdirectory(src)
 add_subdirectory(gallery)
+add_subdirectory(testing)
 
 feature_summary(WHAT ALL FATAL_ON_MISSING_REQUIRED_PACKAGES)
