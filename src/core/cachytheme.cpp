@@ -226,12 +226,23 @@ QString CachyTheme::iconUrl(const QString &name) const
         QStringLiteral("/icons/breeze/actions/scalable/"),
         QStringLiteral("/icons/breeze/apps/scalable/"),
         QStringLiteral("/icons/hicolor/scalable/apps/"),
-        QStringLiteral("/icons/breeze/actions/24/"),
-        QStringLiteral("/icons/breeze/actions/22/"),
-        QStringLiteral("/icons/breeze/actions/16/"),
-        QStringLiteral("/icons/breeze/apps/24/"),
-        QStringLiteral("/icons/breeze/apps/22/"),
-        QStringLiteral("/icons/breeze/apps/16/"),
+    };
+    // The remaining categories of the Breeze theme.
+    static const QStringList breezeCategories = {
+        QStringLiteral("actions"),
+        QStringLiteral("apps"),
+        QStringLiteral("places"),
+        QStringLiteral("emotes"),
+        QStringLiteral("status"),
+        QStringLiteral("devices"),
+        QStringLiteral("mimetypes"),
+        QStringLiteral("preferences"),
+        QStringLiteral("categories"),
+    };
+    static const QStringList breezeSizes = {
+        QStringLiteral("24"),
+        QStringLiteral("22"),
+        QStringLiteral("16"),
     };
     static const QStringList suffixes = {
         QStringLiteral("-symbolic.svg"),
@@ -244,6 +255,16 @@ QString CachyTheme::iconUrl(const QString &name) const
                 const QString candidate = root + directory + name + suffix;
                 if (QFile::exists(candidate)) {
                     return QUrl::fromLocalFile(candidate).toString();
+                }
+            }
+        }
+        for (const QString &category : breezeCategories) {
+            for (const QString &size : breezeSizes) {
+                for (const QString &suffix : suffixes) {
+                    const QString candidate = root + QStringLiteral("/icons/breeze/") + category + QLatin1Char('/') + size + QLatin1Char('/') + name + suffix;
+                    if (QFile::exists(candidate)) {
+                        return QUrl::fromLocalFile(candidate).toString();
+                    }
                 }
             }
         }

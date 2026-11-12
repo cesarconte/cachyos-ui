@@ -19,6 +19,8 @@ Rectangle {
     property bool checkable: false
     property bool checked: false
     property bool pillStyle: true
+    /// Filled with the accent colour: the primary action of a surface.
+    property bool primary: false
 
     signal clicked()
     /// Emitted when a checkable button is toggled. It carries the intended new
@@ -43,6 +45,7 @@ Rectangle {
     }
 
     color: {
+        if (root.primary) return CachyTheme.accentColor;
         if (root.checked) return Qt.rgba(CachyTheme.accentColor.r, CachyTheme.accentColor.g, CachyTheme.accentColor.b, 0.22);
         if (root.isPressed) return CachyTheme.isDark ? Qt.rgba(1, 1, 1, 0.18) : Qt.rgba(0, 0, 0, 0.14);
         if (root.isHovered) return CachyTheme.isDark ? Qt.rgba(1, 1, 1, 0.12) : Qt.rgba(0, 0, 0, 0.08);
@@ -50,8 +53,8 @@ Rectangle {
         return "transparent";
     }
 
-    border.width: (root.pillStyle || root.checked || root.isHovered) ? 1 : 0
-    border.color: root.checked ? CachyTheme.accentColor : CachyTheme.specularBorder
+    border.width: (root.pillStyle || root.checked || root.isHovered || root.primary) ? 1 : 0
+    border.color: root.primary ? CachyTheme.accentColor : (root.checked ? CachyTheme.accentColor : CachyTheme.specularBorder)
 
     Behavior on color { ColorAnimation { duration: 120 } }
 
@@ -100,14 +103,14 @@ Rectangle {
             GE.ColorOverlay {
                 anchors.fill: parent
                 source: iconImage
-                color: root.checked ? CachyTheme.accentColor : CachyTheme.textPrimary
+                color: root.primary ? "#FFFFFF" : (root.checked ? CachyTheme.accentColor : CachyTheme.textPrimary)
             }
         }
 
         Text {
             visible: root.text.length > 0
             text: root.text
-            color: root.checked ? CachyTheme.accentColor : CachyTheme.textPrimary
+            color: root.primary ? "#FFFFFF" : (root.checked ? CachyTheme.accentColor : CachyTheme.textPrimary)
             font.pixelSize: 13
             font.weight: Font.Medium
             anchors.verticalCenter: parent.verticalCenter
