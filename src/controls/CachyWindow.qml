@@ -213,6 +213,7 @@ Window {
                         // Leading: Traffic Lights (if no sidebar) + Optional Leading Area (e.g. chevrons < >)
                         Row {
                             id: leadingRow
+                            objectName: "cachyHeaderLeading"
                             anchors.left: parent.left
                             anchors.leftMargin: root.hasSidebar ? 14 : root.contentMargin
                             anchors.verticalCenter: parent.verticalCenter
@@ -240,17 +241,31 @@ Window {
                         // Center: Window Title or Custom Center Item (e.g. Siri Orb Pill, File Name)
                         Item {
                             id: headerCenterContainer
-                            anchors.centerIn: parent
+                            objectName: "cachyHeaderCenter"
                             height: parent.height
-                            width: Math.max(60, parent.width - (leadingRow.width + headerTrailingArea.width + 48))
+                            anchors.verticalCenter: parent.verticalCenter
+
+                            // The title band is exactly the free space left between the leading
+                            // and the trailing clusters. Sizing the container to that band (instead
+                            // of approximating it from the cluster widths) guarantees that the
+                            // title can NEVER overlap the header actions, whatever the window
+                            // width is: the title elides inside the band instead of overflowing.
+                            readonly property real bandLeft: leadingRow.x + leadingRow.width
+                            readonly property real bandRight: headerTrailingArea.x
+                            readonly property real bandWidth: Math.max(0, bandRight - bandLeft)
+
+                            x: bandLeft
+                            width: bandWidth
 
                             Item {
                                 id: headerCenterArea
+                                objectName: "cachyHeaderCenterArea"
                                 anchors.fill: parent
                             }
 
                             Text {
                                 id: titleLabel
+                                objectName: "cachyHeaderTitle"
                                 anchors.centerIn: parent
                                 text: root.title
                                 color: CachyTheme.textPrimary
@@ -258,7 +273,7 @@ Window {
                                 font.weight: Font.DemiBold
                                 elide: Text.ElideMiddle
                                 visible: headerCenterArea.children.length === 0
-                                width: parent.width
+                                width: Math.min(implicitWidth, parent.width)
                                 horizontalAlignment: Text.AlignHCenter
                             }
                         }
@@ -266,6 +281,7 @@ Window {
                         // Trailing: Header Actions (Flush at 18px from right edge)
                         Item {
                             id: headerTrailingArea
+                            objectName: "cachyHeaderTrailing"
                             anchors.right: parent.right
                             anchors.rightMargin: root.contentMargin
                             anchors.verticalCenter: parent.verticalCenter
