@@ -7,6 +7,7 @@
 
 #include <QObject>
 #include <QString>
+#include <QVariant>
 #include <qqmlregistration.h>
 
 /**
@@ -41,7 +42,13 @@ public:
     }
 
     /// Translates @p message using the application domain.
-    Q_INVOKABLE QString i18n(const QString &message) const;
+    ///
+    /// The optional arguments replace the `%1`, `%2` … placeholders of the
+    /// message, exactly like the KF6 `i18n()` helper does.
+    Q_INVOKABLE QString i18n(const QString &message,
+                              const QVariant &arg1 = QVariant(),
+                              const QVariant &arg2 = QVariant(),
+                              const QVariant &arg3 = QVariant()) const;
 
     /// Translates @p message disambiguated by @p context.
     Q_INVOKABLE QString i18nc(const QString &context, const QString &message) const;

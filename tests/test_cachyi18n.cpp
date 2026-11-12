@@ -24,6 +24,7 @@ private Q_SLOTS:
     void initTestCase();
     void testFallsBackToSourceText();
     void testContextVariant();
+    void testPlaceholderArguments();
     void testDomainVariant();
     void testEmptyMessage();
 
@@ -54,6 +55,22 @@ void TestCachyI18n::testContextVariant()
     QCOMPARE(m_i18n.i18nc(QStringLiteral("Verb"), QStringLiteral("Open")),
              QStringLiteral("Open"));
     QVERIFY(!m_i18n.i18nc(QStringLiteral("Verb"), QStringLiteral("Open")).isEmpty());
+}
+
+void TestCachyI18n::testPlaceholderArguments()
+{
+    // The placeholders must be replaced, and the KF6 marker of a missing
+    // argument must never reach the interface.
+    QCOMPARE(m_i18n.i18n(QStringLiteral("%1 palabras • %2 entidades"), 12, 3),
+             QStringLiteral("12 palabras • 3 entidades"));
+
+    QCOMPARE(m_i18n.i18n(QStringLiteral("%1 de %2"), QStringLiteral("uno"), QStringLiteral("dos")),
+             QStringLiteral("uno de dos"));
+
+    // Without arguments the placeholders stay untouched and nothing is broken.
+    const QString untouched = m_i18n.i18n(QStringLiteral("%1 elementos"));
+    QVERIFY(!untouched.isEmpty());
+    QVERIFY(!untouched.contains(QStringLiteral("I18N_ARGUMENT_MISSING")));
 }
 
 void TestCachyI18n::testDomainVariant()
