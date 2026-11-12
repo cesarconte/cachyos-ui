@@ -58,6 +58,25 @@ Todas las aplicaciones deben recurrir a los tokens métricos provistos por el si
 | `titleBarHeight` | `44` | Altura estándar de la barra de título / botones de semáforo |
 | `trafficLightMargin` | `18` | Distancia desde el borde izquierdo de la ventana al primer botón del semáforo |
 
+### Proporción de la ventana
+
+La proporción (alto × ancho) de una ventana es parte de la identidad visual del
+ecosistema y **debe ser homogénea entre aplicaciones**:
+
+| Clase | Proporción | Medida de referencia |
+| :--- | :---: | :--- |
+| Ventana de herramienta (documento, lista, panel) | `1,33` – `1,50` | `880 × 640` (`windowWidthSettings`) |
+| Utilidad flotante vertical | `0,87` | `540 × 620` (`windowWidthUtility`) |
+| Teléfono / dialpad | `0,62` | `396 × 640` |
+
+- **Prohibido** el formato panorámico (proporción `> 2`): una franja de
+  `900 × 250` rompe la lectura del escritorio como conjunto y hace que la
+  aplicación parezca un *banner* en lugar de una ventana.
+- Cuando una aplicación original tenía una forma muy alargada (barra de subtítulos,
+  panel de estado), se **redimensiona a la proporción canónica** y el espacio
+  recuperado se llena con contenido real (historial, detalle, lista), nunca
+  con vacío.
+
 ### Radios de Esquina Canónicos
 - `radiusWindow: 22` (Esquinas de ventana curvada continua, estilo *squircle* de CachyOS).
 - `radiusLarge: 16` (Contenedores y secciones amplias).
