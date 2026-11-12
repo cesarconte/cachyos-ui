@@ -1,6 +1,6 @@
 # CachyOS UI (`cachyos-ui`) 🧊
 
-> **Framework de interfaz gráfica nativo, réplica pixel-perfect de macOS Golden Gate y sistema de diseño Liquid Glass para CachyOS Linux.**
+> **Framework de interfaz gráfica nativo, réplica pixel-perfect del lenguaje de diseño CachyOS y sistema de diseño Liquid Glass para CachyOS Linux.**
 
 `cachyos-ui` proporciona una biblioteca de controles declarativos ultrarrápidos y unificados sobre **Qt 6.12** y **C++23**, integrados a nivel de kernel y compositor con **KWin 6.8 Wayland**.
 
@@ -11,7 +11,7 @@ Inspirado en la filosofía de desacoplamiento de **Cutefish OS (`fishui`)**, `ca
 ## 💎 Características Principales
 
 - **Física y Geometría Pixel-Perfect**:
-  - Curvaturas *squircle* continuas de Apple ($n=4$).
+  - Curvaturas *squircle* continuas del lenguaje de diseño ($n=4$).
   - Botones de semáforo interactivos (`#FF5F56`, `#FFBD2E`, `#27C93F`) con iconos de acción al pasar el ratón.
   - Microinteracciones táctiles con curvas Bezier elásticas idénticas a CoreAnimation.
 - **Efecto Liquid Glass & KWin Blur**:
@@ -33,8 +33,8 @@ Inspirado en la filosofía de desacoplamiento de **Cutefish OS (`fishui`)**, `ca
 | **`CachyTheme`** | Singleton C++ con tokens de color, curvaturas, espaciados y respuesta reactiva a modo oscuro/claro. |
 | **`CachyWindow`** | Ventana frameless con radio de esquinas continuo (22px), barra de título semáforo y KWin blur Wayland automático. |
 | **`CachyCard`** | Superficie translúcida Liquid Glass con borde especular y hover feedback interactivo. |
-| **`CachySlider`** | Control deslizante continuo idéntico a macOS, con track cilíndrico translúcido y pulgar con sombra suave. |
-| **`CachySwitch`** | Interruptor toggle elástico estilo iOS/macOS con transición de color verde/acento y amortiguación elástica. |
+| **`CachySlider`** | Control deslizante continuo del lenguaje de diseño, con track cilíndrico translúcido y pulgar con sombra suave. |
+| **`CachySwitch`** | Interruptor toggle elástico con transición de color verde/acento y amortiguación elástica. |
 | **`CachyButton`** | Botones redondeados con variantes (default, primary, destructive, flat) y compresión háptica visual. |
 | **`CachySegmentedControl`** | Selector de modos con píldora deslizante translúcida animada por resorte. |
 

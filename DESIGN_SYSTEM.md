@@ -1,6 +1,6 @@
 # CachyOS UI — Principios Arquitectónicos & Guía de Diseño Golden Gate
 
-Este documento consolida las reglas de arquitectura y diseño canónicas de **CachyOS UI (`CachyOS.UI 1.0`)** para garantizar fidelidad pixel-perfect al estilo macOS Golden Gate / Liquid Glass en KDE Plasma 6 (Wayland) y erradicar errores de desbordamiento, recorte de texto o valores hardcodeados en cualquier aplicación del ecosistema.
+Este documento consolida las reglas de arquitectura y diseño canónicas de **CachyOS UI (`CachyOS.UI 1.0`)** para garantizar fidelidad pixel-perfect al lenguaje de diseño CachyOS / Liquid Glass en KDE Plasma 6 (Wayland) y erradicar errores de desbordamiento, recorte de texto o valores hardcodeados en cualquier aplicación del ecosistema.
 
 ---
 
@@ -47,7 +47,7 @@ Todas las aplicaciones deben recurrir a los tokens métricos provistos por el si
 
 | Token en `CachyTheme` | Valor | Propósito |
 | :--- | :---: | :--- |
-| `windowWidthUtility` | `540` | Ancho estándar para utilidades flotantes (Dropover, Siri/Kiri, Writing Tools) |
+| `windowWidthUtility` | `540` | Ancho estándar para utilidades flotantes (Dropover, Kiri, herramientas de escritura) |
 | `windowHeightUtility` | `620` | Alto estándar para utilidades flotantes |
 | `windowWidthSettings` | `880` | Ancho canónico para aplicaciones con barra lateral (Ajustes, Música, Control Center) |
 | `windowHeightSettings` | `640` | Alto canónico para aplicaciones con barra lateral |
@@ -55,11 +55,11 @@ Todas las aplicaciones deben recurrir a los tokens métricos provistos por el si
 | `windowHeightDialog` | `320` | Alto base para modales y diálogos |
 | `marginWindow` | `18` | Margen perimetral continuo entre el borde de la ventana y los componentes |
 | `marginCard` | `14` | Padding interno universal dentro de tarjetas `CachyCard` |
-| `titleBarHeight` | `44` | Altura estándar de la barra de título / botones de semáforo estilo macOS |
+| `titleBarHeight` | `44` | Altura estándar de la barra de título / botones de semáforo |
 | `trafficLightMargin` | `18` | Distancia desde el borde izquierdo de la ventana al primer botón del semáforo |
 
 ### Radios de Esquina Canónicos
-- `radiusWindow: 22` (Esquinas de ventana curvada continua estilo macOS Sonoma / Sequoia).
+- `radiusWindow: 22` (Esquinas de ventana curvada continua, estilo *squircle* de CachyOS).
 - `radiusLarge: 16` (Contenedores y secciones amplias).
 - `radiusMedium: 12` (Tarjetas `CachyCard` elevadas).
 - `radiusSmall: 8` (Botones `CachyButton`, campos de texto `CachyTextField`, píldoras).
@@ -74,7 +74,7 @@ Todas las aplicaciones deben recurrir a los tokens métricos provistos por el si
 
 ---
 
-## 5. Replicación Pixel-Perfect macOS Golden Gate / Liquid Glass
+## 5. Replicación Pixel-Perfect CachyOS / Liquid Glass
 
 1. **Semáforo Vectorial Oficial (`CachyTrafficLights`):**
    - 14 px de diámetro, 8 px de espacio entre círculos, situado a 16 px del borde izquierdo.

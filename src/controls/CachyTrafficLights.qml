@@ -21,7 +21,7 @@ Item {
     implicitWidth: 55 // 3 botones de 13px + 2 espaciados de 8px
     implicitHeight: 16
 
-    // HoverHandler que abarca la zona de los 3 botones como conjunto (macOS style)
+    // HoverHandler que abarca la zona de los 3 botones como conjunto
     readonly property bool rowHovered: zoneHover.hovered
 
     HoverHandler {
@@ -66,7 +66,7 @@ Item {
 
             Behavior on color { ColorAnimation { duration: 140 } }
 
-            // Subtly glassy top-left specular crescent (macOS 27 Golden Gate)
+            // Subtly glassy top-left specular crescent (CachyOS)
             Rectangle {
                 anchors.fill: parent
                 anchors.margins: 0.75
@@ -79,7 +79,7 @@ Item {
                 }
             }
 
-            // Vector Glyphs (Exact macOS Golden Gate Stroke)
+            // Vector Glyphs (Exact CachyOS Stroke)
             Shape {
                 anchors.fill: parent
                 opacity: (root.rowHovered && root.closable) ? 1.0 : 0.0
@@ -227,7 +227,7 @@ Item {
                 }
             }
 
-            // macOS Fullscreen Two Opposite Diagonal Arrows
+            // Fullscreen Two Opposite Diagonal Arrows
             Shape {
                 anchors.fill: parent
                 opacity: (root.rowHovered && root.maximizable) ? 1.0 : 0.0

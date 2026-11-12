@@ -53,7 +53,7 @@ Window {
         id: windowSurface
         anchors.fill: parent
 
-        // Full-window squircle mask for edge-to-edge sidebars & content (macOS 27 Golden Gate)
+        // Full-window squircle mask for edge-to-edge sidebars & content (CachyOS)
         Item {
             id: windowMask
             anchors.fill: parent
@@ -67,7 +67,7 @@ Window {
             }
         }
 
-        // 1. Translucent Liquid Glass Background (macOS Golden Gate)
+        // 1. Translucent Liquid Glass Background (CachyOS)
         Rectangle {
             id: backgroundRect
             anchors.fill: parent
@@ -177,7 +177,7 @@ Window {
                     Layout.fillHeight: true
                     spacing: 0
 
-                    // 3. macOS Titlebar / Toolbar (44px Golden Gate)
+                    // 3. CachyOS Titlebar / Toolbar (44px)
                     Item {
                         id: titleBar
                         Layout.fillWidth: true
@@ -238,7 +238,7 @@ Window {
                             }
                         }
 
-                        // Center: Window Title or Custom Center Item (e.g. Siri Orb Pill, File Name)
+                        // Center: Window Title or Custom Center Item (e.g. Assistant Orb Pill, File Name)
                         Item {
                             id: headerCenterContainer
                             objectName: "cachyHeaderCenter"
@@ -266,14 +266,21 @@ Window {
                             Text {
                                 id: titleLabel
                                 objectName: "cachyHeaderTitle"
-                                anchors.centerIn: parent
+                                // The title is bound to the band with a small
+                                // breathing margin, so it can never exceed the
+                                // free space: an over long title elides
+                                // instead of overlapping the header clusters.
+                                anchors.left: parent.left
+                                anchors.right: parent.right
+                                anchors.leftMargin: 4
+                                anchors.rightMargin: 4
+                                anchors.verticalCenter: parent.verticalCenter
                                 text: root.title
                                 color: CachyTheme.textPrimary
                                 font.pixelSize: 13
                                 font.weight: Font.DemiBold
                                 elide: Text.ElideMiddle
                                 visible: headerCenterArea.children.length === 0
-                                width: Math.min(implicitWidth, parent.width)
                                 horizontalAlignment: Text.AlignHCenter
                             }
                         }
@@ -321,7 +328,7 @@ Window {
         }
 
         // =====================================================================
-        // Window Overlay Host (Full-window modals, Siri halo shader, etc.)
+        // Window Overlay Host (Full-window modals, assistant halo shader, etc.)
         // =====================================================================
         Item {
             id: overlayContainer

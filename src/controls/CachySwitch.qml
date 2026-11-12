@@ -15,7 +15,7 @@ T.Switch {
     implicitWidth: 44
     implicitHeight: 26
 
-    property color activeColor: "#34C759" // iOS/macOS System Green
+    property color activeColor: "#34C759" // System Green
 
     indicator: Rectangle {
         id: track

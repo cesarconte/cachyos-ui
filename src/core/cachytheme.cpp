@@ -8,8 +8,11 @@
 #include <QDir>
 #include <QFile>
 #include <QSettings>
+#include <QSysInfo>
 #include <QStandardPaths>
 #include <QtMath>
+
+#include <kcoreaddons.h>
 
 CachyTheme::CachyTheme(QObject *parent)
     : QObject(parent)
@@ -184,6 +187,24 @@ QColor CachyTheme::dividerColor() const
     return isDark()
         ? QColor::fromRgbF(1.0, 1.0, 1.0, 0.10)
         : QColor::fromRgbF(0.0, 0.0, 0.0, 0.08);
+}
+
+QString CachyTheme::distroName() const
+{
+    // The distribution the application is running on, read from the platform
+    // (os-release). Applications use it to brand themselves with CachyOS
+    // instead of hardcoding any vendor name.
+    const QString name = QSysInfo::prettyProductName().trimmed();
+    return name.isEmpty() ? QStringLiteral("Linux") : name;
+}
+
+QString CachyTheme::desktopShell() const
+{
+    // KDE Frameworks and Plasma share the same major generation, so the
+    // framework version identifies the desktop shell generation.
+    const QStringList parts = KCoreAddons::versionString().split(QLatin1Char('.'));
+    const QString major = parts.value(0).trimmed();
+    return QStringLiteral("Plasma %1").arg(major.isEmpty() ? QStringLiteral("6") : major);
 }
 
 void CachyTheme::onColorSchemeChanged()

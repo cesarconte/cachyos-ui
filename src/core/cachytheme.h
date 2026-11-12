@@ -35,6 +35,10 @@ class CachyTheme : public QObject
     Q_PROPERTY(QColor textMuted READ textMuted NOTIFY themeChanged)
     Q_PROPERTY(QColor dividerColor READ dividerColor NOTIFY themeChanged)
 
+    // Platform identification (distribution and desktop shell) shown by the apps
+    Q_PROPERTY(QString distroName READ distroName CONSTANT)
+    Q_PROPERTY(QString desktopShell READ desktopShell CONSTANT)
+
     // Traffic light window buttons
     Q_PROPERTY(QColor closeButton READ closeButton CONSTANT)
     Q_PROPERTY(QColor minimizeButton READ minimizeButton CONSTANT)
@@ -52,7 +56,7 @@ class CachyTheme : public QObject
     Q_PROPERTY(int spacingLarge READ spacingLarge CONSTANT)
     Q_PROPERTY(int spacingHuge READ spacingHuge CONSTANT)
 
-    // Standard Window & Container Metrics (macOS Golden Gate canonical sizing)
+    // Standard Window & Container Metrics (canonical CachyOS sizing)
     Q_PROPERTY(int windowWidthUtility READ windowWidthUtility CONSTANT)
     Q_PROPERTY(int windowHeightUtility READ windowHeightUtility CONSTANT)
     Q_PROPERTY(int windowWidthSettings READ windowWidthSettings CONSTANT)
@@ -89,6 +93,9 @@ public:
     QColor textMuted() const;
     QColor dividerColor() const;
 
+    QString distroName() const;
+    QString desktopShell() const;
+
     QColor closeButton() const { return QColor(255, 95, 86); }     // #FF5F56
     QColor minimizeButton() const { return QColor(255, 189, 46); } // #FFBD2E
     QColor maximizeButton() const { return QColor(39, 201, 63); }   // #27C93F
@@ -96,7 +103,7 @@ public:
     int radiusSmall() const { return 8; }
     int radiusMedium() const { return 12; }
     int radiusLarge() const { return 16; }
-    int radiusWindow() const { return 20; } // macOS 27 Golden Gate unified corner radius (between Sequoia 12 and Tahoe 26)
+    int radiusWindow() const { return 20; } // unified corner radius of the CachyOS design system
 
     int spacingTiny() const { return 4; }
     int spacingSmall() const { return 8; }

@@ -81,7 +81,7 @@ CachyWindow {
                         { label: "Desktop & Dock", icon: "▭", color: "#007AFF" },
                         { label: "Displays", icon: "☀", color: "#0A84FF" },
                         { label: "Kity & Intelligence", icon: "✦", color: "#AF52DE" },
-                        { label: "Spotlight", icon: "⌕", color: "#8E8E93" },
+                        { label: "Búsqueda", icon: "⌕", color: "#8E8E93" },
                         { label: "Notifications", icon: "🔔", color: "#FF3B30" },
                         { label: "Sound (PipeWire)", icon: "🔊", color: "#FF2D55" },
                         { label: "Focus", icon: "☾", color: "#5856D6" }
@@ -134,7 +134,7 @@ CachyWindow {
                         color: CachyTheme.textPrimary
                     }
                     Text {
-                        text: "macOS 27 Golden Gate UI"
+                        text: "CachyOS UI"
                         font.pixelSize: 11
                         color: CachyTheme.textSecondary
                     }
@@ -272,7 +272,7 @@ CachyWindow {
                         CachyTextField {
                             Layout.fillWidth: true
                             placeholderText: "Search or Ask..."
-                            text: "macOS 27 Golden Gate Liquid Glass"
+                            text: "CachyOS Liquid Glass"
                             showClearButton: true
                         }
 
