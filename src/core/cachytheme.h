@@ -96,6 +96,9 @@ public:
     QString distroName() const;
     QString desktopShell() const;
 
+    /// Resolves a name of the Plasma icon theme into the URL of its file.
+    Q_INVOKABLE QString iconUrl(const QString &name) const;
+
     QColor closeButton() const { return QColor(255, 95, 86); }     // #FF5F56
     QColor minimizeButton() const { return QColor(255, 189, 46); } // #FFBD2E
     QColor maximizeButton() const { return QColor(39, 201, 63); }   // #27C93F

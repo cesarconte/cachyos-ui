@@ -10,11 +10,14 @@
 */
 
 #include <QCoreApplication>
+#include <QFile>
 #include <QTest>
+#include <QUrl>
 
 #include <KLocalizedString>
 
 #include "cachyi18n.h"
+#include "cachytheme.h"
 
 class TestCachyI18n : public QObject
 {
@@ -27,9 +30,11 @@ private Q_SLOTS:
     void testPlaceholderArguments();
     void testDomainVariant();
     void testEmptyMessage();
+    void testThemedIconResolution();
 
 private:
     CachyI18n m_i18n;
+    CachyTheme m_theme;
 };
 
 void TestCachyI18n::initTestCase()
@@ -84,6 +89,27 @@ void TestCachyI18n::testEmptyMessage()
 {
     // An empty message must not throw and must stay empty.
     QCOMPARE(m_i18n.i18n(QString()), QString());
+}
+
+void TestCachyI18n::testThemedIconResolution()
+{
+    // A known icon of the Plasma theme must be resolved into a file that
+    // really exists on disk.
+    const QString url = m_theme.iconUrl(QStringLiteral("edit-copy"));
+    QVERIFY(!url.isEmpty());
+    QVERIFY(url.startsWith(QStringLiteral("file://")));
+
+    const QString path = QUrl(url).toLocalFile();
+    QVERIFY(QFile::exists(path));
+    QVERIFY(path.endsWith(QStringLiteral(".svg")));
+
+    // The symbolic variant is preferred: it can be tinted with the colour of
+    // the interface.
+    QVERIFY(path.contains(QStringLiteral("symbolic")));
+
+    // An unknown icon resolves to nothing instead of a broken image.
+    QCOMPARE(m_theme.iconUrl(QStringLiteral("this-icon-does-not-exist")), QString());
+    QCOMPARE(m_theme.iconUrl(QString()), QString());
 }
 
 QTEST_MAIN(TestCachyI18n)

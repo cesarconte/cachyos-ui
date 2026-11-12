@@ -5,14 +5,19 @@ add_executable(test_cachyi18n
     test_cachyi18n.cpp
     ../src/core/cachyi18n.cpp
     ../src/core/cachyi18n.h
+    ../src/core/cachytheme.cpp
+    ../src/core/cachytheme.h
 )
 
 target_include_directories(test_cachyi18n PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../src/core)
 target_link_libraries(test_cachyi18n PRIVATE
     Qt6::Core
+    Qt6::Gui
     Qt6::Qml
+    Qt6::Quick
     Qt6::Test
     KF6::I18n
+    KF6::CoreAddons
 )
 
 add_test(NAME test_cachyi18n COMMAND test_cachyi18n)

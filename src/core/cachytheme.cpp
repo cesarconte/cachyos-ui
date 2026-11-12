@@ -10,6 +10,7 @@
 #include <QSettings>
 #include <QSysInfo>
 #include <QStandardPaths>
+#include <QUrl>
 #include <QtMath>
 
 #include <kcoreaddons.h>
@@ -205,6 +206,50 @@ QString CachyTheme::desktopShell() const
     const QStringList parts = KCoreAddons::versionString().split(QLatin1Char('.'));
     const QString major = parts.value(0).trimmed();
     return QStringLiteral("Plasma %1").arg(major.isEmpty() ? QStringLiteral("6") : major);
+}
+
+QString CachyTheme::iconUrl(const QString &name) const
+{
+    if (name.isEmpty()) {
+        return QString();
+    }
+
+    const QStringList roots = QStandardPaths::standardLocations(QStandardPaths::GenericDataLocation);
+
+    // The icon themes shipped with Plasma (Breeze) and the freedesktop
+    // fallback (hicolor) are searched explicitly. The symbolic variant is
+    // preferred: it is monochrome and can be tinted with the colour of the
+    // interface, so it follows the colour scheme of the desktop.
+    static const QStringList directories = {
+        QStringLiteral("/icons/hicolor/symbolic/apps/"),
+        QStringLiteral("/icons/breeze/symbolic/apps/"),
+        QStringLiteral("/icons/breeze/actions/scalable/"),
+        QStringLiteral("/icons/breeze/apps/scalable/"),
+        QStringLiteral("/icons/hicolor/scalable/apps/"),
+        QStringLiteral("/icons/breeze/actions/24/"),
+        QStringLiteral("/icons/breeze/actions/22/"),
+        QStringLiteral("/icons/breeze/actions/16/"),
+        QStringLiteral("/icons/breeze/apps/24/"),
+        QStringLiteral("/icons/breeze/apps/22/"),
+        QStringLiteral("/icons/breeze/apps/16/"),
+    };
+    static const QStringList suffixes = {
+        QStringLiteral("-symbolic.svg"),
+        QStringLiteral(".svg"),
+    };
+
+    for (const QString &root : roots) {
+        for (const QString &directory : directories) {
+            for (const QString &suffix : suffixes) {
+                const QString candidate = root + directory + name + suffix;
+                if (QFile::exists(candidate)) {
+                    return QUrl::fromLocalFile(candidate).toString();
+                }
+            }
+        }
+    }
+
+    return QString();
 }
 
 void CachyTheme::onColorSchemeChanged()
