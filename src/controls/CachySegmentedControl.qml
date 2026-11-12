@@ -15,7 +15,26 @@ Item {
     property var model: []
     property int currentIndex: 0
 
-    implicitWidth: segmentsRow.implicitWidth + 8
+    // Canonical segment metrics.
+    //
+    // The segment width is measured from the labels (TextMetrics) instead of
+    // being derived from the laid-out children. Deriving it from the children
+    // creates a binding cycle:
+    //     implicitWidth -> segmentsRow.implicitWidth -> child widths
+    //                   -> segmentsRow.width -> control.width -> implicitWidth
+    // which makes the control spin at 100% CPU during creation.
+    readonly property real segmentWidth: {
+        var widest = 0;
+        for (var i = 0; i < metricsHost.children.length; ++i) {
+            var item = metricsHost.children[i];
+            if (item && item.implicitWidth > widest) {
+                widest = item.implicitWidth;
+            }
+        }
+        return widest > 0 ? widest + 24 : 44;
+    }
+
+    implicitWidth: root.model.length > 0 ? (root.model.length * root.segmentWidth) + 8 : 28
     implicitHeight: 32
 
     Rectangle {
@@ -45,15 +64,20 @@ Item {
 
         Row {
             id: segmentsRow
-            anchors.fill: parent
+            anchors.left: parent.left
+            anchors.top: parent.top
+            anchors.bottom: parent.bottom
             anchors.margins: 3
+            // Explicit width: deriving it from the children would close a
+            // binding cycle (implicitWidth -> contentWidth -> child widths).
+            width: Math.max(0, bg.width - 6)
 
             Repeater {
                 model: root.model
 
                 Item {
                     id: segmentItem
-                    width: (segmentsRow.width) / (root.model.length || 1)
+                    width: root.model.length > 0 ? (segmentsRow.width / root.model.length) : 0
                     height: segmentsRow.height
 
                     required property var modelData
@@ -75,6 +99,25 @@ Item {
                         onTapped: root.currentIndex = segmentItem.index
                     }
                 }
+            }
+        }
+    }
+
+    // Off-screen label metrics used to size the control without creating a
+    // binding cycle with the laid-out segments.
+    Item {
+        id: metricsHost
+        visible: false
+        width: 0
+        height: 0
+
+        Repeater {
+            model: root.model
+
+            Text {
+                required property var modelData
+                font.pixelSize: 12
+                text: modelData
             }
         }
     }

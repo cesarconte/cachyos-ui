@@ -21,7 +21,7 @@ Rectangle {
 
     signal clicked()
 
-    implicitWidth: root.text.length > 0 && root.iconName.length > 0 ? contentRow.implicitWidth + 18 : 28
+    implicitWidth: root.text.length > 0 ? contentRow.implicitWidth + 18 : 28
     implicitHeight: 28
     radius: height / 2
 

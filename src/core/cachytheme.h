@@ -27,6 +27,7 @@ class CachyTheme : public QObject
     Q_PROPERTY(QColor surfacePill READ surfacePill NOTIFY themeChanged)
     Q_PROPERTY(QColor cardBackground READ cardBackground NOTIFY themeChanged)
     Q_PROPERTY(QColor cardBackgroundHover READ cardBackgroundHover NOTIFY themeChanged)
+    Q_PROPERTY(QColor sheetBackground READ sheetBackground NOTIFY themeChanged)
     Q_PROPERTY(QColor specularBorder READ specularBorder NOTIFY themeChanged)
     Q_PROPERTY(QColor hardDividerColor READ hardDividerColor NOTIFY themeChanged)
     Q_PROPERTY(QColor textPrimary READ textPrimary NOTIFY themeChanged)
@@ -80,6 +81,7 @@ public:
     QColor surfacePill() const;
     QColor cardBackground() const;
     QColor cardBackgroundHover() const;
+    QColor sheetBackground() const;
     QColor specularBorder() const;
     QColor hardDividerColor() const;
     QColor textPrimary() const;

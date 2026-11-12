@@ -128,6 +128,19 @@ QColor CachyTheme::cardBackgroundHover() const
     }
 }
 
+QColor CachyTheme::sheetBackground() const
+{
+    // Floating panels (popovers, sheets, menus) need a denser material than the
+    // regular cards so their content stays legible over arbitrary backdrops.
+    if (isDark()) {
+        const qreal alpha = 0.88 + (m_glassOpacity * 0.10); // 0.88 -> 0.93 -> 0.98
+        return QColor::fromRgbF(0.12, 0.12, 0.15, alpha);
+    } else {
+        const qreal alpha = 0.92 + (m_glassOpacity * 0.06); // 0.92 -> 0.95 -> 0.98
+        return QColor::fromRgbF(0.98, 0.98, 1.00, alpha);
+    }
+}
+
 QColor CachyTheme::specularBorder() const
 {
     // Slightly more refractive when glassier, subtler when tinted
