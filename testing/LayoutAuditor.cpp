@@ -43,6 +43,22 @@ bool isScrollable(QQuickItem *item)
 }
 
 /**
+ * True when the item lives inside the *content* of a scrollable area (the
+ * items of a list view, for instance). That content is clipped by the
+ * viewport by design, and the views keep a pool of recycled delegates whose
+ * geometry is stale, so it must never be reported as protruding.
+ */
+bool isScrollableContent(QQuickItem *item)
+{
+    for (QQuickItem *ancestor = item->parentItem(); ancestor; ancestor = ancestor->parentItem()) {
+        if (isScrollable(ancestor)) {
+            return true;
+        }
+    }
+    return false;
+}
+
+/**
  * True when the item lives inside a scrollable area. Its content is clipped
  * by the scroll view, so it can legitimately be bigger than the window.
  */
@@ -128,7 +144,7 @@ void LayoutAuditor::auditItem(QQuickItem *item, QList<Violation> &out)
     QQuickItem *parent = item->parentItem();
     const bool rendered = item->width() > 0.0 && item->height() > 0.0;
     const bool measurable = rendered && parent && parent->width() > 0.0 && parent->height() > 0.0
-        && !isScrollable(parent) && !declaresBleed(item);
+        && !isScrollable(parent) && !isScrollableContent(item) && !declaresBleed(item);
 
     if (measurable) {
         const QRectF self(0.0, 0.0, item->width(), item->height());
@@ -138,7 +154,8 @@ void LayoutAuditor::auditItem(QQuickItem *item, QList<Violation> &out)
         if (!containsRect(bounds, inParent, kTolerance)) {
             out.append({Rule::Protrusion,
                         pathOf(item),
-                        QStringLiteral("item occupies %1,%2 %3x%4 but the container is %5,%6 %7x%8")
+                        QStringLiteral("%1 occupies %2,%3 %4x%5 but the container is %6,%7 %8x%9")
+                            .arg(QString::fromLatin1(item->metaObject()->className()))
                             .arg(inParent.x())
                             .arg(inParent.y())
                             .arg(inParent.width())
