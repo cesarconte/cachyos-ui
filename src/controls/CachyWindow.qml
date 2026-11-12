@@ -316,7 +316,12 @@ Window {
                         Layout.leftMargin: root.contentPadded ? root.contentMargin : 0
                         Layout.rightMargin: root.contentPadded ? root.contentMargin : 0
                         Layout.bottomMargin: root.contentPadded ? root.contentMargin : 0
-                        Layout.topMargin: (root.contentPadded && !root.showTrafficLights) ? root.contentMargin : 0
+                        // The content keeps the canonical margin on the four
+                        // sides: the divider of the title bar separates the
+                        // chrome from the content, but the content itself is a
+                        // floating surface that must breathe. Only the
+                        // edge-to-edge sidebar reaches the divider.
+                        Layout.topMargin: root.contentPadded ? root.contentMargin : 0
 
                         Item {
                             id: contentHost

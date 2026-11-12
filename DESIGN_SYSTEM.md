@@ -37,7 +37,9 @@ Toda ventana del sistema comparte estrictamente la misma arquitectura física:
    - **Semáforo izquierdo:** Situado a `CachyTheme.marginWindow` (18 px) del borde izquierdo.
    - **Título central:** Centrado geométricamente en la ventana.
    - **Acciones derechas (`headerActions`):** Contenedor anclado a `CachyTheme.marginWindow` (18 px) del borde derecho.
-4. **Área de Contenido:** Con `contentPadded: true`, el contenido queda automáticamente protegido con un margen perimetral exacto de 18 px (`CachyTheme.marginWindow`) a izquierda, derecha y fondo, garantizando alineación vertical estricta 1:1 con el semáforo y las herramientas superiores.
+4. **Área de Contenido:** Con `contentPadded: true`, el contenido queda automáticamente protegido con un margen perimetral exacto de `18 px` (`CachyTheme.marginWindow`) **en los cuatro lados**, garantizando alineación vertical estricta 1:1 con el semáforo y las herramientas superiores.
+   - El divisor de la cabecera separa el *chrome* del contenido, pero **el contenido es una superficie flotante y debe respirar**: nunca queda pegado al divisor.
+   - La **única** superficie que llega al divisor es la barra lateral *edge-to-edge*, por definición.
 
 ---
 
