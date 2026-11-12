@@ -97,7 +97,11 @@ public:
     QString desktopShell() const;
 
     /// Resolves a name of the Plasma icon theme into the URL of its file.
-    Q_INVOKABLE QString iconUrl(const QString &name) const;
+    ///
+    /// When the icon does not exist and @p fallback is not empty, the fallback
+    /// icon is resolved instead, so a missing icon never leaves a hole in the
+    /// interface.
+    Q_INVOKABLE QString iconUrl(const QString &name, const QString &fallback = QString()) const;
 
     QColor closeButton() const { return QColor(255, 95, 86); }     // #FF5F56
     QColor minimizeButton() const { return QColor(255, 189, 46); } // #FFBD2E

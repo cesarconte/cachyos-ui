@@ -72,7 +72,7 @@ Window {
             id: backgroundRect
             anchors.fill: parent
             radius: root.cornerRadius
-            color: root.backgroundColor !== "transparent" ? root.backgroundColor : CachyTheme.windowBackground
+            color: root.backgroundColor.a > 0 ? root.backgroundColor : CachyTheme.windowBackground
             visible: root.showWindowFrame
         }
 

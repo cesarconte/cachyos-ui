@@ -8,6 +8,7 @@ pragma ComponentBehavior: Bound
 import QtQuick
 import QtQuick.Templates as T
 import QtQuick.Layouts
+import Qt5Compat.GraphicalEffects as GE
 import CachyOS.UI
 
 T.Button {
@@ -17,12 +18,20 @@ T.Button {
     property bool destructive: false
     property string iconName: ""
 
-    leftPadding: 16
-    rightPadding: 16
+    readonly property string effectiveIconName: control.iconName.length > 0 ? control.iconName : control.icon.name
+    readonly property color effectiveContentColor: {
+        if (!control.enabled) return CachyTheme.textMuted;
+        if (control.primary || control.destructive) return "#FFFFFF";
+        if (control.flat) return CachyTheme.isDark ? "#409CFF" : CachyTheme.accentColor;
+        return CachyTheme.textPrimary;
+    }
+
+    leftPadding: control.text.length > 0 ? 16 : 10
+    rightPadding: control.text.length > 0 ? 16 : 10
     topPadding: 6
     bottomPadding: 6
 
-    implicitWidth: Math.max(84, (contentItem ? contentItem.implicitWidth : 0) + leftPadding + rightPadding)
+    implicitWidth: Math.max(control.text.length > 0 ? 84 : 36, (contentItem ? contentItem.implicitWidth : 0) + leftPadding + rightPadding)
     implicitHeight: 32
 
     scale: control.pressed ? 0.96 : (btnHover.hovered ? 1.01 : 1.0)
@@ -59,19 +68,53 @@ T.Button {
         }
     }
 
-    contentItem: Text {
-        text: control.text
-        color: {
-            if (!control.enabled) return CachyTheme.textMuted;
-            if (control.primary || control.destructive) return "#FFFFFF";
-            if (control.flat) return CachyTheme.isDark ? "#409CFF" : CachyTheme.accentColor;
-            return CachyTheme.textPrimary;
+    contentItem: Item {
+        implicitWidth: innerRow.implicitWidth
+        implicitHeight: innerRow.implicitHeight
+
+        RowLayout {
+            id: innerRow
+            anchors.centerIn: parent
+            width: Math.min(parent.width, implicitWidth)
+            spacing: 6
+
+            Item {
+                Layout.preferredWidth: 16
+                Layout.preferredHeight: 16
+                Layout.alignment: Qt.AlignVCenter
+                visible: control.effectiveIconName.length > 0 && CachyTheme.iconUrl(control.effectiveIconName).length > 0
+
+                Image {
+                    id: btnIcon
+                    anchors.fill: parent
+                    source: control.effectiveIconName.length > 0 ? CachyTheme.iconUrl(control.effectiveIconName) : ""
+                    sourceSize.width: 16
+                    sourceSize.height: 16
+                    fillMode: Image.PreserveAspectFit
+                    smooth: true
+                }
+
+                GE.ColorOverlay {
+                    anchors.fill: parent
+                    source: btnIcon
+                    color: control.effectiveContentColor
+                }
+            }
+
+            Text {
+                Layout.fillWidth: true
+                Layout.minimumWidth: 0
+                Layout.alignment: Qt.AlignVCenter
+                visible: control.text.length > 0
+                text: control.text
+                color: control.effectiveContentColor
+                font.pixelSize: 13
+                font.weight: control.primary ? Font.DemiBold : Font.Normal
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
+                elide: Text.ElideRight
+            }
         }
-        font.pixelSize: 13
-        font.weight: control.primary ? Font.DemiBold : Font.Normal
-        horizontalAlignment: Text.AlignHCenter
-        verticalAlignment: Text.AlignVCenter
-        elide: Text.ElideRight
     }
 
     HoverHandler {

@@ -208,7 +208,7 @@ QString CachyTheme::desktopShell() const
     return QStringLiteral("Plasma %1").arg(major.isEmpty() ? QStringLiteral("6") : major);
 }
 
-QString CachyTheme::iconUrl(const QString &name) const
+QString CachyTheme::iconUrl(const QString &name, const QString &fallback) const
 {
     if (name.isEmpty()) {
         return QString();
@@ -243,6 +243,10 @@ QString CachyTheme::iconUrl(const QString &name) const
         QStringLiteral("24"),
         QStringLiteral("22"),
         QStringLiteral("16"),
+        QStringLiteral("32"),
+        QStringLiteral("48"),
+        QStringLiteral("64"),
+        QStringLiteral("scalable"),
     };
     static const QStringList suffixes = {
         QStringLiteral("-symbolic.svg"),
@@ -268,6 +272,12 @@ QString CachyTheme::iconUrl(const QString &name) const
                 }
             }
         }
+    }
+
+    // The icon does not exist: the fallback is resolved instead, so the
+    // interface never shows a hole where an icon was expected.
+    if (!fallback.isEmpty() && fallback != name) {
+        return iconUrl(fallback);
     }
 
     return QString();

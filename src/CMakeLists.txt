@@ -23,6 +23,26 @@ qt_add_qml_module(cachyosui
         controls/CachyDivider.qml
         controls/CachySidebarItem.qml
         controls/CachyToolbarButton.qml
+        controls/CachyHeading.qml
+        controls/CachyPlaceholderMessage.qml
+        controls/CachyFormLayout.qml
+        controls/CachySelectableLabel.qml
+        controls/CachyInlineMessage.qml
+        controls/CachySectionHeader.qml
+        controls/CachyFormCard.qml
+        controls/CachyFormHeader.qml
+        controls/CachyFormDelegateSeparator.qml
+        controls/CachyFormCheckDelegate.qml
+        controls/CachyFormTextFieldDelegate.qml
+        controls/CachyFormButtonDelegate.qml
+        controls/CachyFormCardPage.qml
+        controls/CachyIconTitleSubtitle.qml
+        controls/CachyPageStack.qml
+        controls/CachyDialogLayer.qml
+        controls/CachyScrollablePage.qml
+        controls/CachySearchField.qml
+        controls/CachyAboutPage.qml
+        controls/CachyDialog.qml
 )
 
 target_include_directories(cachyosui PUBLIC

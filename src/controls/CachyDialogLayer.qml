@@ -1,0 +1,74 @@
+/*
+ * SPDX-FileCopyrightText: 2026 CachyOS UI contributors
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ *
+ * Modal dialog layer of the CachyOS.UI design system: the stack of dialogs
+ * that are shown over the content of a window.
+ *
+ * It offers the same API as the layer stack of Kirigami (`push`, `pop`,
+ * `depth`) so the applications can be migrated mechanically. The dialogs are
+ * created as children of the layer and fill it.
+ */
+
+pragma ComponentBehavior: Bound
+
+import QtQuick
+import CachyOS.UI
+
+Item {
+    id: root
+
+    /// The dialogs that are currently open, from the bottom to the top.
+    property list<Item> dialogs: []
+
+    /// Number of open dialogs.
+    readonly property int depth: root.dialogs.length
+
+    /// The dialog on top.
+    readonly property Item currentDialog: root.dialogs.length > 0 ? root.dialogs[root.dialogs.length - 1] : null
+
+    visible: root.dialogs.length > 0
+
+    /// Opens a dialog and returns it.
+    function push(component, properties) {
+        if (!component) {
+            return null;
+        }
+        const dialog = component.createObject(root, properties || {});
+        if (!dialog) {
+            return null;
+        }
+        // The dialogs are shown over the whole content of the window, as the
+        // modal layers of the toolkit of the desktop do.
+        dialog.anchors.fill = root;
+        root.dialogs.push(dialog);
+        return dialog;
+    }
+
+    /// Closes the dialog on top.
+    function pop() {
+        if (root.dialogs.length === 0) {
+            return;
+        }
+        const dialog = root.dialogs.pop();
+        dialog.destroy();
+    }
+
+    /// Closes every dialog.
+    function clear() {
+        while (root.dialogs.length > 0) {
+            const dialog = root.dialogs.pop();
+            dialog.destroy();
+        }
+    }
+
+    // Scrim behind the dialogs: dismisses the one on top.
+    Rectangle {
+        anchors.fill: parent
+        color: Qt.rgba(0, 0, 0, 0.25)
+
+        TapHandler {
+            onTapped: root.pop()
+        }
+    }
+}

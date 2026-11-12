@@ -17,6 +17,13 @@ T.Switch {
 
     property color activeColor: "#34C759" // System Green
 
+    /// When it is false the switch only reflects the state: the state is
+    /// owned by another item (a row of a form, for instance) that handles the
+    /// interaction by itself.
+    property bool interactive: true
+
+    enabled: control.interactive
+
     indicator: Rectangle {
         id: track
         anchors.fill: parent
@@ -60,6 +67,7 @@ T.Switch {
     }
 
     HoverHandler {
+        enabled: control.interactive
         cursorShape: Qt.PointingHandCursor
     }
 }
