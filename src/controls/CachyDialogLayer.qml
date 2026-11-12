@@ -62,10 +62,17 @@ Item {
         }
     }
 
-    // Scrim behind the dialogs: dismisses the one on top.
+    // Solid backdrop so the page underneath does not show through the modal
+    // layer: the scrim on top of it dismisses the dialog on tap.
     Rectangle {
         anchors.fill: parent
-        color: Qt.rgba(0, 0, 0, 0.25)
+        color: CachyTheme.sheetBackground
+    }
+
+    // Scrim: dismisses the dialog on top.
+    Rectangle {
+        anchors.fill: parent
+        color: Qt.rgba(0, 0, 0, 0.18)
 
         TapHandler {
             onTapped: root.pop()
