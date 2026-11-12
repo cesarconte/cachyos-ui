@@ -32,6 +32,8 @@ Item {
 
     RowLayout {
         anchors.fill: parent
+        anchors.leftMargin: CachyTheme.spacingMedium
+        anchors.rightMargin: CachyTheme.spacingMedium
         spacing: CachyTheme.spacingMedium
 
         Text {

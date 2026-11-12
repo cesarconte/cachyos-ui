@@ -21,6 +21,8 @@ T.AbstractButton {
     padding: 0
 
     contentItem: RowLayout {
+        anchors.leftMargin: CachyTheme.spacingMedium
+        anchors.rightMargin: CachyTheme.spacingMedium
         spacing: CachyTheme.spacingSmall
 
         Image {
