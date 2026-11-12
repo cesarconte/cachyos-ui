@@ -8,6 +8,8 @@ qt_add_qml_module(cachyosui
         core/cachywindowblur.cpp
         core/cachytheme.h
         core/cachytheme.cpp
+        core/cachyi18n.h
+        core/cachyi18n.cpp
     QML_FILES
         controls/CachyWindow.qml
         controls/CachyCard.qml
@@ -35,6 +37,7 @@ target_link_libraries(cachyosui PUBLIC
     Qt6::Quick
     KF6::WindowSystem
     KF6::CoreAddons
+    KF6::I18n
 )
 
 set_target_properties(cachyosuiplugin PROPERTIES
