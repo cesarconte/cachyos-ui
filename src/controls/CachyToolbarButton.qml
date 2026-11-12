@@ -20,6 +20,11 @@ Rectangle {
     property bool pillStyle: true
 
     signal clicked()
+    /// Emitted when a checkable button is toggled. It carries the intended new
+    /// state; the button never writes `checked` by itself, because that would
+    /// destroy the binding the application sets on it and desynchronise the
+    /// control from its backend.
+    signal toggled(bool checked)
 
     implicitWidth: root.text.length > 0 ? contentRow.implicitWidth + 18 : 28
     implicitHeight: 28
@@ -58,7 +63,7 @@ Rectangle {
         id: btnTap
         onTapped: {
             if (root.checkable) {
-                root.checked = !root.checked;
+                root.toggled(!root.checked);
             }
             root.clicked();
         }
