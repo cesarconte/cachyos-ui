@@ -53,6 +53,25 @@ qt_add_qml_module(cachyosui
         controls/CachySearchField.qml
         controls/CachyAboutPage.qml
         controls/CachyDialog.qml
+        controls/CachyCheckBox.qml
+        controls/CachyRadioButton.qml
+        controls/CachyComboBox.qml
+        controls/CachyFormComboBoxDelegate.qml
+        controls/CachySpinBox.qml
+        controls/CachyFormSpinBoxDelegate.qml
+        controls/CachyTextArea.qml
+        controls/CachyMenu.qml
+        controls/CachyMenuItem.qml
+        controls/CachyMenuSeparator.qml
+        controls/CachyToast.qml
+        controls/CachyBusyIndicator.qml
+        controls/CachyBadge.qml
+        controls/CachyTooltip.qml
+        controls/CachyTabButton.qml
+        controls/CachyTabBar.qml
+        controls/CachyTabView.qml
+        controls/CachyNavigationButtons.qml
+        controls/CachyBreadcrumbBar.qml
 )
 
 target_include_directories(cachyosui PUBLIC

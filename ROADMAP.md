@@ -69,7 +69,7 @@ Sustituye soluciones pesadas en QML por primitivas nativas en C++23 y prepara el
 
 ---
 
-## Fase 2: Controles de Formulario, Selección, Menús y Pestañas (`FishUI` Controls Parity)
+## Fase 2: Controles de Formulario, Selección, Menús y Pestañas (`FishUI` Controls Parity) ✅ COMPLETADA
 
 Completa el repertorio de controles interactivos individuales para que ningún formulario, barra de herramientas o diálogo necesite controles externos.
 

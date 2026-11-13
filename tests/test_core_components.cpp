@@ -13,10 +13,12 @@
 #include <QQmlComponent>
 #include <QQmlEngine>
 #include <QQuickItem>
+#include <QQuickWindow>
 #include <QSignalSpy>
 #include <QStandardItemModel>
 #include <QTest>
 
+#include "LayoutAuditor.h"
 #include "cachysortfilterproxymodel.h"
 #include "cachytheme.h"
 #include "cachywindowshadow.h"
@@ -72,6 +74,7 @@ private Q_SLOTS:
     void testSortFilterProxyModelSortingAndMapping();
     void testBuiltinVectorIconsResolution();
     void testCachyIconAndShadowQmlInstantiation();
+    void testPhase2ControlsAndLayoutAudit();
 
 private:
     CachyTheme m_theme;
@@ -215,6 +218,170 @@ void TestCoreComponents::testCachyIconAndShadowQmlInstantiation()
     QCOMPARE(icon->width(), 20.0);
     QCOMPARE(icon->height(), 20.0);
     QCOMPARE(icon->property("valid").toBool(), true);
+}
+
+void TestCoreComponents::testPhase2ControlsAndLayoutAudit()
+{
+    QQmlEngine engine;
+    engine.addImportPath(QStringLiteral(CACHYOS_BUILD_QML_DIR));
+
+    QQmlComponent component(&engine);
+    component.setData(QByteArrayLiteral(R"QML(
+        import QtQuick
+        import QtQuick.Layouts
+        import CachyOS.UI
+
+        CachyWindow {
+            id: win
+            title: "Phase 2 Controls Audit"
+            width: 760
+            height: 620
+            contentPadded: true
+
+            headerLeading: [
+                CachyNavigationButtons {
+                    anchors.verticalCenter: parent.verticalCenter
+                    canGoBack: true
+                    canGoForward: false
+                }
+            ]
+
+            ColumnLayout {
+                anchors.fill: parent
+                spacing: CachyTheme.spacingSmall
+
+                CachyBreadcrumbBar {
+                    objectName: "breadcrumbBar"
+                    Layout.fillWidth: true
+                    Layout.minimumWidth: 0
+                    path: "/home/cesar/Proyectos/cachyos-ui"
+                }
+
+                CachyTabView {
+                    id: tabView
+                    objectName: "tabView"
+                    Layout.fillWidth: true
+                    Layout.minimumWidth: 0
+                    Layout.fillHeight: true
+                    tabs: [
+                        { title: "General", iconName: "settings" },
+                        { title: "Downloads", iconName: "download" }
+                    ]
+
+                    CachyFormCard {
+                        Layout.fillWidth: true
+
+                        RowLayout {
+                            Layout.fillWidth: true
+                            spacing: CachyTheme.spacingMedium
+
+                            CachyCheckBox {
+                                objectName: "checkBox"
+                                text: "Enable BORE Scheduler"
+                                checked: true
+                            }
+                            CachyRadioButton {
+                                objectName: "radioButton"
+                                text: "Performance"
+                                checked: true
+                            }
+                            CachyBadge {
+                                objectName: "badge"
+                                text: "Active"
+                                badgeType: "success"
+                                iconName: "check"
+                            }
+                            CachyBusyIndicator {
+                                objectName: "busyIndicator"
+                                running: true
+                                size: 18
+                            }
+                        }
+
+                        CachyFormDelegateSeparator {}
+
+                        CachyFormComboBoxDelegate {
+                            objectName: "comboDelegate"
+                            label: "Color Mode"
+                            model: ["Auto", "Light", "Dark"]
+                            currentIndex: 2
+                        }
+
+                        CachyFormDelegateSeparator {}
+
+                        CachyFormSpinBoxDelegate {
+                            objectName: "spinDelegate"
+                            label: "Listening Port"
+                            from: 1024
+                            to: 65535
+                            value: 51413
+                        }
+
+                        CachyTextArea {
+                            objectName: "textArea"
+                            Layout.fillWidth: true
+                            Layout.minimumWidth: 0
+                            placeholderText: "Release notes..."
+                            text: "CachyOS.UI Phase 2 controls"
+                        }
+                    }
+
+                    Item {}
+                }
+
+                CachyToast {
+                    id: toast
+                    objectName: "toast"
+                    Layout.alignment: Qt.AlignHCenter
+                    text: "Settings saved"
+                    messageType: "success"
+                }
+            }
+
+            CachyMenu {
+                id: contextMenu
+                objectName: "contextMenu"
+                CachyMenuItem {
+                    text: "Copy"
+                    iconName: "file"
+                    shortcutText: "Ctrl+C"
+                }
+                CachyMenuSeparator {}
+                CachyMenuItem {
+                    text: "Move to Trash"
+                    iconName: "trash"
+                    destructive: true
+                }
+            }
+        }
+    )QML"), QUrl());
+
+    QVERIFY2(!component.isError(), qPrintable(component.errorString()));
+    QScopedPointer<QObject> obj(component.create());
+    auto *window = qobject_cast<QQuickWindow *>(obj.data());
+    QVERIFY(window != nullptr);
+    QVERIFY(QTest::qWaitForWindowExposed(window));
+    QCoreApplication::processEvents();
+
+    // Verify spinbox clamping and toast activation
+    auto *spinDelegate = window->findChild<QQuickItem *>(QStringLiteral("spinDelegate"));
+    QVERIFY(spinDelegate != nullptr);
+    QCOMPARE(spinDelegate->property("value").toInt(), 51413);
+
+    auto *toast = window->findChild<QQuickItem *>(QStringLiteral("toast"));
+    QVERIFY(toast != nullptr);
+    QMetaObject::invokeMethod(toast, "show",
+                              Q_ARG(QVariant, QStringLiteral("Configuration updated")),
+                              Q_ARG(QVariant, QStringLiteral("info")),
+                              Q_ARG(QVariant, 0));
+    QCOMPARE(toast->property("active").toBool(), true);
+
+    const auto violations = LayoutAuditor::audit(window->contentItem());
+    QStringList messages;
+    for (const auto &v : violations) {
+        messages.append(v.toString());
+    }
+    QVERIFY2(violations.isEmpty(), qPrintable(messages.join(QLatin1Char('\n'))));
 }
 
 QTEST_MAIN(TestCoreComponents)

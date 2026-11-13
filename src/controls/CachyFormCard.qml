@@ -14,7 +14,7 @@ import CachyOS.UI
 Rectangle {
     id: root
 
-    implicitWidth: 320
+    implicitWidth: Math.max(320, contentColumn.implicitWidth + (CachyTheme.marginCard * 2))
     implicitHeight: contentColumn.implicitHeight + (CachyTheme.marginCard * 2)
     radius: CachyTheme.radiusMedium
     color: CachyTheme.cardBackground

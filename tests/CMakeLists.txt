@@ -32,10 +32,12 @@ target_compile_definitions(test_core_components PRIVATE
 
 target_link_libraries(test_core_components PRIVATE
     cachyosui
+    CachyOSUITesting
     Qt6::Core
     Qt6::Gui
     Qt6::Qml
     Qt6::Quick
+    Qt6::QuickControls2
     Qt6::Test
     KF6::WindowSystem
     KF6::I18n
