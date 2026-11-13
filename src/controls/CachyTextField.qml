@@ -49,19 +49,30 @@ T.TextField {
         }
     }
 
-    // Leading Icon (Search Magnifier or Custom) - Capa z: 10
+    // Leading Icon (Vector Search Magnifier or Named Icon / Glyph) - Capa z: 10
+    CachyIcon {
+        z: 10
+        anchors.left: parent.left
+        anchors.leftMargin: 10
+        anchors.verticalCenter: parent.verticalCenter
+        name: control.isSearch ? "search" : control.leadingIcon
+        size: 14
+        color: CachyTheme.textSecondary
+        visible: control.isSearch || (control.leadingIcon.length > 0 && valid)
+    }
+
     Text {
         z: 10
         anchors.left: parent.left
         anchors.leftMargin: 10
         anchors.verticalCenter: parent.verticalCenter
-        text: control.isSearch ? "🔍" : control.leadingIcon
+        text: control.leadingIcon
         font.pixelSize: 11
         color: CachyTheme.textSecondary
-        visible: control.isSearch || control.leadingIcon.length > 0
+        visible: !control.isSearch && control.leadingIcon.length > 0 && CachyTheme.iconUrl(control.leadingIcon).length === 0
     }
 
-    // Clear Button (Quick Clean ✕) - Capa z: 10 interactiva
+    // Clear Button (Vector Quick Clean) - Capa z: 10 interactiva
     Rectangle {
         id: clearBtn
         z: 10
@@ -76,11 +87,10 @@ T.TextField {
             : (CachyTheme.isDark ? Qt.rgba(1, 1, 1, 0.18) : Qt.rgba(0, 0, 0, 0.15))
         visible: control.showClearButton && control.length > 0
 
-        Text {
+        CachyIcon {
             anchors.centerIn: parent
-            text: "✕"
-            font.pixelSize: 8
-            font.bold: true
+            name: "close"
+            size: 10
             color: CachyTheme.textPrimary
         }
 

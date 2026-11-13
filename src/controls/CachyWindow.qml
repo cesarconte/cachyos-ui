@@ -48,6 +48,8 @@ Window {
     property bool contentPadded: false
 
     CachyWindowBlur.enabled: root.showWindowFrame
+    CachyWindowShadow.enabled: root.showWindowFrame
+    CachyWindowShadow.radius: root.cornerRadius
 
     Item {
         id: windowSurface

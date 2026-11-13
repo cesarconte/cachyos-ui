@@ -7,7 +7,6 @@ pragma ComponentBehavior: Bound
 
 import QtQuick
 import QtQuick.Controls
-import Qt5Compat.GraphicalEffects as GE
 import CachyOS.UI
 
 Rectangle {
@@ -78,33 +77,14 @@ Rectangle {
         anchors.centerIn: parent
         spacing: 5
 
-        // Themed icon of the Plasma icon theme (Breeze), when the button
-        // declares one. The symbolic variant is preferred: it is monochrome and
-        // is tinted with the colour of the interface, so it follows the colour
-        // scheme of the desktop.
-        Item {
+        // Themed or built-in vector icon, tinted with the semantic color of the button.
+        CachyIcon {
             id: iconHolder
             anchors.verticalCenter: parent.verticalCenter
-            visible: root.iconName.length > 0 && CachyTheme.iconUrl(root.iconName).length > 0
-            width: 16
-            height: 16
-
-            Image {
-                id: iconImage
-                anchors.fill: parent
-                source: CachyTheme.iconUrl(root.iconName)
-                sourceSize.width: 16
-                sourceSize.height: 16
-                fillMode: Image.PreserveAspectFit
-                smooth: true
-                cache: true
-            }
-
-            GE.ColorOverlay {
-                anchors.fill: parent
-                source: iconImage
-                color: root.primary ? "#FFFFFF" : (root.checked ? CachyTheme.accentColor : CachyTheme.textPrimary)
-            }
+            name: root.iconName
+            size: 16
+            color: root.primary ? "#FFFFFF" : (root.checked ? CachyTheme.accentColor : CachyTheme.textPrimary)
+            visible: root.iconName.length > 0 && valid
         }
 
         Text {

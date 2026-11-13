@@ -13,6 +13,7 @@ Rectangle {
     id: root
 
     property string text: ""
+    property string iconName: ""
     property string iconGlyph: ""
     property color iconColor: CachyTheme.accentColor
     property bool squircleIconBadge: false
@@ -50,19 +51,30 @@ Rectangle {
         anchors.rightMargin: 10
         spacing: 10
 
-        // Golden Gate Colorful Sidebar Icon (Squircle badge in System Settings, colorful glyph in Finder/Shortcuts)
+        // Golden Gate Colorful Sidebar Icon (Squircle badge in System Settings, colorful vector icon in Finder/Shortcuts)
         Rectangle {
-            visible: root.iconGlyph.length > 0
+            readonly property string resolvedIcon: root.iconName.length > 0 ? root.iconName : root.iconGlyph
+            visible: resolvedIcon.length > 0
             Layout.preferredWidth: 22
             Layout.preferredHeight: 22
             radius: 6
             color: root.squircleIconBadge ? root.iconColor : "transparent"
+
+            CachyIcon {
+                id: vectorIcon
+                anchors.centerIn: parent
+                name: parent.resolvedIcon
+                size: root.squircleIconBadge ? 13 : 15
+                color: root.squircleIconBadge ? "#FFFFFF" : root.iconColor
+                visible: valid
+            }
 
             Text {
                 anchors.centerIn: parent
                 text: root.iconGlyph
                 font.pixelSize: root.squircleIconBadge ? 13 : 15
                 color: root.squircleIconBadge ? "#FFFFFF" : root.iconColor
+                visible: !vectorIcon.valid && root.iconGlyph.length > 0
             }
         }
 

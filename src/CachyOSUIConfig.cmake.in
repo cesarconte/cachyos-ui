@@ -1,0 +1,10 @@
+@PACKAGE_INIT@
+
+include(CMakeFindDependencyMacro)
+
+find_dependency(Qt6 COMPONENTS Core Gui Qml Quick)
+find_dependency(KF6 COMPONENTS WindowSystem CoreAddons I18n)
+
+include("${CMAKE_CURRENT_LIST_DIR}/CachyOSUITargets.cmake")
+
+check_required_components(CachyOSUI)

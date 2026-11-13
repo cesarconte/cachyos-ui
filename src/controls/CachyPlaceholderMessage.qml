@@ -49,14 +49,11 @@ Item {
             color: CachyTheme.withAlpha(CachyTheme.textPrimary, 0.06)
             visible: root.iconName.length > 0
 
-            Image {
+            CachyIcon {
                 anchors.centerIn: parent
-                width: Math.round(root.iconSize * 0.55)
-                height: width
-                source: root.iconName.length > 0 ? CachyTheme.iconUrl(root.iconName) : ""
-                fillMode: Image.PreserveAspectFit
-                smooth: true
-                opacity: 0.55
+                name: root.iconName
+                size: Math.round(root.iconSize * 0.55)
+                color: CachyTheme.textSecondary
             }
         }
 

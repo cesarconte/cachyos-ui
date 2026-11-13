@@ -3,14 +3,10 @@
 
 add_executable(test_cachyi18n
     test_cachyi18n.cpp
-    ../src/core/cachyi18n.cpp
-    ../src/core/cachyi18n.h
-    ../src/core/cachytheme.cpp
-    ../src/core/cachytheme.h
 )
 
-target_include_directories(test_cachyi18n PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../src/core)
 target_link_libraries(test_cachyi18n PRIVATE
+    cachyosui
     Qt6::Core
     Qt6::Gui
     Qt6::Qml
@@ -21,6 +17,35 @@ target_link_libraries(test_cachyi18n PRIVATE
 )
 
 add_test(NAME test_cachyi18n COMMAND test_cachyi18n)
+
+# ---------------------------------------------------------------------------
+# Phase 1 Core Components test (CachySortFilterProxyModel, Builtin Icons,
+# CachyIcon, CachyWindowShadow).
+# ---------------------------------------------------------------------------
+add_executable(test_core_components
+    test_core_components.cpp
+)
+
+target_compile_definitions(test_core_components PRIVATE
+    CACHYOS_BUILD_QML_DIR="${CMAKE_BINARY_DIR}/src"
+)
+
+target_link_libraries(test_core_components PRIVATE
+    cachyosui
+    Qt6::Core
+    Qt6::Gui
+    Qt6::Qml
+    Qt6::Quick
+    Qt6::Test
+    KF6::WindowSystem
+    KF6::I18n
+    KF6::CoreAddons
+)
+
+add_test(NAME test_core_components COMMAND test_core_components)
+set_tests_properties(test_core_components PROPERTIES
+    ENVIRONMENT "QT_QPA_PLATFORM=offscreen;QT_QUICK_CONTROLS_STYLE=Basic"
+)
 
 # ---------------------------------------------------------------------------
 # QML test of the checkable state of CachyToolbarButton.
@@ -35,6 +60,7 @@ if(QMLTESTRUNNER_EXECUTABLE)
         NAME test_toolbarbutton
         COMMAND ${QMLTESTRUNNER_EXECUTABLE}
                 -input ${CMAKE_CURRENT_SOURCE_DIR}/tst_toolbarbutton.qml
+                -import ${CMAKE_BINARY_DIR}/src
                 -import ${CMAKE_INSTALL_PREFIX}/lib/qt6/qml
                 -import $ENV{HOME}/.local/lib/qt6/qml
     )

@@ -9,7 +9,6 @@ license=('GPL-3.0-or-later')
 depends=(
     'qt6-base>=6.7.0'
     'qt6-declarative>=6.7.0'
-    'qt6-5compat>=6.7.0'
     'kwindowsystem>=6.0.0'
     'kcoreaddons>=6.0.0'
     'ki18n>=6.0.0'

@@ -34,11 +34,11 @@ CachyWindow {
                 anchors.centerIn: parent
                 spacing: 8
 
-                Text {
-                    text: "‹"
+                CachyIcon {
+                    anchors.verticalCenter: parent.verticalCenter
+                    name: "chevron-left"
+                    size: 14
                     color: CachyTheme.textPrimary
-                    font.pixelSize: 16
-                    font.weight: Font.Medium
                 }
                 Rectangle {
                     width: 1
@@ -46,11 +46,11 @@ CachyWindow {
                     anchors.verticalCenter: parent.verticalCenter
                     color: CachyTheme.dividerColor
                 }
-                Text {
-                    text: "›"
+                CachyIcon {
+                    anchors.verticalCenter: parent.verticalCenter
+                    name: "chevron-right"
+                    size: 14
                     color: CachyTheme.textMuted
-                    font.pixelSize: 16
-                    font.weight: Font.Medium
                 }
             }
         }
@@ -77,14 +77,14 @@ CachyWindow {
 
                 Repeater {
                     model: [
-                        { label: "Appearance & Glass", icon: "◐", color: "#1C1C1E" },
-                        { label: "Desktop & Dock", icon: "▭", color: "#007AFF" },
-                        { label: "Displays", icon: "☀", color: "#0A84FF" },
-                        { label: "Kity & Intelligence", icon: "✦", color: "#AF52DE" },
-                        { label: "Búsqueda", icon: "⌕", color: "#8E8E93" },
-                        { label: "Notifications", icon: "🔔", color: "#FF3B30" },
-                        { label: "Sound (PipeWire)", icon: "🔊", color: "#FF2D55" },
-                        { label: "Focus", icon: "☾", color: "#5856D6" }
+                        { label: "Appearance & Glass", icon: "appearance", color: "#1C1C1E" },
+                        { label: "Desktop & Dock", icon: "desktop", color: "#007AFF" },
+                        { label: "Displays", icon: "display", color: "#0A84FF" },
+                        { label: "Kity & Intelligence", icon: "sparkles", color: "#AF52DE" },
+                        { label: "Búsqueda", icon: "search", color: "#8E8E93" },
+                        { label: "Notifications", icon: "bell", color: "#FF3B30" },
+                        { label: "Sound (PipeWire)", icon: "volume", color: "#FF2D55" },
+                        { label: "Focus", icon: "moon", color: "#5856D6" }
                     ]
 
                     CachySidebarItem {
@@ -92,7 +92,7 @@ CachyWindow {
                         required property int index
 
                         text: modelData.label
-                        iconGlyph: modelData.icon
+                        iconName: modelData.icon
                         iconColor: modelData.color
                         squircleIconBadge: true
                         selected: root.activeNavIndex === index

@@ -29,13 +29,13 @@ T.AbstractButton {
     contentItem: RowLayout {
         spacing: CachyTheme.spacingSmall
 
-        Image {
+        CachyIcon {
             Layout.preferredWidth: 22
             Layout.preferredHeight: 22
-            visible: root.icon.name.length > 0
-            source: root.icon.name.length > 0 ? CachyTheme.iconUrl(root.icon.name) : ""
-            fillMode: Image.PreserveAspectFit
-            smooth: true
+            name: root.icon.name
+            size: 22
+            color: root.selected ? CachyTheme.accentColor : CachyTheme.textPrimary
+            visible: root.icon.name.length > 0 && valid
         }
 
         ColumnLayout {

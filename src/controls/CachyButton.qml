@@ -8,7 +8,6 @@ pragma ComponentBehavior: Bound
 import QtQuick
 import QtQuick.Templates as T
 import QtQuick.Layouts
-import Qt5Compat.GraphicalEffects as GE
 import CachyOS.UI
 
 T.Button {
@@ -78,27 +77,14 @@ T.Button {
             width: Math.min(parent.width, implicitWidth)
             spacing: 6
 
-            Item {
+            CachyIcon {
                 Layout.preferredWidth: 16
                 Layout.preferredHeight: 16
                 Layout.alignment: Qt.AlignVCenter
-                visible: control.effectiveIconName.length > 0 && CachyTheme.iconUrl(control.effectiveIconName).length > 0
-
-                Image {
-                    id: btnIcon
-                    anchors.fill: parent
-                    source: control.effectiveIconName.length > 0 ? CachyTheme.iconUrl(control.effectiveIconName) : ""
-                    sourceSize.width: 16
-                    sourceSize.height: 16
-                    fillMode: Image.PreserveAspectFit
-                    smooth: true
-                }
-
-                GE.ColorOverlay {
-                    anchors.fill: parent
-                    source: btnIcon
-                    color: control.effectiveContentColor
-                }
+                name: control.effectiveIconName
+                size: 16
+                color: control.effectiveContentColor
+                visible: control.effectiveIconName.length > 0 && valid
             }
 
             Text {

@@ -39,12 +39,13 @@ Rectangle {
         anchors.margins: 8
         spacing: CachyTheme.spacingSmall
 
-        Image {
+        CachyIcon {
             Layout.preferredWidth: 16
             Layout.preferredHeight: 16
-            source: CachyTheme.iconUrl(root.iconName)
-            fillMode: Image.PreserveAspectFit
-            smooth: true
+            name: root.iconName
+            fallback: root.messageType === "error" ? "error" : (root.messageType === "warning" ? "warning" : "info")
+            size: 16
+            color: root.accent
         }
 
         Text {

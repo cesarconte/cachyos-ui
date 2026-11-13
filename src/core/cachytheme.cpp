@@ -7,6 +7,7 @@
 
 #include <QDir>
 #include <QFile>
+#include <QHash>
 #include <QSettings>
 #include <QSysInfo>
 #include <QStandardPaths>
@@ -15,9 +16,19 @@
 
 #include <kcoreaddons.h>
 
+static void ensureBuiltinIconsInitialized()
+{
+    static const bool initialized = []() {
+        Q_INIT_RESOURCE(cachyosui_icons);
+        return true;
+    }();
+    Q_UNUSED(initialized);
+}
+
 CachyTheme::CachyTheme(QObject *parent)
     : QObject(parent)
 {
+    ensureBuiltinIconsInitialized();
     m_configPath = QStandardPaths::writableLocation(QStandardPaths::ConfigLocation) + QStringLiteral("/cachyosuirc");
     loadSettings();
 
@@ -214,9 +225,20 @@ QString CachyTheme::iconUrl(const QString &name, const QString &fallback) const
         return QString();
     }
 
+    if (name.startsWith( QStringLiteral("qrc:/")) || name.startsWith(QStringLiteral("file://"))) {
+        return name;
+    }
+
+    // 1. Embedded CachyOS.UI structural vector icons (FishUI style): always
+    // available in memory with zero disk I/O and immune to missing themes.
+    const QString builtinResource = QStringLiteral(":/CachyOS/UI/icons/") + name + QStringLiteral(".svg");
+    if (QFile::exists(builtinResource)) {
+        return QStringLiteral("qrc") + builtinResource;
+    }
+
     const QStringList roots = QStandardPaths::standardLocations(QStandardPaths::GenericDataLocation);
 
-    // The icon themes shipped with Plasma (Breeze) and the freedesktop
+    // 2. The icon themes shipped with Plasma (Breeze) and the freedesktop
     // fallback (hicolor) are searched explicitly. The symbolic variant is
     // preferred: it is monochrome and can be tinted with the colour of the
     // interface, so it follows the colour scheme of the desktop.
@@ -274,7 +296,44 @@ QString CachyTheme::iconUrl(const QString &name, const QString &fallback) const
         }
     }
 
-    // The icon does not exist: the fallback is resolved instead, so the
+    // 3. Freedesktop alias fallback to embedded structural icons when the
+    // desktop icon theme is absent or incomplete.
+    static const QHash<QString, QString> builtinAliases = {
+        {QStringLiteral("dialog-information"), QStringLiteral("info")},
+        {QStringLiteral("dialog-warning"), QStringLiteral("warning")},
+        {QStringLiteral("dialog-error"), QStringLiteral("error")},
+        {QStringLiteral("dialog-ok-apply"), QStringLiteral("check")},
+        {QStringLiteral("emblem-checked"), QStringLiteral("check")},
+        {QStringLiteral("window-close"), QStringLiteral("close")},
+        {QStringLiteral("dialog-close"), QStringLiteral("close")},
+        {QStringLiteral("edit-clear"), QStringLiteral("clear")},
+        {QStringLiteral("edit-find"), QStringLiteral("search")},
+        {QStringLiteral("search"), QStringLiteral("search")},
+        {QStringLiteral("list-add"), QStringLiteral("add")},
+        {QStringLiteral("list-remove"), QStringLiteral("remove")},
+        {QStringLiteral("view-refresh"), QStringLiteral("refresh")},
+        {QStringLiteral("go-previous"), QStringLiteral("chevron-left")},
+        {QStringLiteral("go-next"), QStringLiteral("chevron-right")},
+        {QStringLiteral("go-up"), QStringLiteral("chevron-up")},
+        {QStringLiteral("go-down"), QStringLiteral("chevron-down")},
+        {QStringLiteral("configure"), QStringLiteral("settings")},
+        {QStringLiteral("preferences-system"), QStringLiteral("settings")},
+        {QStringLiteral("window-pin"), QStringLiteral("pin")},
+        {QStringLiteral("user-trash"), QStringLiteral("trash")},
+        {QStringLiteral("edit-delete"), QStringLiteral("trash")},
+        {QStringLiteral("view-list-icons"), QStringLiteral("grid")},
+        {QStringLiteral("view-list-details"), QStringLiteral("list")},
+        {QStringLiteral("media-playback-start"), QStringLiteral("play")},
+        {QStringLiteral("media-playback-pause"), QStringLiteral("pause")},
+    };
+    if (const QString alias = builtinAliases.value(name); !alias.isEmpty()) {
+        const QString aliasResource = QStringLiteral(":/CachyOS/UI/icons/") + alias + QStringLiteral(".svg");
+        if (QFile::exists(aliasResource)) {
+            return QStringLiteral("qrc") + aliasResource;
+        }
+    }
+
+    // 4. The icon does not exist: the fallback is resolved instead, so the
     // interface never shows a hole where an icon was expected.
     if (!fallback.isEmpty() && fallback != name) {
         return iconUrl(fallback);

@@ -25,13 +25,13 @@ T.AbstractButton {
         anchors.rightMargin: CachyTheme.spacingMedium
         spacing: CachyTheme.spacingSmall
 
-        Image {
+        CachyIcon {
             Layout.preferredWidth: 18
             Layout.preferredHeight: 18
-            visible: root.icon.name.length > 0
-            source: root.icon.name.length > 0 ? CachyTheme.iconUrl(root.icon.name) : ""
-            fillMode: Image.PreserveAspectFit
-            smooth: true
+            name: root.icon.name
+            size: 18
+            color: CachyTheme.textPrimary
+            visible: root.icon.name.length > 0 && valid
         }
 
         Text {
