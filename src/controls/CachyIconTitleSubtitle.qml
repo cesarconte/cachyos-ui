@@ -34,7 +34,7 @@ T.AbstractButton {
             Layout.preferredHeight: 22
             name: root.icon.name
             size: 22
-            color: root.selected ? CachyTheme.accentColor : CachyTheme.textPrimary
+            color: root.selected ? CachyPalette.accentText : CachyPalette.text
             visible: root.icon.name.length > 0 && valid
         }
 
@@ -50,7 +50,7 @@ T.AbstractButton {
                 elide: Text.ElideRight
                 font.pixelSize: 13
                 font.weight: root.selected ? Font.Bold : Font.DemiBold
-                color: root.selected ? CachyTheme.accentColor : CachyTheme.textPrimary
+                color: root.selected ? CachyPalette.accentText : CachyPalette.text
             }
 
             Text {
@@ -60,7 +60,7 @@ T.AbstractButton {
                 text: root.subtitle
                 elide: Text.ElideRight
                 font.pixelSize: 11
-                color: CachyTheme.textMuted
+                color: CachyPalette.textMuted
             }
         }
     }
@@ -69,7 +69,7 @@ T.AbstractButton {
         radius: CachyTheme.radiusSmall
         color: root.checked || root.selected
             ? CachyTheme.withAlpha(CachyTheme.accentColor, 0.16)
-            : (root.hovered ? CachyTheme.cardBackgroundHover : "transparent")
+            : (root.hovered ? CachyPalette.cardBackgroundHover : "transparent")
     }
 
     HoverHandler {

@@ -30,10 +30,10 @@ T.Switch {
         radius: Math.round(height / 2)
         color: control.checked
             ? control.activeColor
-            : (CachyTheme.isDark ? Qt.rgba(1, 1, 1, 0.18) : Qt.rgba(0, 0, 0, 0.14))
+            : (CachyPalette.isDark ? Qt.rgba(1, 1, 1, 0.18) : Qt.rgba(0, 0, 0, 0.14))
 
         border.width: control.checked ? 0 : 1
-        border.color: CachyTheme.specularBorder
+        border.color: CachyPalette.specularBorder
 
         Behavior on color {
             ColorAnimation { duration: CachyTheme.animNormal; easing.type: Easing.OutCubic }

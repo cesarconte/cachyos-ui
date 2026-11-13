@@ -54,7 +54,7 @@ Rectangle {
             text: root.text
             wrapMode: Text.WordWrap
             font.pixelSize: 12
-            color: CachyTheme.textPrimary
+            color: CachyPalette.text
         }
     }
 }

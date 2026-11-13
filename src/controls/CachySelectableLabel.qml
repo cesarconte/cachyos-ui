@@ -20,7 +20,7 @@ TextEdit {
     activeFocusOnTab: false
 
     textFormat: TextEdit.AutoText
-    color: CachyTheme.textPrimary
+    color: CachyPalette.text
     selectedTextColor: "#FFFFFF"
     selectionColor: CachyTheme.accentColor
     font.pixelSize: 12

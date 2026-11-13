@@ -27,7 +27,7 @@ Item {
     /// Logical width and height of the icon in pixels.
     property int size: 16
     /// Tint color applied when `colored` is true.
-    property color color: CachyTheme.textPrimary
+    property color color: CachyPalette.text
     /// When true (default), monochrome/symbolic icons are tinted with `color`.
     /// Set to false for full-color application icons (e.g. in About pages).
     property bool colored: true

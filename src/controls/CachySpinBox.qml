@@ -35,9 +35,9 @@ Rectangle {
     implicitWidth: 132
     implicitHeight: 32
     radius: CachyTheme.radiusSmall
-    color: CachyTheme.isDark ? Qt.rgba(0, 0, 0, 0.30) : Qt.rgba(0, 0, 0, 0.06)
+    color: CachyPalette.isDark ? Qt.rgba(0, 0, 0, 0.30) : Qt.rgba(0, 0, 0, 0.06)
     border.width: valueInput.activeFocus ? 1.5 : 1
-    border.color: valueInput.activeFocus ? CachyTheme.accentColor : CachyTheme.specularBorder
+    border.color: valueInput.activeFocus ? CachyTheme.accentColor : CachyPalette.specularBorder
 
     RowLayout {
         anchors.fill: parent
@@ -51,14 +51,14 @@ Rectangle {
             radius: 6
             color: decTap.pressed
                 ? CachyTheme.withAlpha(CachyTheme.accentColor, 0.25)
-                : (decHover.hovered ? CachyTheme.cardBackgroundHover : "transparent")
+                : (decHover.hovered ? CachyPalette.cardBackgroundHover : "transparent")
             enabled: root.value > root.from
 
             CachyIcon {
                 anchors.centerIn: parent
                 name: "remove"
                 size: 12
-                color: parent.enabled ? CachyTheme.textPrimary : CachyTheme.textMuted
+                color: parent.enabled ? CachyPalette.text : CachyPalette.textMuted
             }
 
             HoverHandler {
@@ -81,7 +81,7 @@ Rectangle {
             verticalAlignment: Text.AlignVCenter
             readOnly: !root.editable
             selectByMouse: true
-            color: root.enabled ? CachyTheme.textPrimary : CachyTheme.textMuted
+            color: root.enabled ? CachyPalette.text : CachyPalette.textMuted
             selectionColor: CachyTheme.accentColor
             selectedTextColor: "#FFFFFF"
             font.pixelSize: 13
@@ -105,14 +105,14 @@ Rectangle {
             radius: 6
             color: incTap.pressed
                 ? CachyTheme.withAlpha(CachyTheme.accentColor, 0.25)
-                : (incHover.hovered ? CachyTheme.cardBackgroundHover : "transparent")
+                : (incHover.hovered ? CachyPalette.cardBackgroundHover : "transparent")
             enabled: root.value < root.to
 
             CachyIcon {
                 anchors.centerIn: parent
                 name: "add"
                 size: 12
-                color: parent.enabled ? CachyTheme.textPrimary : CachyTheme.textMuted
+                color: parent.enabled ? CachyPalette.text : CachyPalette.textMuted
             }
 
             HoverHandler {

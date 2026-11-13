@@ -33,7 +33,7 @@ Item {
     Rectangle {
         anchors.fill: parent
         radius: CachyTheme.radiusSmall
-        color: rowHover.hovered ? CachyTheme.cardBackgroundHover : "transparent"
+        color: rowHover.hovered ? CachyPalette.cardBackgroundHover : "transparent"
     }
 
     RowLayout {
@@ -48,7 +48,7 @@ Item {
             text: root.label
             wrapMode: Text.WordWrap
             font.pixelSize: 12
-            color: CachyTheme.textPrimary
+            color: CachyPalette.text
         }
 
         CachyComboBox {

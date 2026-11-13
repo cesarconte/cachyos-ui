@@ -34,8 +34,8 @@ T.Menu {
         implicitWidth: 180
         implicitHeight: 36
         radius: CachyTheme.radiusMedium
-        color: CachyTheme.sheetBackground
+        color: CachyPalette.sheetBackground
         border.width: 1
-        border.color: CachyTheme.specularBorder
+        border.color: CachyPalette.specularBorder
     }
 }

@@ -24,8 +24,8 @@ T.TextField {
     topPadding: 6
     bottomPadding: 6
 
-    color: control.enabled ? CachyTheme.textPrimary : CachyTheme.textMuted
-    placeholderTextColor: CachyTheme.textMuted
+    color: control.enabled ? CachyPalette.text : CachyPalette.textMuted
+    placeholderTextColor: CachyPalette.textMuted
     selectedTextColor: "#FFFFFF"
     selectionColor: CachyTheme.accentColor
     verticalAlignment: TextInput.AlignVCenter
@@ -33,11 +33,11 @@ T.TextField {
 
     background: Rectangle {
         radius: CachyTheme.radiusSmall
-        color: CachyTheme.isDark ? Qt.rgba(0, 0, 0, 0.32) : Qt.rgba(0, 0, 0, 0.06)
+        color: CachyPalette.isDark ? Qt.rgba(0, 0, 0, 0.32) : Qt.rgba(0, 0, 0, 0.06)
         border.width: control.activeFocus ? 2 : 1
         border.color: control.activeFocus
             ? CachyTheme.accentColor
-            : (fieldHover.hovered ? CachyTheme.withAlpha(CachyTheme.specularBorder, 0.40) : CachyTheme.specularBorder)
+            : (fieldHover.hovered ? CachyTheme.withAlpha(CachyPalette.specularBorder, 0.40) : CachyPalette.specularBorder)
 
         Behavior on border.color {
             ColorAnimation { duration: CachyTheme.animFast }
@@ -57,7 +57,7 @@ T.TextField {
         anchors.verticalCenter: parent.verticalCenter
         name: control.isSearch ? "search" : control.leadingIcon
         size: 14
-        color: CachyTheme.textSecondary
+        color: CachyPalette.textSecondary
         visible: control.isSearch || (control.leadingIcon.length > 0 && valid)
     }
 
@@ -68,7 +68,7 @@ T.TextField {
         anchors.verticalCenter: parent.verticalCenter
         text: control.leadingIcon
         font.pixelSize: 11
-        color: CachyTheme.textSecondary
+        color: CachyPalette.textSecondary
         visible: !control.isSearch && control.leadingIcon.length > 0 && CachyTheme.iconUrl(control.leadingIcon).length === 0
     }
 
@@ -83,15 +83,15 @@ T.TextField {
         height: 16
         radius: 8
         color: clearMouse.containsMouse
-            ? (CachyTheme.isDark ? Qt.rgba(1, 1, 1, 0.32) : Qt.rgba(0, 0, 0, 0.28))
-            : (CachyTheme.isDark ? Qt.rgba(1, 1, 1, 0.18) : Qt.rgba(0, 0, 0, 0.15))
+            ? (CachyPalette.isDark ? Qt.rgba(1, 1, 1, 0.32) : Qt.rgba(0, 0, 0, 0.28))
+            : (CachyPalette.isDark ? Qt.rgba(1, 1, 1, 0.18) : Qt.rgba(0, 0, 0, 0.15))
         visible: control.showClearButton && control.length > 0
 
         CachyIcon {
             anchors.centerIn: parent
             name: "close"
             size: 10
-            color: CachyTheme.textPrimary
+            color: CachyPalette.text
         }
 
         MouseArea {

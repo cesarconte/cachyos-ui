@@ -22,10 +22,10 @@ T.MenuItem {
 
     readonly property string effectiveIconName: control.iconName.length > 0 ? control.iconName : control.icon.name
     readonly property color fgColor: {
-        if (!control.enabled) return CachyTheme.textMuted;
+        if (!control.enabled) return CachyPalette.textMuted;
         if (control.destructive) return (control.highlighted || itemHover.hovered) ? "#FFFFFF" : "#FF3B30";
         if (control.highlighted || itemHover.hovered) return "#FFFFFF";
-        return CachyTheme.textPrimary;
+        return CachyPalette.text;
     }
 
     implicitWidth: Math.max(160, row.implicitWidth + leftPadding + rightPadding)
@@ -76,7 +76,7 @@ T.MenuItem {
             font.pixelSize: 11
             color: (control.highlighted || itemHover.hovered)
                 ? Qt.rgba(1, 1, 1, 0.80)
-                : CachyTheme.textMuted
+                : CachyPalette.textMuted
             verticalAlignment: Text.AlignVCenter
         }
     }

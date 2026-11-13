@@ -27,19 +27,19 @@ T.TextArea {
     selectByKeyboard: true
     clip: true
 
-    color: control.enabled ? CachyTheme.textPrimary : CachyTheme.textMuted
-    placeholderTextColor: CachyTheme.textMuted
+    color: control.enabled ? CachyPalette.text : CachyPalette.textMuted
+    placeholderTextColor: CachyPalette.textMuted
     selectedTextColor: "#FFFFFF"
     selectionColor: CachyTheme.accentColor
     font.pixelSize: 13
 
     background: Rectangle {
         radius: CachyTheme.radiusSmall
-        color: CachyTheme.isDark ? Qt.rgba(0, 0, 0, 0.32) : Qt.rgba(0, 0, 0, 0.06)
+        color: CachyPalette.isDark ? Qt.rgba(0, 0, 0, 0.32) : Qt.rgba(0, 0, 0, 0.06)
         border.width: control.activeFocus ? 2 : 1
         border.color: control.activeFocus
             ? CachyTheme.accentColor
-            : (areaHover.hovered ? CachyTheme.withAlpha(CachyTheme.specularBorder, 0.40) : CachyTheme.specularBorder)
+            : (areaHover.hovered ? CachyTheme.withAlpha(CachyPalette.specularBorder, 0.40) : CachyPalette.specularBorder)
 
         Behavior on border.color {
             ColorAnimation { duration: CachyTheme.animFast }

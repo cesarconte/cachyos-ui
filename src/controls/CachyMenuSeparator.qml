@@ -26,6 +26,6 @@ T.MenuSeparator {
         anchors.right: parent.right
         anchors.leftMargin: 6
         anchors.rightMargin: 6
-        color: CachyTheme.dividerColor
+        color: CachyPalette.dividerColor
     }
 }

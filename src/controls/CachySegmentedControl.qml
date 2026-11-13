@@ -41,9 +41,9 @@ Item {
         id: bg
         anchors.fill: parent
         radius: CachyTheme.radiusSmall
-        color: CachyTheme.isDark ? Qt.rgba(0, 0, 0, 0.28) : Qt.rgba(0, 0, 0, 0.08)
+        color: CachyPalette.isDark ? Qt.rgba(0, 0, 0, 0.28) : Qt.rgba(0, 0, 0, 0.08)
         border.width: 1
-        border.color: CachyTheme.specularBorder
+        border.color: CachyPalette.specularBorder
 
         // Sliding indicator pill
         Rectangle {
@@ -53,9 +53,9 @@ Item {
             width: root.model.length > 0 ? (parent.width - 6) / root.model.length : 0
             x: 3 + (root.currentIndex * width)
             radius: CachyTheme.radiusSmall - 2
-            color: CachyTheme.isDark ? Qt.rgba(1, 1, 1, 0.18) : "#FFFFFF"
+            color: CachyPalette.isDark ? Qt.rgba(1, 1, 1, 0.18) : "#FFFFFF"
             border.width: 0.5
-            border.color: CachyTheme.specularBorder
+            border.color: CachyPalette.specularBorder
 
             Behavior on x {
                 NumberAnimation { duration: CachyTheme.animNormal; easing.type: Easing.OutCubic }
@@ -88,7 +88,7 @@ Item {
                         text: segmentItem.modelData
                         font.pixelSize: 12
                         font.weight: root.currentIndex === segmentItem.index ? Font.DemiBold : Font.Normal
-                        color: root.currentIndex === segmentItem.index ? CachyTheme.textPrimary : CachyTheme.textSecondary
+                        color: root.currentIndex === segmentItem.index ? CachyPalette.text : CachyPalette.textSecondary
                     }
 
                     HoverHandler {

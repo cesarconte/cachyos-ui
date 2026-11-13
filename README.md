@@ -65,6 +65,14 @@ Inspirado en la filosofía de desacoplamiento de **Cutefish OS (`fishui`)**, `ca
 | **`CachyProgressBar`** | Barra de progreso estilizada con animación continua para modos determinado e indeterminado. |
 | **`CachyDivider`** | Separador horizontal o vertical de `1px` con soporte de sangría (`inset`). |
 
+### Plasmoides y Paleta Efectiva (`src/controls/`)
+
+| Componente | Descripción |
+| :--- | :--- |
+| **`CachyPalette`** | Singleton QML con la paleta **efectiva** de la superficie real: `text`, `textSecondary`, `textMuted`, `accentText`, `isDark` y todas las superficies translúcidas. Dentro de una app coincide con `CachyTheme`; dentro de `plasmashell` sigue el tema de escritorio de Plasma (blanco sobre oscuro con Golden Gate), lo que garantiza el contraste en ambos casos. |
+| **`CachyPlasmoidSurface`** | Raíz canónica de un plasmoide: transparente por defecto (el anfitrión pinta el fondo con *blur*), cabecera compacta con título, subtítulo y acciones, cuerpo y pie opcional. |
+| **`CachyPlasmoidIcon`** | Icono de plasmoide resuelto en el tema de iconos de Plasma y teñido con el primer plano del anfitrión (`isMask`), para que siga el Tema Automático y sea legible en el panel. |
+
 ### Tipografía, Mensajes y Formularios (`src/controls/`)
 
 | Componente | Descripción |

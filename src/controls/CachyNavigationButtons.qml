@@ -24,9 +24,9 @@ Rectangle {
     width: implicitWidth
     height: implicitHeight
     radius: height / 2
-    color: CachyTheme.surfacePill
+    color: CachyPalette.surfacePill
     border.width: 1
-    border.color: CachyTheme.specularBorder
+    border.color: CachyPalette.specularBorder
 
     Row {
         anchors.fill: parent
@@ -39,14 +39,14 @@ Rectangle {
                 anchors.fill: parent
                 anchors.margins: 2
                 radius: height / 2
-                color: backHover.hovered && root.canGoBack ? CachyTheme.cardBackgroundHover : "transparent"
+                color: backHover.hovered && root.canGoBack ? CachyPalette.cardBackgroundHover : "transparent"
             }
 
             CachyIcon {
                 anchors.centerIn: parent
                 name: "chevron-left"
                 size: 14
-                color: root.canGoBack ? CachyTheme.textPrimary : CachyTheme.textMuted
+                color: root.canGoBack ? CachyPalette.text : CachyPalette.textMuted
             }
 
             HoverHandler {
@@ -64,7 +64,7 @@ Rectangle {
             width: 1
             height: 12
             anchors.verticalCenter: parent.verticalCenter
-            color: CachyTheme.dividerColor
+            color: CachyPalette.dividerColor
         }
 
         Item {
@@ -75,14 +75,14 @@ Rectangle {
                 anchors.fill: parent
                 anchors.margins: 2
                 radius: height / 2
-                color: fwdHover.hovered && root.canGoForward ? CachyTheme.cardBackgroundHover : "transparent"
+                color: fwdHover.hovered && root.canGoForward ? CachyPalette.cardBackgroundHover : "transparent"
             }
 
             CachyIcon {
                 anchors.centerIn: parent
                 name: "chevron-right"
                 size: 14
-                color: root.canGoForward ? CachyTheme.textPrimary : CachyTheme.textMuted
+                color: root.canGoForward ? CachyPalette.text : CachyPalette.textMuted
             }
 
             HoverHandler {

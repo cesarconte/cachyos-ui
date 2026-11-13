@@ -20,7 +20,7 @@ T.ProgressBar {
     background: Rectangle {
         anchors.fill: parent
         radius: Math.round(height / 2)
-        color: CachyTheme.isDark ? Qt.rgba(1, 1, 1, 0.14) : Qt.rgba(0, 0, 0, 0.10)
+        color: CachyPalette.isDark ? Qt.rgba(1, 1, 1, 0.14) : Qt.rgba(0, 0, 0, 0.10)
     }
 
     contentItem: Item {

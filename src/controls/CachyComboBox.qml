@@ -72,7 +72,7 @@ T.ComboBox {
                 Layout.minimumWidth: 0
                 Layout.rightMargin: 8
                 text: itemDelegate.itemLabel
-                color: control.currentIndex === itemDelegate.index ? CachyTheme.accentColor : CachyTheme.textPrimary
+                color: control.currentIndex === itemDelegate.index ? CachyPalette.accentText : CachyPalette.text
                 font.pixelSize: 13
                 font.weight: control.currentIndex === itemDelegate.index ? Font.DemiBold : Font.Normal
                 elide: Text.ElideRight
@@ -97,24 +97,24 @@ T.ComboBox {
         y: Math.round((control.height - height) / 2)
         name: "chevron-down"
         size: 14
-        color: control.enabled ? CachyTheme.textSecondary : CachyTheme.textMuted
+        color: control.enabled ? CachyPalette.textSecondary : CachyPalette.textMuted
     }
 
     contentItem: Text {
         text: control.displayText
         font: control.font
-        color: control.enabled ? CachyTheme.textPrimary : CachyTheme.textMuted
+        color: control.enabled ? CachyPalette.text : CachyPalette.textMuted
         verticalAlignment: Text.AlignVCenter
         elide: Text.ElideRight
     }
 
     background: Rectangle {
         radius: CachyTheme.radiusSmall
-        color: comboHover.hovered ? CachyTheme.cardBackgroundHover : CachyTheme.cardBackground
+        color: comboHover.hovered ? CachyPalette.cardBackgroundHover : CachyPalette.cardBackground
         border.width: control.visualFocus || control.popup.visible ? 1.5 : 1
         border.color: control.visualFocus || control.popup.visible
             ? CachyTheme.accentColor
-            : CachyTheme.specularBorder
+            : CachyPalette.specularBorder
 
         Behavior on color {
             ColorAnimation { duration: CachyTheme.animFast }
@@ -142,9 +142,9 @@ T.ComboBox {
 
         background: Rectangle {
             radius: CachyTheme.radiusMedium
-            color: CachyTheme.sheetBackground
+            color: CachyPalette.sheetBackground
             border.width: 1
-            border.color: CachyTheme.specularBorder
+            border.color: CachyPalette.specularBorder
         }
     }
 

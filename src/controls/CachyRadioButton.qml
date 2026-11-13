@@ -27,10 +27,10 @@ T.RadioButton {
         height: 18
         radius: 9
         color: control.checked
-            ? (control.enabled ? control.accentColor : CachyTheme.textMuted)
-            : (CachyTheme.isDark ? Qt.rgba(1, 1, 1, 0.12) : Qt.rgba(0, 0, 0, 0.08))
+            ? (control.enabled ? control.accentColor : CachyPalette.textMuted)
+            : (CachyPalette.isDark ? Qt.rgba(1, 1, 1, 0.12) : Qt.rgba(0, 0, 0, 0.08))
         border.width: control.checked ? 0 : 1
-        border.color: radioHover.hovered ? CachyTheme.accentColor : CachyTheme.specularBorder
+        border.color: radioHover.hovered ? CachyTheme.accentColor : CachyPalette.specularBorder
 
         scale: control.pressed ? 0.90 : 1.0
         Behavior on scale {
@@ -59,7 +59,7 @@ T.RadioButton {
         text: control.text
         visible: control.text.length > 0
         font.pixelSize: 13
-        color: control.enabled ? CachyTheme.textPrimary : CachyTheme.textMuted
+        color: control.enabled ? CachyPalette.text : CachyPalette.textMuted
         verticalAlignment: Text.AlignVCenter
         elide: Text.ElideRight
     }

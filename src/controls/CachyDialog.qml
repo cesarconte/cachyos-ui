@@ -54,9 +54,9 @@ Item {
         width: Math.min(parent.width - (CachyTheme.marginWindow * 2), root.preferredWidth)
         height: cardColumn.implicitHeight + (CachyTheme.marginCard * 2)
         radius: CachyTheme.radiusLarge
-        color: CachyTheme.sheetBackground
+        color: CachyPalette.sheetBackground
         border.width: 1
-        border.color: CachyTheme.specularBorder
+        border.color: CachyPalette.specularBorder
 
         // Prevent clicks inside the card from dismissing the scrim
         TapHandler {}
@@ -82,7 +82,7 @@ Item {
                 text: root.subtitle
                 wrapMode: Text.WordWrap
                 font.pixelSize: 12
-                color: CachyTheme.textSecondary
+                color: CachyPalette.textSecondary
             }
 
             ColumnLayout {

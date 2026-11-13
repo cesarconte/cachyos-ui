@@ -28,18 +28,18 @@ Rectangle {
         if (root.badgeType === "warning") return "#FF9500";
         if (root.badgeType === "success") return "#34C759";
         if (root.badgeType === "accent") return CachyTheme.accentColor;
-        return CachyTheme.textSecondary;
+        return CachyPalette.textSecondary;
     }
 
     implicitWidth: Math.max(24, contentRow.implicitWidth + 16)
     implicitHeight: 22
     radius: height / 2
     color: root.badgeType === "neutral"
-        ? CachyTheme.surfacePill
-        : CachyTheme.withAlpha(root.tintColor, CachyTheme.isDark ? 0.22 : 0.14)
+        ? CachyPalette.surfacePill
+        : CachyTheme.withAlpha(root.tintColor, CachyPalette.isDark ? 0.22 : 0.14)
     border.width: 1
     border.color: root.badgeType === "neutral"
-        ? CachyTheme.specularBorder
+        ? CachyPalette.specularBorder
         : CachyTheme.withAlpha(root.tintColor, 0.38)
 
     RowLayout {
@@ -54,7 +54,7 @@ Rectangle {
             Layout.preferredHeight: 11
             name: root.iconName
             size: 11
-            color: root.badgeType === "neutral" ? CachyTheme.textSecondary : root.tintColor
+            color: root.badgeType === "neutral" ? CachyPalette.textSecondary : root.tintColor
             visible: root.iconName.length > 0 && valid
         }
 
@@ -64,7 +64,7 @@ Rectangle {
             text: root.text
             font.pixelSize: 11
             font.weight: Font.DemiBold
-            color: root.badgeType === "neutral" ? CachyTheme.textPrimary : root.tintColor
+            color: root.badgeType === "neutral" ? CachyPalette.text : root.tintColor
             elide: Text.ElideRight
             verticalAlignment: Text.AlignVCenter
         }
@@ -78,7 +78,7 @@ Rectangle {
                 anchors.centerIn: parent
                 name: "close"
                 size: 9
-                color: root.badgeType === "neutral" ? CachyTheme.textSecondary : root.tintColor
+                color: root.badgeType === "neutral" ? CachyPalette.textSecondary : root.tintColor
             }
 
             HoverHandler {

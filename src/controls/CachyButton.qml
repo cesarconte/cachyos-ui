@@ -19,10 +19,10 @@ T.Button {
 
     readonly property string effectiveIconName: control.iconName.length > 0 ? control.iconName : control.icon.name
     readonly property color effectiveContentColor: {
-        if (!control.enabled) return CachyTheme.textMuted;
+        if (!control.enabled) return CachyPalette.textMuted;
         if (control.primary || control.destructive) return "#FFFFFF";
-        if (control.flat) return CachyTheme.isDark ? "#409CFF" : CachyTheme.accentColor;
-        return CachyTheme.textPrimary;
+        if (control.flat) return CachyPalette.isDark ? "#409CFF" : CachyTheme.accentColor;
+        return CachyPalette.text;
     }
 
     leftPadding: control.text.length > 0 ? 16 : 10
@@ -52,15 +52,15 @@ T.Button {
             }
             // Standard Button
             if (btnHover.hovered) {
-                return CachyTheme.cardBackgroundHover;
+                return CachyPalette.cardBackgroundHover;
             }
-            return CachyTheme.cardBackground;
+            return CachyPalette.cardBackground;
         }
 
         border.width: control.flat ? 0 : 1
         border.color: (control.primary || control.destructive)
             ? Qt.rgba(1, 1, 1, 0.22)
-            : CachyTheme.specularBorder
+            : CachyPalette.specularBorder
 
         Behavior on color {
             ColorAnimation { duration: CachyTheme.animFast }

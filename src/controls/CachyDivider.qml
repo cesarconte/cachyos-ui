@@ -13,7 +13,7 @@ Item {
 
     property int orientation: Qt.Horizontal
     property int inset: 0
-    property color color: CachyTheme.dividerColor
+    property color color: CachyPalette.dividerColor
 
     implicitWidth: orientation === Qt.Horizontal ? 100 : 1
     implicitHeight: orientation === Qt.Horizontal ? 1 : 100

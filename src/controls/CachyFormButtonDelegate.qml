@@ -30,7 +30,7 @@ T.AbstractButton {
             Layout.preferredHeight: 18
             name: root.icon.name
             size: 18
-            color: CachyTheme.textPrimary
+            color: CachyPalette.text
             visible: root.icon.name.length > 0 && valid
         }
 
@@ -41,13 +41,13 @@ T.AbstractButton {
             wrapMode: Text.WordWrap
             font.pixelSize: 12
             font.weight: Font.Medium
-            color: CachyTheme.textPrimary
+            color: CachyPalette.text
         }
     }
 
     background: Rectangle {
         radius: CachyTheme.radiusSmall
-        color: root.hovered ? CachyTheme.cardBackgroundHover : "transparent"
+        color: root.hovered ? CachyPalette.cardBackgroundHover : "transparent"
 
         Behavior on color {
             ColorAnimation { duration: CachyTheme.animFast }

@@ -56,7 +56,7 @@ Rectangle {
     implicitWidth: Math.min(420, Math.max(160, row.implicitWidth + 28))
     implicitHeight: 36
     radius: height / 2
-    color: CachyTheme.sheetBackground
+    color: CachyPalette.sheetBackground
     border.width: 1
     border.color: CachyTheme.withAlpha(root.semanticColor, 0.45)
 
@@ -100,7 +100,7 @@ Rectangle {
             text: root.text
             font.pixelSize: 12
             font.weight: Font.Medium
-            color: CachyTheme.textPrimary
+            color: CachyPalette.text
             elide: Text.ElideRight
             verticalAlignment: Text.AlignVCenter
         }
@@ -110,13 +110,13 @@ Rectangle {
             Layout.preferredWidth: 18
             Layout.preferredHeight: 18
             radius: 9
-            color: closeHover.hovered ? CachyTheme.cardBackgroundHover : "transparent"
+            color: closeHover.hovered ? CachyPalette.cardBackgroundHover : "transparent"
 
             CachyIcon {
                 anchors.centerIn: parent
                 name: "close"
                 size: 10
-                color: CachyTheme.textSecondary
+                color: CachyPalette.textSecondary
             }
 
             HoverHandler {

@@ -30,10 +30,10 @@ T.Control {
         id: bgRect
         radius: CachyTheme.radiusMedium
         color: root.interactive && hoverHandler.hovered
-            ? CachyTheme.cardBackgroundHover
-            : CachyTheme.cardBackground
+            ? CachyPalette.cardBackgroundHover
+            : CachyPalette.cardBackground
         border.width: 1
-        border.color: CachyTheme.specularBorder
+        border.color: CachyPalette.specularBorder
 
         Behavior on color {
             ColorAnimation { duration: CachyTheme.animFast }

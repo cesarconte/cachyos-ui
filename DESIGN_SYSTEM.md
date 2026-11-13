@@ -15,6 +15,29 @@ En Qt Quick (`RowLayout` y `ColumnLayout`), el valor de `Layout.minimumWidth` de
   ```
 - **Efecto:** Evita que el ancho intrínseco del texto sobrepase o fuerce al layout padre a desbordar los límites de la ventana o contenedor.
 
+### C. Regla de Altura Adaptativa (Cero Desbordes por Altura)
+Toda superficie (ventana, popup de plasmoide, tarjeta) debe adaptarse al contenido,
+nunca cortar elementos ni dejar espacio vacío injustificado:
+
+1. **`implicitHeight` / `implicitWidth`**: Deben reflejar el tamaño real del
+   contenido + márgenes + espaciados. Nunca usar un valor fijo que sea menor
+   que el contenido mínimo.
+2. **`Layout.minimumHeight` / `Layout.minimumWidth`**: Cada elemento hijo debe
+   declarar su mínimo explícito para que el layout padre pueda calcular el
+   mínimo real del contenedor.
+3. **`Layout.fillHeight` / `Layout.fillWidth`**: Usar solo en elementos que
+   deben expandirse. Los elementos que deben mantener su tamaño natural no
+   deben tener `fillHeight`/`fillWidth`.
+4. **`Layout.preferredHeight` / `Layout.preferredWidth`**: Usar para sugerir un
+   tamaño cuando el elemento es redimensionable.
+5. **Prohibido**: `implicitHeight: <valor fijo menor que el contenido>` o
+   `Layout.minimumHeight: <valor fijo menor que el contenido>`. Esto provoca
+   que los elementos se corten o se desborden de su contenedor.
+6. **Referencia**: Plasma (`AppletPopup`), QML (`ColumnLayout`/`RowLayout`) y
+   Kirigami (`ScrollablePage`) calculan el tamaño del contenedor a partir de
+   los `implicitHeight`/`implicitWidth` de los hijos. Replicar ese patrón es
+   la forma correcta de garantizar que nada se corte.
+
 ### B. Regla de Textos Completos (Cero Truncamientos Inesperados)
 - **Títulos y encabezados:** Deben ser claros y concisos. En contenedores fluidos nunca deben recortarse sin elipsis (`CachyHeading` aplica `elide: Text.ElideRight` por defecto).
 - **Subtítulos y descripciones:** **NUNCA** usar `elide: Text.ElideRight` si el texto debe ser leído íntegramente por el usuario. En su lugar:
@@ -112,7 +135,73 @@ La proporción (ancho ÷ alto) de una ventana es parte de la identidad visual de
 
 ---
 
-## 4. Tarjetas y Formularios Universales (`CachyCard` y familia `CachyForm*`)
+## 4. Superficies de Plasmoides (no-ventana)
+
+Un plasmoide vive dentro de `plasmashell`, sobre una superficie que pinta
+**Plasma**. El diseño es **idéntico** al de una aplicación (mismos colores,
+radios, tipografía y formas de elemento); lo único que se ajusta es el
+**espaciado**, porque el espacio disponible es mucho menor.
+
+### 4.1 Quién pinta cada superficie
+
+| Superficie | La pinta | Cómo se comporta |
+| :--- | :--- | :--- |
+| Ventana de aplicación | La propia app (`CachyWindow`) | Opaca y translúcida, con *blur* de KWin |
+| Panel de Plasma | El tema de escritorio de Plasma | Transparente, deja ver el fondo de pantalla |
+| Popup de un plasmoide | El tema de escritorio de Plasma | Translúcido, con *blur* y borde especular |
+
+**Regla:** un plasmoide **no pinta su propio fondo opaco**. Plasma ya aporta
+la superficie con *blur* de Golden Gate; taparla oculta el cristal y rompe la
+estética. `CachyPlasmoidSurface` es transparente por defecto (`framed: false`).
+
+### 4.2 Regla del color: la paleta efectiva, no la de la app
+
+El color de primer plano debe describir **la superficie donde se dibuja**:
+
+- En una aplicación, esa superficie la pinta la propia app → el color scheme
+  de la aplicación.
+- En un plasmoide, esa superficie la pinta Plasma → el **tema de escritorio**
+  (su archivo `colors`).
+
+`CachyTheme.isDark()` decide con `QStyleHints::colorScheme()`, que solo
+refleja el segundo caso. Con el tema `macOS-GoldenGate` el tema de escritorio
+es **siempre oscuro con primer plano blanco** (`ForegroundNormal=252,252,252`)
+en todos sus grupos, de modo que usar `CachyTheme.textPrimary` en un
+plasmoide produce **texto negro sobre superficie oscura**.
+
+`CachyPalette` (singleton) resuelve la paleta efectiva y es la **única**
+fuente de color de primer plano del ecosistema:
+
+| Token | Uso |
+| :--- | :--- |
+| `CachyPalette.text` | Texto principal |
+| `CachyPalette.textSecondary` | Etiquetas, cabeceras de columna, ayudas |
+| `CachyPalette.textMuted` | Texto decorativo o deshabilitado |
+| `CachyPalette.accentText` | Acento **como texto** (legible sobre la superficie) |
+| `CachyPalette.cardBackground` | Superficie de tarjeta translúcida |
+| `CachyPalette.specularBorder` | Borde refractivo de `1 px` |
+
+Los tonos secundarios y atenuados se derivan del primario por opacidad, de
+modo que conservan el tono de la superficie y **nunca** quedan por debajo del
+contraste mínimo.
+
+### 4.3 Iconos
+
+`Kirigami.Icon` solo tiñe con `color` cuando `isMask: true`; sin ello, el
+SVG se pinta con su clase `ColorScheme-Text` interna (`#232629`) y aparece
+negro. `CachyPlasmoidIcon` resuelve el icono en el tema de Plasma (el
+elegido por el usuario) y lo tiñe con el primer plano del anfitrión.
+
+### 4.4 Métricas
+
+| Contexto | Margen exterior | Espaciado de bloques | Padding de tarjeta | Radio de tarjeta |
+| :--- | :---: | :---: | :---: | :---: |
+| Ventana | `marginWindow` (18) | `spacingMedium` (12) | `marginCard` (14) | `radiusMedium` (12) |
+| Plasmoide | `marginCard` (14) | `spacingSmall` (8) | `marginCard` (14) | `radiusSmall` (8) |
+
+---
+
+## 5. Tarjetas y Formularios Universales (`CachyCard` y familia `CachyForm*`)
 
 - **Padding interno universal:** `14 px` (`CachyTheme.marginCard`) aplicado automáticamente en `CachyCard` y `CachyFormCard`.
 - **Padding horizontal en delegados:** `CachyFormCheckDelegate`, `CachyFormTextFieldDelegate` y `CachyFormButtonDelegate` incluyen margen interno horizontal (`CachyTheme.spacingMedium`) para que el resaltado hover respire sin pegar el texto al borde.
@@ -122,7 +211,7 @@ La proporción (ancho ÷ alto) de una ventana es parte de la identidad visual de
 
 ---
 
-## 5. Replicación Pixel-Perfect CachyOS / Liquid Glass
+## 6. Replicación Pixel-Perfect CachyOS / Liquid Glass
 
 1. **Semáforo Vectorial Oficial (`CachyTrafficLights`):**
    - `13 px` de diámetro por botón, `8 px` de espacio entre círculos (`55 px` de ancho total), situado a `18 px` (`CachyTheme.marginWindow`) del borde izquierdo.

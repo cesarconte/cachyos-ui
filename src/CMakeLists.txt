@@ -5,6 +5,15 @@ add_library(cachyosui SHARED
 )
 add_library(CachyOSUI::cachyosui ALIAS cachyosui)
 
+# CachyPalette is a QML singleton: the effective foreground palette of the
+# surface the content is painted on (the Plasma desktop theme inside
+# plasmashell, the application palette inside an application).
+# The property must be set BEFORE qt_add_qml_module() so that the generated
+# qmldir declares it as a singleton.
+set_source_files_properties(controls/CachyPalette.qml PROPERTIES
+    QT_QML_SINGLETON_TYPE TRUE
+)
+
 qt_add_qml_module(cachyosui
     URI CachyOS.UI
     VERSION 1.0
@@ -72,6 +81,15 @@ qt_add_qml_module(cachyosui
         controls/CachyTabView.qml
         controls/CachyNavigationButtons.qml
         controls/CachyBreadcrumbBar.qml
+        controls/CachyPlasmoidSurface.qml
+        controls/CachyPlasmoidIcon.qml
+        controls/CachyPalette.qml
+        controls/CachyListItem.qml
+        controls/CachyGridItem.qml
+        controls/CachyTableHeader.qml
+        controls/CachySplitView.qml
+        controls/CachyStatusBar.qml
+        controls/CachyFileDropArea.qml
 )
 
 target_include_directories(cachyosui PUBLIC

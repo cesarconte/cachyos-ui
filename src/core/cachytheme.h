@@ -35,6 +35,11 @@ class CachyTheme : public QObject
     Q_PROPERTY(QColor textMuted READ textMuted NOTIFY themeChanged)
     Q_PROPERTY(QColor dividerColor READ dividerColor NOTIFY themeChanged)
 
+    // Semantic status colours (macOS Golden Gate palette)
+    Q_PROPERTY(QColor successColor READ successColor CONSTANT)
+    Q_PROPERTY(QColor warningColor READ warningColor CONSTANT)
+    Q_PROPERTY(QColor errorColor READ errorColor CONSTANT)
+
     // Platform identification (distribution and desktop shell) shown by the apps
     Q_PROPERTY(QString distroName READ distroName CONSTANT)
     Q_PROPERTY(QString desktopShell READ desktopShell CONSTANT)
@@ -92,6 +97,13 @@ public:
     QColor textSecondary() const;
     QColor textMuted() const;
     QColor dividerColor() const;
+
+    // Semantic status colours: shared by every surface of the ecosystem
+    // (applications and plasmoids alike) so that a "recording", a "warning"
+    // or a "failure" always look the same.
+    QColor successColor() const { return QColor(52, 199, 89); }  // #34C759
+    QColor warningColor() const { return QColor(255, 149, 0); }   // #FF9500
+    QColor errorColor() const { return QColor(255, 59, 48); }     // #FF3B30
 
     QString distroName() const;
     QString desktopShell() const;

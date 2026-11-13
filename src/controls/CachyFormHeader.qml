@@ -20,6 +20,6 @@ Text {
     text: root.title
     font.pixelSize: 13
     font.weight: Font.DemiBold
-    color: CachyTheme.textPrimary
+    color: CachyPalette.text
     elide: Text.ElideRight
 }

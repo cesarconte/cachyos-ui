@@ -22,7 +22,7 @@ Text {
 
     font.pixelSize: Math.round(13 * scale)
     font.weight: level <= 2 ? Font.DemiBold : (level === 3 ? Font.Medium : Font.Normal)
-    color: CachyTheme.textPrimary
+    color: CachyPalette.text
 
     // Long headings must never overflow their container.
     elide: Text.ElideRight

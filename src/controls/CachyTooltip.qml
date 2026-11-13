@@ -32,14 +32,14 @@ T.ToolTip {
     contentItem: Text {
         text: control.text
         font.pixelSize: 12
-        color: CachyTheme.textPrimary
+        color: CachyPalette.text
         wrapMode: Text.WordWrap
     }
 
     background: Rectangle {
         radius: CachyTheme.radiusSmall
-        color: CachyTheme.sheetBackground
+        color: CachyPalette.sheetBackground
         border.width: 1
-        border.color: CachyTheme.specularBorder
+        border.color: CachyPalette.specularBorder
     }
 }

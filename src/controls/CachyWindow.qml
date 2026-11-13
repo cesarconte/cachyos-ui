@@ -167,7 +167,7 @@ Window {
                         anchors.bottom: parent.bottom
                         anchors.right: parent.right
                         width: 1
-                        color: CachyTheme.hardDividerColor
+                        color: CachyPalette.hardDividerColor
                     }
                 }
 
@@ -278,7 +278,7 @@ Window {
                                 anchors.rightMargin: 4
                                 anchors.verticalCenter: parent.verticalCenter
                                 text: root.title
-                                color: CachyTheme.textPrimary
+                                color: CachyPalette.text
                                 font.pixelSize: 13
                                 font.weight: Font.DemiBold
                                 elide: Text.ElideMiddle
@@ -305,7 +305,7 @@ Window {
                             anchors.bottom: parent.bottom
                             height: 1
                             visible: root.showTitleBarDivider
-                            color: CachyTheme.hardDividerColor
+                            color: CachyPalette.hardDividerColor
                         }
                     }
 
@@ -352,7 +352,7 @@ Window {
             radius: root.cornerRadius
             color: "transparent"
             border.width: 1
-            border.color: CachyTheme.specularBorder
+            border.color: CachyPalette.specularBorder
             visible: root.showWindowFrame
             z: 999998
         }

@@ -44,9 +44,9 @@ Rectangle {
     implicitWidth: Math.max(160, row.implicitWidth + 16)
     implicitHeight: 30
     radius: CachyTheme.radiusSmall
-    color: CachyTheme.surfacePill
+    color: CachyPalette.surfacePill
     border.width: 1
-    border.color: CachyTheme.specularBorder
+    border.color: CachyPalette.specularBorder
     clip: true
 
     RowLayout {
@@ -63,7 +63,7 @@ Rectangle {
             Layout.rightMargin: 2
             name: "folder"
             size: 14
-            color: CachyTheme.accentColor
+            color: CachyPalette.accentText
         }
 
         Repeater {
@@ -92,7 +92,7 @@ Rectangle {
                     Layout.preferredHeight: 11
                     name: "chevron-right"
                     size: 11
-                    color: CachyTheme.textMuted
+                    color: CachyPalette.textMuted
                 }
 
                 Rectangle {
@@ -101,7 +101,7 @@ Rectangle {
                     Layout.preferredWidth: crumbText.implicitWidth + 10
                     Layout.preferredHeight: 22
                     radius: 5
-                    color: crumbHover.hovered ? CachyTheme.cardBackgroundHover : "transparent"
+                    color: crumbHover.hovered ? CachyPalette.cardBackgroundHover : "transparent"
 
                     Text {
                         id: crumbText
@@ -111,7 +111,7 @@ Rectangle {
                         text: crumbDelegate.labelText
                         font.pixelSize: 12
                         font.weight: crumbDelegate.isLast ? Font.DemiBold : Font.Normal
-                        color: crumbDelegate.isLast ? CachyTheme.textPrimary : CachyTheme.textSecondary
+                        color: crumbDelegate.isLast ? CachyPalette.text : CachyPalette.textSecondary
                         verticalAlignment: Text.AlignVCenter
                         elide: Text.ElideMiddle
                     }

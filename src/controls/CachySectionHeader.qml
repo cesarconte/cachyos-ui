@@ -17,6 +17,6 @@ Text {
     text: ""
     font.pixelSize: 11
     font.weight: Font.DemiBold
-    color: CachyTheme.textMuted
+    color: CachyPalette.textMuted
     elide: Text.ElideRight
 }

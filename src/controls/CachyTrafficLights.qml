@@ -55,10 +55,10 @@ Item {
             }
 
             color: {
-                if (!root.closable) return CachyTheme.isDark ? Qt.rgba(1, 1, 1, 0.20) : Qt.rgba(0, 0, 0, 0.15);
+                if (!root.closable) return CachyPalette.isDark ? Qt.rgba(1, 1, 1, 0.20) : Qt.rgba(0, 0, 0, 0.15);
                 if (closeBtn.isPressed) return Qt.lighter("#FF5F56", 1.06);
                 if (root.active || closeBtn.isHovered) return "#FF5F56";
-                return CachyTheme.isDark ? Qt.rgba(1, 1, 1, 0.25) : Qt.rgba(0, 0, 0, 0.20);
+                return CachyPalette.isDark ? Qt.rgba(1, 1, 1, 0.25) : Qt.rgba(0, 0, 0, 0.20);
             }
 
             border.width: 0.75
@@ -135,10 +135,10 @@ Item {
             }
 
             color: {
-                if (!root.minimizable) return CachyTheme.isDark ? Qt.rgba(1, 1, 1, 0.20) : Qt.rgba(0, 0, 0, 0.15);
+                if (!root.minimizable) return CachyPalette.isDark ? Qt.rgba(1, 1, 1, 0.20) : Qt.rgba(0, 0, 0, 0.15);
                 if (minBtn.isPressed) return Qt.lighter("#FFBD2E", 1.06);
                 if (root.active || minBtn.isHovered) return "#FFBD2E";
-                return CachyTheme.isDark ? Qt.rgba(1, 1, 1, 0.25) : Qt.rgba(0, 0, 0, 0.20);
+                return CachyPalette.isDark ? Qt.rgba(1, 1, 1, 0.25) : Qt.rgba(0, 0, 0, 0.20);
             }
 
             border.width: 0.75
@@ -204,10 +204,10 @@ Item {
             }
 
             color: {
-                if (!root.maximizable) return CachyTheme.isDark ? Qt.rgba(1, 1, 1, 0.20) : Qt.rgba(0, 0, 0, 0.15);
+                if (!root.maximizable) return CachyPalette.isDark ? Qt.rgba(1, 1, 1, 0.20) : Qt.rgba(0, 0, 0, 0.15);
                 if (maxBtn.isPressed) return Qt.lighter("#27C93F", 1.06);
                 if (root.active || maxBtn.isHovered) return "#27C93F";
-                return CachyTheme.isDark ? Qt.rgba(1, 1, 1, 0.25) : Qt.rgba(0, 0, 0, 0.20);
+                return CachyPalette.isDark ? Qt.rgba(1, 1, 1, 0.25) : Qt.rgba(0, 0, 0, 0.20);
             }
 
             border.width: 0.75

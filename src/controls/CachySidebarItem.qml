@@ -19,7 +19,7 @@ Rectangle {
     property bool squircleIconBadge: false
     property string badgeText: ""
     property bool selected: false
-    property color selectedHighlightColor: CachyTheme.isDark ? Qt.rgba(1, 1, 1, 0.14) : Qt.rgba(0, 0, 0, 0.09)
+    property color selectedHighlightColor: CachyPalette.isDark ? Qt.rgba(1, 1, 1, 0.14) : Qt.rgba(0, 0, 0, 0.09)
 
     signal clicked()
 
@@ -29,7 +29,7 @@ Rectangle {
 
     color: {
         if (root.selected) return root.selectedHighlightColor;
-        if (itemHover.hovered) return CachyTheme.isDark ? Qt.rgba(1, 1, 1, 0.06) : Qt.rgba(0, 0, 0, 0.04);
+        if (itemHover.hovered) return CachyPalette.isDark ? Qt.rgba(1, 1, 1, 0.06) : Qt.rgba(0, 0, 0, 0.04);
         return "transparent";
     }
 
@@ -82,7 +82,7 @@ Rectangle {
         Text {
             Layout.fillWidth: true
             text: root.text
-            color: CachyTheme.textPrimary
+            color: CachyPalette.text
             font.pixelSize: 13
             font.bold: root.selected
             font.weight: root.selected ? Font.Bold : Font.Normal
@@ -94,7 +94,7 @@ Rectangle {
         Text {
             visible: root.badgeText.length > 0
             text: root.badgeText
-            color: CachyTheme.textSecondary
+            color: CachyPalette.textSecondary
             font.pixelSize: 12
             font.weight: Font.Medium
         }

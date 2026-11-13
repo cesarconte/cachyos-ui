@@ -28,15 +28,15 @@ Rectangle {
     radius: CachyTheme.radiusSmall
     color: {
         if (root.selected) {
-            return CachyTheme.isDark ? Qt.rgba(1, 1, 1, 0.16) : "#FFFFFF";
+            return CachyPalette.isDark ? Qt.rgba(1, 1, 1, 0.16) : "#FFFFFF";
         }
         if (tabHover.hovered) {
-            return CachyTheme.isDark ? Qt.rgba(1, 1, 1, 0.08) : Qt.rgba(0, 0, 0, 0.05);
+            return CachyPalette.isDark ? Qt.rgba(1, 1, 1, 0.08) : Qt.rgba(0, 0, 0, 0.05);
         }
         return "transparent";
     }
     border.width: root.selected ? 1 : 0
-    border.color: CachyTheme.specularBorder
+    border.color: CachyPalette.specularBorder
 
     Behavior on color {
         ColorAnimation { duration: CachyTheme.animFast }
@@ -62,7 +62,7 @@ Rectangle {
             Layout.preferredHeight: 14
             name: root.iconName
             size: 14
-            color: root.selected ? CachyTheme.accentColor : CachyTheme.textSecondary
+            color: root.selected ? CachyPalette.accentText : CachyPalette.textSecondary
             visible: root.iconName.length > 0 && valid
         }
 
@@ -72,7 +72,7 @@ Rectangle {
             text: root.text
             font.pixelSize: 12
             font.weight: root.selected ? Font.DemiBold : Font.Normal
-            color: root.selected ? CachyTheme.textPrimary : CachyTheme.textSecondary
+            color: root.selected ? CachyPalette.text : CachyPalette.textSecondary
             elide: Text.ElideRight
             verticalAlignment: Text.AlignVCenter
         }
@@ -84,7 +84,7 @@ Rectangle {
             Layout.preferredHeight: 16
             radius: 4
             color: closeHover.hovered
-                ? (CachyTheme.isDark ? Qt.rgba(1, 1, 1, 0.18) : Qt.rgba(0, 0, 0, 0.12))
+                ? (CachyPalette.isDark ? Qt.rgba(1, 1, 1, 0.18) : Qt.rgba(0, 0, 0, 0.12))
                 : "transparent"
 
             Behavior on opacity {
@@ -95,7 +95,7 @@ Rectangle {
                 anchors.centerIn: parent
                 name: "close"
                 size: 10
-                color: CachyTheme.textSecondary
+                color: CachyPalette.textSecondary
             }
 
             HoverHandler {

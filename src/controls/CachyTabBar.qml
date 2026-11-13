@@ -28,9 +28,9 @@ Rectangle {
     implicitWidth: 420
     implicitHeight: 36
     radius: CachyTheme.radiusSmall
-    color: CachyTheme.isDark ? Qt.rgba(0, 0, 0, 0.22) : Qt.rgba(0, 0, 0, 0.05)
+    color: CachyPalette.isDark ? Qt.rgba(0, 0, 0, 0.22) : Qt.rgba(0, 0, 0, 0.05)
     border.width: 1
-    border.color: CachyTheme.specularBorder
+    border.color: CachyPalette.specularBorder
 
     RowLayout {
         anchors.fill: parent
@@ -72,13 +72,13 @@ Rectangle {
             Layout.preferredWidth: 28
             Layout.preferredHeight: 28
             radius: 6
-            color: addHover.hovered ? CachyTheme.cardBackgroundHover : "transparent"
+            color: addHover.hovered ? CachyPalette.cardBackgroundHover : "transparent"
 
             CachyIcon {
                 anchors.centerIn: parent
                 name: "add"
                 size: 14
-                color: CachyTheme.textPrimary
+                color: CachyPalette.text
             }
 
             HoverHandler {

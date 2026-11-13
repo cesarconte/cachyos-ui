@@ -17,9 +17,9 @@ Rectangle {
     implicitWidth: Math.max(320, contentColumn.implicitWidth + (CachyTheme.marginCard * 2))
     implicitHeight: contentColumn.implicitHeight + (CachyTheme.marginCard * 2)
     radius: CachyTheme.radiusMedium
-    color: CachyTheme.cardBackground
+    color: CachyPalette.cardBackground
     border.width: 1
-    border.color: CachyTheme.specularBorder
+    border.color: CachyPalette.specularBorder
 
     default property alias content: contentColumn.data
 

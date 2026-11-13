@@ -64,7 +64,7 @@ CachyScrollablePage {
             horizontalAlignment: Text.AlignHCenter
             text: root.appVersion
             font.pixelSize: 12
-            color: CachyTheme.textMuted
+            color: CachyPalette.textMuted
         }
 
         CachySelectableLabel {

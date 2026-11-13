@@ -46,14 +46,14 @@ Item {
             Layout.preferredWidth: root.iconSize
             Layout.preferredHeight: root.iconSize
             radius: root.iconSize / 2
-            color: CachyTheme.withAlpha(CachyTheme.textPrimary, 0.06)
+            color: CachyTheme.withAlpha(CachyPalette.text, 0.06)
             visible: root.iconName.length > 0
 
             CachyIcon {
                 anchors.centerIn: parent
                 name: root.iconName
                 size: Math.round(root.iconSize * 0.55)
-                color: CachyTheme.textSecondary
+                color: CachyPalette.textSecondary
             }
         }
 
@@ -66,7 +66,7 @@ Item {
             horizontalAlignment: Text.AlignHCenter
             wrapMode: Text.WordWrap
             font.pixelSize: 12
-            color: CachyTheme.textMuted
+            color: CachyPalette.textMuted
         }
 
         ColumnLayout {

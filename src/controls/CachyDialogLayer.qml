@@ -66,7 +66,7 @@ Item {
     // layer: the scrim on top of it dismisses the dialog on tap.
     Rectangle {
         anchors.fill: parent
-        color: CachyTheme.sheetBackground
+        color: CachyPalette.sheetBackground
     }
 
     // Scrim: dismisses the dialog on top.

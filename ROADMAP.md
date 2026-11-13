@@ -122,9 +122,17 @@ Proporciona los bloques estructurales completos para armar gestores de archivos,
   3. **`CachyStatusBar.qml`**: Barra inferior canónica de `28 px` con divisor superior duro de `1 px`, texto de resumen izquierdo (`summaryText`, ej. «24 elementos • 142 GB disponibles»), slot central/derecho para indicadores de velocidad o zoom (ej. deslizador de tamaño de iconos en *Dolphin* o velocidades `↓ 12.4 MB/s ↑ 1.8 MB/s` en *Transmission*).
 
 ### Paso 3.3 — Superficie Estándar para Plasmoides (`CachyPlasmoidSurface`) y Estilo Automático (`CachyStyle`)
-* **Archivos a crear:**
-  1. **`src/controls/CachyPlasmoidSurface.qml`**: Contenedor raíz para applets/plasmoides de KDE Plasma (que no usan `CachyWindow`). Proporciona cabecera compacta con título y acciones, área de contenido con `marginCard`, pie opcional y adaptación automática de colores a `CachyTheme`.
-  2. ** Puente de Estilo para `QtQuick.Controls`**: Asegurar que cada control de `CachyOS.UI` funcione como reemplazo 1:1 de `QtQuick.Controls` con la misma API (`text`, `checked`, `value`, `model`, `currentIndex`, `onClicked`, `onToggled`) para que migrar código QML existente sea mecánico.
+
+* **Estado:** ✅ COMPLETADO. El componente se llama `CachyPlasmoidSurface` y la
+  paleta efectiva se expone en el singleton `CachyPalette`.
+* **Archivos implementados:**
+  1. **`src/controls/CachyPlasmoidSurface.qml`**: Contenedor raíz para applets/plasmoides de KDE Plasma (que no usan `CachyWindow`). Proporciona cabecera compacta con título, subtítulo y acciones, área de contenido con `marginCard` y pie opcional. Es **transparente por defecto** (`framed: false`): el anfitrión (Plasma) ya pinta la superficie con su *blur* de Golden Gate y el plasmoide no debe taparla.
+  2. **`src/controls/CachyPlasmoidIcon.qml`**: Icono de plasmoide resuelto en el tema de iconos de Plasma y teñido con el primer plano del anfitrión (`isMask: true`). Sustituye tanto a `Kirigami.Icon` sin `isMask` (que se pinta negro con su `ColorScheme-Text` interna) como a `CachyIcon` (que ignora el tema de iconos elegido por el usuario).
+  3. **`src/controls/CachyPalette.qml`**: Singleton QML con la paleta **efectiva** de la superficie real (`text`, `textSecondary`, `textMuted`, `accentText`, `isDark`, `cardBackground`, `surfacePill`, `windowBackground`, `sheetBackground`, `specularBorder`, `hardDividerColor`, `dividerColor`). Resuelve la causa raíz del «texto negro sobre popup oscuro»: `CachyTheme.isDark()` decide con `QStyleHints::colorScheme()` (color scheme de la app), mientras que el chrome del panel lo pinta el tema de escritorio de Plasma, que con Golden Gate es siempre oscuro con primer plano blanco.
+  4. **`src/core/cachytheme.h`**: tokens semánticos `successColor` (`#34C759`), `warningColor` (`#FF9500`) y `errorColor` (`#FF3B30`), para que ningún plasmoid escriba literales de estado.
+* **Documentación:** `MIGRATION_GUIDE.md` §3 (receta de migración de plasmoides con tabla de equivalencias y checklist propio) y `DESIGN_SYSTEM.md` §4 (superficies de plasmoides, quién pinta cada una, regla del color y métricas).
+* **Regla de estética unificada:** el diseño de plasmoides y aplicaciones es **idéntico** (mismos colores, radios, tipografía y formas de elemento); solo cambia el **espaciado** (margen `14` frente a `18`, y `spacingSmall` frente a `spacingMedium`), porque un applet dispone de mucho menos espacio.
+* **Puente de Estilo para `QtQuick.Controls`**: cada control de `CachyOS.UI` funciona como reemplazo 1:1 de `QtQuick.Controls` con la misma API (`text`, `checked`, `value`, `model`, `currentIndex`, `onClicked`, `onToggled`) para que migrar código QML existente sea mecánico.
 
 ### Paso 3.4 — Tests y Auditoría de Layout de la Fase 3
 * Tests unitarios y de `LayoutAuditor` montando una escena tipo *Gestor de Archivos (Dolphin)* y una escena tipo *Cliente de Descargas (Transmission)* usando los nuevos bloques en tamaños mínimo, estándar y panorámico.

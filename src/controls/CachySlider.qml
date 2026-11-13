@@ -23,13 +23,13 @@ T.Slider {
         width: control.availableWidth
         height: 6
         radius: 3
-        color: CachyTheme.isDark ? Qt.rgba(1, 1, 1, 0.16) : Qt.rgba(0, 0, 0, 0.10)
+        color: CachyPalette.isDark ? Qt.rgba(1, 1, 1, 0.16) : Qt.rgba(0, 0, 0, 0.10)
 
         Rectangle {
             width: Math.max(0, control.visualPosition * parent.width)
             height: parent.height
             radius: 3
-            color: control.enabled ? control.accentColor : CachyTheme.textMuted
+            color: control.enabled ? control.accentColor : CachyPalette.textMuted
         }
     }
 
