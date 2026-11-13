@@ -33,22 +33,28 @@ Inspirado en la filosofía de desacoplamiento de **Cutefish OS (`fishui`)**, `ca
 
 | Componente | Tipo | Descripción |
 | :--- | :---: | :--- |
-| **`CachyTheme`** | Singleton C++ | Tokens de color reactivos (`windowBackground`, `sidebarBackground`, `cardBackground`, `sheetBackground`, `surfacePill`, `specularBorder`, `hardDividerColor`), `glassOpacity`, métricas canónicas, identidad de plataforma (`distroName`, `desktopShell`) y resolución de iconos (`iconUrl`). |
+| **`CachyTheme`** | Singleton C++ | Tokens de color reactivos (`windowBackground`, `sidebarBackground`, `cardBackground`, `sheetBackground`, `surfacePill`, `specularBorder`, `hardDividerColor`), `glassOpacity`, métricas canónicas, identidad de plataforma (`distroName`, `desktopShell`), iconos vectoriales embebidos (`iconUrl`) y resolución de iconos del sistema. |
 | **`CachyI18n`** | Singleton C++ | Traducción segura sobre `KLocalizedString` (`i18n`, `i18nc`, `i18d`) con sustitución de argumentos y fallback limpio al texto original. |
 | **`CachyWindowBlur`** | Attached QML | Propiedad adjunta (`CachyWindowBlur.enabled`) que registra la máscara poligonal redondeada ante `KWindowEffects` para blur y contraste en KWin Wayland. |
+| **`CachyWindowShadow`** | Attached QML | Propiedad adjunta (`CachyWindowShadow.enabled`) que genera un *nine-patch* de sombra Gaussiana en C++ y la delega a `KWindowShadow` de KWin (coste 0 en QML). |
+| **`CachySortFilterProxyModel`** | Clase QML (C++) | Motor de filtrado y ordenación instantáneo (`< 1 ms`) conectable a cualquier `ListView`, `GridView` o `TableView`. |
+| **`CachyPalette`** | Singleton QML | Paleta de colores efectiva de la superficie sobre la que se pinta el contenido (tema Plasma o de aplicación). |
 
 ### Ventana, Navegación y Páginas (`src/controls/`)
 
 | Componente | Descripción |
 | :--- | :--- |
 | **`CachyWindow`** | Ventana frameless Liquid Glass con barra lateral *edge-to-edge* opcional, barra de título de `44px`, semáforo, slots de cabecera (`headerLeading`, `headerCenter`, `headerActions`), capa `overlay` y resize Wayland en 8 direcciones. |
-| **`CachyTrafficLights`** | Semáforo vectorial (Cerrar `✕`, Minimizar `─`, Maximizar `⤢`) con gradiente cristalino y animación elástica. |
-| **`CachySidebarItem`** | Elemento de barra lateral con insignia *squircle* coloreada o glifo, etiqueta en negrita al seleccionar y contador opcional. |
+| **`CachyTrafficLights`** | Semáforo vectorial (Cerrar, Minimizar, Maximizar) con gradiente cristalino y animación elástica. |
+| **`CachySidebarItem`** | Elemento de barra lateral con insignia *squircle* coloreada, icono vectorial `CachyIcon` o glifo, etiqueta en negrita al seleccionar y contador opcional. |
 | **`CachyPageStack`** | Pila de navegación de páginas (`push`, `pop`, `removePage`, `clear`, `get`, `depth`, `currentIndex`, `initialPage`, `pushDialogLayer`) independiente de Kirigami. |
 | **`CachyScrollablePage`** | Página desplazable con bandas superiores (`header`) e inferiores (`footer`) con divisores automáticos y adaptación de `Flickable`/`ListView`. |
 | **`CachyDialogLayer`** | Capa modal integrada en `CachyPageStack` con fondo sólido (`sheetBackground`) y *scrim* para apilar diálogos sobre el contenido. |
 | **`CachyDialog`** | Diálogo modal superpuesto con tarjeta elevada, título, subtítulo, cuerpo personalizable y acciones de pie. |
 | **`CachyAboutPage`** | Página modal «Acerca de» con icono de aplicación, versión, descripción seleccionable y tarjetas de enlaces externos. |
+| **`CachyTabButton` / `CachyTabBar` / `CachyTabView`** | Pestañas de documentos cerrables con botón `+` de nueva pestaña y contenedor de vistas sincronizado. |
+| **`CachyNavigationButtons`** | Píldora canónica `< | >` para `headerLeading` con propiedades `canGoBack` / `canGoForward`. |
+| **`CachyBreadcrumbBar`** | Barra de ruta interactiva (`/ > home > cesar > ...`) con segmentos clicables para gestores de archivos. |
 
 ### Controles Interactivos y Superficies (`src/controls/`)
 
@@ -60,10 +66,21 @@ Inspirado en la filosofía de desacoplamiento de **Cutefish OS (`fishui`)**, `ca
 | **`CachySegmentedControl`** | Selector segmentado con píldora deslizante animada y cálculo de métricas fuera de pantalla libre de bucles de binding. |
 | **`CachySwitch`** | Interruptor toggle elástico con transición de color (`#34C759`), animación `OutBack` y modo `interactive` desacoplable para filas de formulario. |
 | **`CachySlider`** | Control deslizante continuo con track cilíndrico translúcido y pulgar con respuesta elástica. |
-| **`CachyTextField`** | Campo de texto con borde de foco reactivo, icono izquierdo opcional y botón rápido de borrado (`✕`). |
+| **`CachyTextField`** | Campo de texto con borde de foco reactivo, icono izquierdo opcional y botón rápido de borrado (`clear`). |
 | **`CachySearchField`** | Campo de búsqueda especializado con icono de lupa, limpieza rápida y vaciado con tecla `Escape`. |
 | **`CachyProgressBar`** | Barra de progreso estilizada con animación continua para modos determinado e indeterminado. |
 | **`CachyDivider`** | Separador horizontal o vertical de `1px` con soporte de sangría (`inset`). |
+| **`CachyCheckBox`** | Casilla de verificación *squircle* animada con trazo `check` vectorial elástico. |
+| **`CachyRadioButton`** | Botón de opción circular con punto interior animado y grupo exclusivo. |
+| **`CachyComboBox` / `CachyFormComboBoxDelegate`** | Selector desplegable Liquid Glass con popup `sheetBackground` y marca `check` en la opción activa. |
+| **`CachySpinBox` / `CachyFormSpinBoxDelegate`** | Selector numérico (`- | valor | +`) con entrada directa por teclado. |
+| **`CachyTextArea`** | Campo de texto multilínea con recorte seguro y foco reactivo. |
+| **`CachyMenu` / `CachyMenuItem` / `CachyMenuSeparator`** | Menús contextuales y desplegables con iconos, atajos de teclado y acciones destructivas. |
+| **`CachyToast`** | Notificación flotante no intrusiva (`show(message, type, timeoutMs)`) con variantes `info`, `success`, `warning`, `error`. |
+| **`CachyBusyIndicator`** | Indicador de carga vectorial continuo en GPU. |
+| **`CachyBadge`** | Píldoras/chips de estado (`neutral`, `accent`, `success`, `warning`, `error`) con icono y cierre opcional. |
+| **`CachyTooltip`** | Globo de ayuda emergente con `sheetBackground` y `specularBorder`. |
+| **`CachyIcon`** | Icono vectorial unificado basado en `MultiEffect` (tintado en GPU, sin `Qt5Compat`). |
 
 ### Plasmoides y Paleta Efectiva (`src/controls/`)
 
@@ -72,6 +89,19 @@ Inspirado en la filosofía de desacoplamiento de **Cutefish OS (`fishui`)**, `ca
 | **`CachyPalette`** | Singleton QML con la paleta **efectiva** de la superficie real: `text`, `textSecondary`, `textMuted`, `accentText`, `isDark` y todas las superficies translúcidas. Dentro de una app coincide con `CachyTheme`; dentro de `plasmashell` sigue el tema de escritorio de Plasma (blanco sobre oscuro con Golden Gate), lo que garantiza el contraste en ambos casos. |
 | **`CachyPlasmoidSurface`** | Raíz canónica de un plasmoide: transparente por defecto (el anfitrión pinta el fondo con *blur*), cabecera compacta con título, subtítulo y acciones, cuerpo y pie opcional. |
 | **`CachyPlasmoidIcon`** | Icono de plasmoide resuelto en el tema de iconos de Plasma y teñido con el primer plano del anfitrión (`isMask`), para que siga el Tema Automático y sea legible en el panel. |
+
+### Bloques de Alto Nivel para Aplicaciones Complejas (`src/controls/`)
+
+| Componente | Descripción |
+| :--- | :--- |
+| **`CachyListItem`** | Fila universal para listas (`title`, `subtitle`, `statusText`, icono/badge, `progressValue` inline con `CachyProgressBar`, acciones en hover y clic derecho). |
+| **`CachyGridItem`** | Celda universal para vistas de iconos/miniaturas con selección redondeada, insignia superpuesta y etiqueta de 2 líneas. |
+| **`CachyTableHeader`** | Cabecera de tabla con columnas ordenables (`sortRequested`) conectable en 1 línea a `CachySortFilterProxyModel`. |
+| **`CachySplitView`** | Paneles divididos horizontales/verticales con manejador de `1 px` que se ilumina al arrastrar. |
+| **`CachyFileDropArea`** | Contenedor reactivo de arrastrar y soltar archivos/URLs con filtro de extensiones y superposición visual automática. |
+| **`CachyStatusBar`** | Barra de estado inferior de `28 px` para resúmenes de espacio, conteo de archivos o velocidades `↓ / ↑`. |
+| **`CachyPlasmoidSurface`** | Contenedor raíz preconstruido para applets/plasmoides de KDE Plasma con header compacto, body y footer. |
+| **`CachyPlasmoidIcon`** | Icono de plasmoide con tintado dinámico y tamaño configurable. |
 
 ### Tipografía, Mensajes y Formularios (`src/controls/`)
 
@@ -216,6 +246,12 @@ CachyWindow {
 - [x] Módulo `CachyOS.UI 1.0` con KWin Wayland Blur integrado (`CachyWindowBlur`).
 - [x] Componentes maestros (`CachyWindow`, `CachyCard`, `CachySlider`, `CachySwitch`, `CachyButton`, `CachySegmentedControl`, `CachyToolbarButton`, `CachySidebarItem`, `CachyTextField`, `CachySearchField`, `CachyProgressBar`, `CachyDivider`).
 - [x] Familia completa de navegación, páginas, diálogos y formularios (`CachyPageStack`, `CachyDialogLayer`, `CachyScrollablePage`, `CachyDialog`, `CachyAboutPage`, `CachyFormCardPage`, `CachyFormCard`, `CachyFormCheckDelegate`, `CachyFormTextFieldDelegate`, `CachyFormButtonDelegate`, `CachyHeading`, `CachyPlaceholderMessage`, `CachyInlineMessage`).
+- [x] Controles de selección y entrada (`CachyCheckBox`, `CachyRadioButton`, `CachyComboBox`, `CachyFormComboBoxDelegate`, `CachySpinBox`, `CachyFormSpinBoxDelegate`, `CachyTextArea`).
+- [x] Menús contextuales, notificaciones y estados (`CachyMenu`, `CachyMenuItem`, `CachyMenuSeparator`, `CachyToast`, `CachyBusyIndicator`, `CachyBadge`, `CachyTooltip`).
+- [x] Navegación de ventana y pestañas (`CachyTabButton`, `CachyTabBar`, `CachyTabView`, `CachyNavigationButtons`, `CachyBreadcrumbBar`).
+- [x] Bloques de alto nivel para aplicaciones complejas (`CachyListItem`, `CachyGridItem`, `CachyTableHeader`, `CachySplitView`, `CachyFileDropArea`, `CachyStatusBar`, `CachyPlasmoidSurface`, `CachyPlasmoidIcon`, `CachyPalette`).
+- [x] Iconos vectoriales embebidos (`CachyIcon` + 37 SVG) y sombras de compositor nativas (`CachyWindowShadow`).
+- [x] Motor C++ de filtrado y ordenación instantáneo (`CachySortFilterProxyModel`).
 - [x] Internacionalización robusta (`CachyI18n`) y resolución de iconos del sistema (`CachyTheme.iconUrl`).
 - [x] Librería de auditoría geométrica automatizada (`CachyOSUITesting` / `LayoutAuditor`) y suite de tests con `ctest`.
 - [x] Galería interactiva `cachyos-ui-gallery`.
