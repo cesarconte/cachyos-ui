@@ -13,8 +13,9 @@ Receta canónica para pasar una aplicación del ecosistema KDE/Qt al diseño
 | Pregunta | Por qué importa |
 | :--- | :--- |
 | ¿La ventana es una `ApplicationWindow`? | Solo las *ventanas* se migran a `CachyWindow`. Un plasmoid, un panel o un *applet* **no** puede usar `CachyWindow`: se migran sustituyendo `Kirigami.Theme` por `CachyTheme`. |
-| ¿Tiene superficies de configuración? | `ConfigGeneral.qml` de un plasmoid y los KCM se migran aparte (tokens + `CachyCard`). |
-| ¿Hay contenido desplazable? | El contenido de un `Flickable` puede exceder su viewport **por diseño**: la auditoría lo excluye automáticamente. |
+| ¿Tiene superficies de configuración? | `ConfigGeneral.qml` de un plasmoid y los KCM se migran aparte (tokens + `CachyCard` / `CachyFormCard`). |
+| ¿Usa `org.kde.ki18n` en QML? | Sustituir por `CachyI18n.i18n(...)`, `CachyI18n.i18nc(...)` o `CachyI18n.i18d(...)` para evitar etiquetas en blanco cuando no existe catálogo instalado. |
+| ¿Hay contenido desplazable? | El contenido de un `Flickable` o `CachyScrollablePage` puede exceder su viewport **por diseño**: la auditoría lo excluye automáticamente. |
 | ¿Hay solapamientos intencionados? | Se declaran con `property bool auditBleed: true`. |
 
 ---
@@ -39,9 +40,9 @@ import CachyOS.UI
 CachyWindow {
     id: window
 
-    title: "Mi Aplicación"
-    width: 880
-    height: 640
+    title: CachyI18n.i18n("Mi Aplicación")
+    width: CachyTheme.windowWidthSettings
+    height: CachyTheme.windowHeightSettings
     minimumWidth: 560
     minimumHeight: 400
 
@@ -71,19 +72,41 @@ CachyWindow {
 6. El botón **Preferencias** va **siempre en el extremo derecho** de la
    cabecera, precedido del botón *Fijar ventana* cuando aplique.
 
-### Componentes a usar
+### Tabla de equivalencias Kirigami / FormCard → `CachyOS.UI`
 
-| Necesidad | Componente |
+| Necesidad / Componente antiguo | Componente en `CachyOS.UI` |
 | :--- | :--- |
-| Tarjeta / panel | `CachyCard` (radio `12 px`, padding `14 px`, borde `1 px`) |
-| Botón de barra | `CachyToolbarButton` (píldora con `surfacePill`) |
+| `Kirigami.ApplicationWindow` | `CachyWindow` |
+| `Kirigami.PageStack` | `CachyPageStack` (+ `layers` con `CachyDialogLayer`) |
+| `Kirigami.ScrollablePage` / `Kirigami.Page` | `CachyScrollablePage` |
+| `FormCard.FormCardPage` | `CachyFormCardPage` |
+| `FormCard.FormCard` | `CachyFormCard` |
+| `FormCard.FormHeader` | `CachyFormHeader` |
+| `FormCard.FormDelegateSeparator` | `CachyFormDelegateSeparator` |
+| `FormCard.FormCheckDelegate` | `CachyFormCheckDelegate` |
+| `FormCard.FormTextFieldDelegate` | `CachyFormTextFieldDelegate` |
+| `FormCard.FormButtonDelegate` | `CachyFormButtonDelegate` |
+| `Kirigami.FormLayout` | `CachyFormLayout` |
+| `Kirigami.Heading` | `CachyHeading` (`level: 1..5`) |
+| `Kirigami.PlaceholderMessage` | `CachyPlaceholderMessage` |
+| `Kirigami.InlineMessage` | `CachyInlineMessage` (`information` / `warning` / `error`) |
+| `Kirigami.SelectableLabel` | `CachySelectableLabel` |
+| `Kirigami.ListSectionHeader` | `CachySectionHeader` |
+| `Kirigami.IconTitleSubtitle` | `CachyIconTitleSubtitle` |
+| `Kirigami.SearchField` | `CachySearchField` |
+| `Kirigami.Dialog` / `Kirigami.PromptDialog` | `CachyDialog` |
+| `FormCard.AboutPage` / `Kirigami.AboutPage` | `CachyAboutPage` |
+| Tarjeta / panel contenedor | `CachyCard` (radio `12 px`, padding `14 px`, borde `1 px`) |
+| Botón de barra de herramientas | `CachyToolbarButton` (píldora con `surfacePill` e icono Breeze) |
 | Botón de acción | `CachyButton` (`primary` / `destructive` / `flat`) |
 | Elemento de barra lateral | `CachySidebarItem` (icono coloreado + negrita al seleccionar) |
 | Interruptor | `CachySwitch` |
-| Segmentado | `CachySegmentedControl` |
+| Selector segmentado | `CachySegmentedControl` |
 | Deslizador | `CachySlider` |
 | Campo de texto | `CachyTextField` |
+| Barra de progreso | `CachyProgressBar` |
 | Separador | `CachyDivider` |
+| `KI18n.i18n(...)` | `CachyI18n.i18n(...)` / `i18nc(...)` / `i18d(...)` |
 
 ---
 
@@ -128,7 +151,7 @@ void TestLayoutAudit::auditWindowStates_data()
 ```
 
 El caso de referencia completo está en
-[`kphonemirroring/tests/test_layout_audit.cpp`](../../kphonemirroring/tests/test_layout_audit.cpp).
+[`kphonemirroring/tests/test_layout_audit.cpp`](../kphonemirroring/tests/test_layout_audit.cpp).
 
 ---
 

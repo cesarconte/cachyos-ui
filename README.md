@@ -1,73 +1,137 @@
 # CachyOS UI (`cachyos-ui`) 🧊
 
-> **Framework de interfaz gráfica nativo, réplica pixel-perfect del lenguaje de diseño CachyOS y sistema de diseño Liquid Glass para CachyOS Linux.**
+> **Framework de interfaz gráfica nativo, réplica pixel-perfect del lenguaje de diseño mac OS y sistema de diseño Liquid Glass para CachyOS Linux.**
 
-`cachyos-ui` proporciona una biblioteca de controles declarativos ultrarrápidos y unificados sobre **Qt 6.12** y **C++23**, integrados a nivel de kernel y compositor con **KWin 6.8 Wayland**.
+`cachyos-ui` proporciona una biblioteca de controles declarativos ultrarrápidos y unificados sobre **Qt 6** y **C++23**, integrados a nivel de kernel y compositor con **KWin 6 Wayland** y **KDE Frameworks 6**.
 
-Inspirado en la filosofía de desacoplamiento de **Cutefish OS (`fishui`)**, `cachyos-ui` elimina la disparidad visual entre aplicaciones y descarta el bloatware web (cero WebViews / Electron). Toda la aceleración gráfica se ejecuta directamente sobre GPU mediante **Qt Quick Scene Graph (RHI / Vulkan)**.
+Inspirado en la filosofía de desacoplamiento de **Cutefish OS (`fishui`)**, `cachyos-ui` elimina la disparidad visual entre aplicaciones, sustituye por completo la dependencia de `Kirigami` / `KirigamiAddons.FormCard` y descarta el bloatware web (cero WebViews / Electron). Toda la aceleración gráfica se ejecuta directamente sobre GPU mediante **Qt Quick Scene Graph (RHI / Vulkan)**.
 
 ---
 
 ## 💎 Características Principales
 
-- **Física y Geometría Pixel-Perfect**:
-  - Curvaturas *squircle* continuas del lenguaje de diseño ($n=4$).
-  - Botones de semáforo interactivos (`#FF5F56`, `#FFBD2E`, `#27C93F`) con iconos de acción al pasar el ratón.
-  - Microinteracciones táctiles con curvas Bezier elásticas idénticas a CoreAnimation.
+- **Física y Geometría Pixel-Perfect (Golden Gate / Liquid Glass)**:
+  - Esquinas continuas de ventana (`20px`, `CachyTheme.radiusWindow`) con máscara `MultiEffect` para barras laterales *edge-to-edge*.
+  - Botones de semáforo vectoriales interactivos (`#FF5F56`, `#FFBD2E`, `#27C93F`) con brillo especular, revelación simultánea de glifos y expansión elástica al pulsar.
+  - Cabecera canónica de `44px` con banda de título autoajustada libre de colisiones entre grupos (`headerLeading`, `headerCenter`, `headerActions`) y divisor duro de `1px`.
+  - Redimensionado universal por bordes y esquinas nativo sobre Wayland (`startSystemResize` / `startSystemMove`).
 - **Efecto Liquid Glass & KWin Blur**:
-  - Integración nativa con `KWindowEffects` para solicitar regiones de desenfoque (*blur behind*) y contraste directo al compositor KWin en Wayland.
-  - Bordes especulares cenitales (*specular rim*) adaptados dinámicamente a temas claro y oscuro.
-- **Rendimiento C++23 Extremo**:
-  - Compilación AOT de QML a C++ (`qmltc`).
-  - Consumo de memoria en reposo: **~15 - 25 MB** por ventana.
-  - Tiempos de arranque en CachyOS: **< 40 ms**.
-- **Consistencia Total en el Ecosistema**:
-  - Un único punto de verdad para sliders, botones, tarjetas, interruptores y selectores segmentados en todas las herramientas del sistema.
+  - Integración nativa con `KWindowEffects` (`CachyWindowBlur`) para solicitar regiones vectoriales redondeadas de desenfoque (*blur behind*) y contraste directo al compositor KWin en Wayland.
+  - Control reactivo de opacidad (`CachyTheme.glassOpacity`, persistido en `~/.config/cachyosuirc`) que interpola en tiempo real desde *Glassiest (`0.0`)* hasta *Maximum Tint (`1.0`)* pasando por *Medium Glassy (`0.5`)*.
+  - Bordes especulares perimetrales (*specular rim*) adaptados dinámicamente a temas claro y oscuro.
+- **Internacionalización e Iconografía sin Fallos**:
+  - Singleton `CachyI18n` conectado directamente a `KLocalizedString` (`i18n`, `i18nc`, `i18d`) con soporte de marcadores `%1..%3` y fallback garantizado al texto fuente sin marcadores `(I18N_EMPTY_MESSAGE)`.
+  - Resolución automática de iconos simbólicos y escalables de Breeze / Hicolor (`CachyTheme.iconUrl(name, fallback)`) coloreados dinámicamente según el tema.
+- **Auditoría Automatizada de Layout (`CachyOSUITesting`)**:
+  - Biblioteca CMake reutilizable (`LayoutAuditor`) que analiza el árbol `QQuickItem` en tests *offscreen* y detecta automáticamente desbordamientos (`Protrusion`), salidas de ventana (`OutOfWindow`), recortes de texto sin elipsis (`TextClipping`) y solapamientos en la barra de título (`HeaderOverlap`).
 
 ---
 
-## 📦 Componentes del Sistema (`CachyOS.UI 1.0`)
+## 📦 Catálogo Completo del Sistema (`CachyOS.UI 1.0`)
+
+### Núcleo C++ (`src/core/`)
+
+| Componente | Tipo | Descripción |
+| :--- | :---: | :--- |
+| **`CachyTheme`** | Singleton C++ | Tokens de color reactivos (`windowBackground`, `sidebarBackground`, `cardBackground`, `sheetBackground`, `surfacePill`, `specularBorder`, `hardDividerColor`), `glassOpacity`, métricas canónicas, identidad de plataforma (`distroName`, `desktopShell`) y resolución de iconos (`iconUrl`). |
+| **`CachyI18n`** | Singleton C++ | Traducción segura sobre `KLocalizedString` (`i18n`, `i18nc`, `i18d`) con sustitución de argumentos y fallback limpio al texto original. |
+| **`CachyWindowBlur`** | Attached QML | Propiedad adjunta (`CachyWindowBlur.enabled`) que registra la máscara poligonal redondeada ante `KWindowEffects` para blur y contraste en KWin Wayland. |
+
+### Ventana, Navegación y Páginas (`src/controls/`)
 
 | Componente | Descripción |
 | :--- | :--- |
-| **`CachyTheme`** | Singleton C++ con tokens de color, curvaturas, espaciados y respuesta reactiva a modo oscuro/claro. |
-| **`CachyWindow`** | Ventana frameless con radio de esquinas continuo (22px), barra de título semáforo y KWin blur Wayland automático. |
-| **`CachyCard`** | Superficie translúcida Liquid Glass con borde especular y hover feedback interactivo. |
-| **`CachySlider`** | Control deslizante continuo del lenguaje de diseño, con track cilíndrico translúcido y pulgar con sombra suave. |
-| **`CachySwitch`** | Interruptor toggle elástico con transición de color verde/acento y amortiguación elástica. |
-| **`CachyButton`** | Botones redondeados con variantes (default, primary, destructive, flat) y compresión háptica visual. |
-| **`CachySegmentedControl`** | Selector de modos con píldora deslizante translúcida animada por resorte. |
+| **`CachyWindow`** | Ventana frameless Liquid Glass con barra lateral *edge-to-edge* opcional, barra de título de `44px`, semáforo, slots de cabecera (`headerLeading`, `headerCenter`, `headerActions`), capa `overlay` y resize Wayland en 8 direcciones. |
+| **`CachyTrafficLights`** | Semáforo vectorial (Cerrar `✕`, Minimizar `─`, Maximizar `⤢`) con gradiente cristalino y animación elástica. |
+| **`CachySidebarItem`** | Elemento de barra lateral con insignia *squircle* coloreada o glifo, etiqueta en negrita al seleccionar y contador opcional. |
+| **`CachyPageStack`** | Pila de navegación de páginas (`push`, `pop`, `removePage`, `clear`, `get`, `depth`, `currentIndex`, `initialPage`, `pushDialogLayer`) independiente de Kirigami. |
+| **`CachyScrollablePage`** | Página desplazable con bandas superiores (`header`) e inferiores (`footer`) con divisores automáticos y adaptación de `Flickable`/`ListView`. |
+| **`CachyDialogLayer`** | Capa modal integrada en `CachyPageStack` con fondo sólido (`sheetBackground`) y *scrim* para apilar diálogos sobre el contenido. |
+| **`CachyDialog`** | Diálogo modal superpuesto con tarjeta elevada, título, subtítulo, cuerpo personalizable y acciones de pie. |
+| **`CachyAboutPage`** | Página modal «Acerca de» con icono de aplicación, versión, descripción seleccionable y tarjetas de enlaces externos. |
+
+### Controles Interactivos y Superficies (`src/controls/`)
+
+| Componente | Descripción |
+| :--- | :--- |
+| **`CachyCard`** | Superficie translúcida Liquid Glass (`radiusMedium: 12px`, `marginCard: 14px`) con borde especular y modo interactivo (`hover` + `clicked`). |
+| **`CachyButton`** | Botón redondeado con soporte de iconos coloreados y variantes `default`, `primary`, `destructive` y `flat`. |
+| **`CachyToolbarButton`** | Botón de barra de herramientas en formato píldora (`surfacePill`) con icono Breeze coloreado, tooltip, estado `checkable` sin ruptura de bindings (`toggled(bool)`) y modo `primary`. |
+| **`CachySegmentedControl`** | Selector segmentado con píldora deslizante animada y cálculo de métricas fuera de pantalla libre de bucles de binding. |
+| **`CachySwitch`** | Interruptor toggle elástico con transición de color (`#34C759`), animación `OutBack` y modo `interactive` desacoplable para filas de formulario. |
+| **`CachySlider`** | Control deslizante continuo con track cilíndrico translúcido y pulgar con respuesta elástica. |
+| **`CachyTextField`** | Campo de texto con borde de foco reactivo, icono izquierdo opcional y botón rápido de borrado (`✕`). |
+| **`CachySearchField`** | Campo de búsqueda especializado con icono de lupa, limpieza rápida y vaciado con tecla `Escape`. |
+| **`CachyProgressBar`** | Barra de progreso estilizada con animación continua para modos determinado e indeterminado. |
+| **`CachyDivider`** | Separador horizontal o vertical de `1px` con soporte de sangría (`inset`). |
+
+### Tipografía, Mensajes y Formularios (`src/controls/`)
+
+| Componente | Descripción |
+| :--- | :--- |
+| **`CachyHeading`** | Encabezado tipográfico semántico con 5 niveles de escala (`level: 1..5`) y truncamiento seguro. |
+| **`CachySectionHeader`** | Encabezado compacto en seminegrita atenuada para agrupar secciones de listas o paneles. |
+| **`CachySelectableLabel`** | Etiqueta de texto de solo lectura seleccionable con ratón y teclado. |
+| **`CachyIconTitleSubtitle`** | Elemento de lista interactivo con icono temático, título principal, subtítulo secundario y estado seleccionado. |
+| **`CachyInlineMessage`** | Aviso contextual integrado con icono y código de color semántico (`information`, `warning`, `error`). |
+| **`CachyPlaceholderMessage`** | Estado vacío centrado con insignia circular de icono, mensaje explicativo, contenido extra y botón de acción (`helpfulAction`). |
+| **`CachyFormCardPage`** | Página desplazable optimizada para columnas de tarjetas de configuración (`CachyFormCard`). |
+| **`CachyFormCard`** | Tarjeta agrupadora para filas y delegados de formularios de preferencias. |
+| **`CachyFormHeader`** | Título de sección para grupos de tarjetas de formulario. |
+| **`CachyFormLayout`** | Layout vertical con espaciado canónico para formularios de configuración. |
+| **`CachyFormCheckDelegate`** | Fila de formulario interactiva con etiqueta multi-línea y `CachySwitch` sincronizado. |
+| **`CachyFormTextFieldDelegate`** | Fila de formulario con etiqueta lateral y `CachyTextField` integrado. |
+| **`CachyFormButtonDelegate`** | Fila de formulario clicable con icono opcional y resaltado hover. |
+| **`CachyFormDelegateSeparator`** | Separador horizontal de ancho completo entre delegados de un `CachyFormCard`. |
+
+### Auditoría y Testing (`testing/`)
+
+| Paquete CMake / Clase | Descripción |
+| :--- | :--- |
+| **`CachyOSUITesting::CachyOSUITesting`** (`LayoutAuditor`) | Auditor estático de árboles `QQuickItem` que verifica 4 reglas geométricas (`Protrusion`, `OutOfWindow`, `TextClipping`, `HeaderOverlap`) con tolerancia para animaciones elásticas (`2.0px`) y exclusión inteligente de áreas desplazables. |
 
 ---
 
 ## 🛠️ Requisitos del Sistema
 
 - **Distribución:** CachyOS Linux (o Arch Linux).
-- **Entorno:** KDE Plasma 6.8+ sobre Wayland.
+- **Entorno:** KDE Plasma 6 sobre Wayland.
 - **Compilador:** GCC 14+ o Clang 18+ (C++23 habilitado).
-- **Librerías:** `qt6-base`, `qt6-declarative`, `qt6-shadertools`, `extra-cmake-modules`, `kwindowsystem`, `kcoreaddons`.
+- **Librerías:** `qt6-base`, `qt6-declarative`, `qt6-5compat`, `qt6-shadertools`, `extra-cmake-modules`, `kwindowsystem`, `kcoreaddons`, `ki18n`.
 
 ---
 
-## 🚀 Compilación y Galería de Componentes
+## 🚀 Compilación, Tests y Galería de Componentes
 
 ### 1. Compilación manual
 ```bash
-git clone https://github.com/cachyos/cachyos-ui.git
+git clone https://github.com/cesarconte/cachyos-ui.git
 cd cachyos-ui
 cmake -B build -S . -DCMAKE_BUILD_TYPE=Release
-cmake --build build -j$(nproc)
+cmake --build build -j"$(nproc)"
 ```
 
-### 2. Ejecutar la galería interactiva
-Prueba los componentes en vivo bajo Wayland:
+### 2. Ejecutar la suite de tests (`ctest`)
+```bash
+ctest --test-dir build --output-on-failure
+```
+
+### 3. Ejecutar la galería interactiva
+Prueba los componentes y el deslizador de opacidad Liquid Glass en vivo bajo Wayland:
 ```bash
 ./build/bin/cachyos-ui-gallery
 ```
 
-### 3. Instalación en el sistema
+### 4. Instalación en el sistema o en `~/.local`
 ```bash
+# Instalación global (/usr):
 ./install.sh
+
+# Instalación en el directorio de usuario (~/.local):
+cmake -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/
+cmake --build build -j"$(nproc)"
+DESTDIR=$HOME/.local cmake --install build
+
 # O mediante PKGBUILD en Arch/CachyOS:
 cd packaging && makepkg -si
 ```
@@ -76,7 +140,7 @@ cd packaging && makepkg -si
 
 ## 💻 Uso en Aplicaciones
 
-Cualquier proyecto o herramienta de CachyOS puede importar la librería de forma directa:
+Cualquier aplicación del ecosistema importa `CachyOS.UI` directamente:
 
 ```qml
 import QtQuick
@@ -84,50 +148,69 @@ import QtQuick.Layouts
 import CachyOS.UI
 
 CachyWindow {
-    title: "Mi Aplicación"
-    width: 480
-    height: 360
+    title: CachyI18n.i18n("Mi Aplicación")
+    width: CachyTheme.windowWidthUtility
+    height: CachyTheme.windowHeightUtility
+    contentPadded: true
 
-    contentData: [
-        ColumnLayout {
-            anchors.fill: parent
-            anchors.margins: CachyTheme.spacingLarge
+    ColumnLayout {
+        anchors.fill: parent
+        spacing: CachyTheme.spacingMedium
 
-            CachyCard {
-                Layout.fillWidth: true
-                
-                content: [
-                    RowLayout {
-                        anchors.fill: parent
-                        Text { text: "Activar Aceleración BORE"; color: CachyTheme.textPrimary; Layout.fillWidth: true }
-                        CachySwitch { checked: true }
-                    }
-                ]
-            }
+        CachyCard {
+            Layout.fillWidth: true
 
-            CachySlider {
-                Layout.fillWidth: true
-                from: 0; to: 100; value: 80
-            }
+            contentItem: RowLayout {
+                spacing: CachyTheme.spacingMedium
 
-            CachyButton {
-                text: "Aplicar Cambios"
-                primary: true
-                Layout.alignment: Qt.AlignRight
+                Text {
+                    text: CachyI18n.i18n("Activar Aceleración BORE")
+                    color: CachyTheme.textPrimary
+                    Layout.fillWidth: true
+                    Layout.minimumWidth: 0
+                    wrapMode: Text.WordWrap
+                }
+
+                CachySwitch {
+                    checked: true
+                }
             }
         }
-    ]
+
+        CachySlider {
+            Layout.fillWidth: true
+            from: 0
+            to: 100
+            value: 80
+        }
+
+        CachyButton {
+            text: CachyI18n.i18n("Aplicar Cambios")
+            primary: true
+            Layout.alignment: Qt.AlignRight
+        }
+    }
 }
 ```
+
+---
+
+## 📚 Documentación Adicional
+
+- [**`DESIGN_SYSTEM.md`**](./DESIGN_SYSTEM.md): Principios arquitectónicos, tokens métricos de `CachyTheme`, proporciones canónicas de ventana y reglas contra desbordamientos y recortes.
+- [**`MIGRATION_GUIDE.md`**](./MIGRATION_GUIDE.md): Guía paso a paso para migrar aplicaciones de Kirigami / Qt Quick a `CachyOS.UI` y configurar la auditoría automatizada con `CachyOSUITesting`.
 
 ---
 
 ## 🗺️ Hoja de Ruta (Roadmap)
 
 - [x] Arquitectura base C++23 con `qt_add_qml_module` y CMake.
-- [x] Módulo `CachyOS.UI 1.0` con KWin Wayland Blur integrado.
-- [x] Componentes maestros (`CachyWindow`, `CachyCard`, `CachySlider`, `CachySwitch`, `CachyButton`, `CachySegmentedControl`).
+- [x] Módulo `CachyOS.UI 1.0` con KWin Wayland Blur integrado (`CachyWindowBlur`).
+- [x] Componentes maestros (`CachyWindow`, `CachyCard`, `CachySlider`, `CachySwitch`, `CachyButton`, `CachySegmentedControl`, `CachyToolbarButton`, `CachySidebarItem`, `CachyTextField`, `CachySearchField`, `CachyProgressBar`, `CachyDivider`).
+- [x] Familia completa de navegación, páginas, diálogos y formularios (`CachyPageStack`, `CachyDialogLayer`, `CachyScrollablePage`, `CachyDialog`, `CachyAboutPage`, `CachyFormCardPage`, `CachyFormCard`, `CachyFormCheckDelegate`, `CachyFormTextFieldDelegate`, `CachyFormButtonDelegate`, `CachyHeading`, `CachyPlaceholderMessage`, `CachyInlineMessage`).
+- [x] Internacionalización robusta (`CachyI18n`) y resolución de iconos del sistema (`CachyTheme.iconUrl`).
+- [x] Librería de auditoría geométrica automatizada (`CachyOSUITesting` / `LayoutAuditor`) y suite de tests con `ctest`.
 - [x] Galería interactiva `cachyos-ui-gallery`.
 - [x] Paquete `PKGBUILD` y scripts de instalación limpia.
-- [ ] Migración de las aplicaciones de `Proyectos/` (`kiri`, `kisland`, `plasma-control-center`, `kpeek`, etc.) a `CachyOS.UI`.
+- [x] Migración de las aplicaciones de `Proyectos/` (`kiri`, `kisland`, `plasma-control-center`, `kpeek`, etc.) a `CachyOS.UI`.
 - [ ] Instalador visual GUI unificado con selector modular de componentes para instalaciones nuevas de CachyOS.
