@@ -22,6 +22,7 @@ int main(int argc, char *argv[])
     engine.addImportPath(QStringLiteral("/home/cesar/Proyectos/cachyos-ui/build/src"));
     engine.addImportPath(QStringLiteral(":/"));
     engine.addImportPath(QStringLiteral("qrc:/"));
+    engine.addImportPath(QStringLiteral("/home/cesar/.local/lib/qt6/qml"));
 
     QObject::connect(
         &engine,
