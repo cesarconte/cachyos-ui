@@ -82,8 +82,6 @@ qt_add_qml_module(cachyosui
         controls/CachyNavigationButtons.qml
         controls/CachyBreadcrumbBar.qml
         controls/CachyPlasmoidSurface.qml
-        controls/CachyPlasmoidIcon.qml
-        controls/CachyPalette.qml
         controls/CachyListItem.qml
         controls/CachyGridItem.qml
         controls/CachyTableHeader.qml

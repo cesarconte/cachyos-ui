@@ -75,6 +75,7 @@ private Q_SLOTS:
     void testBuiltinVectorIconsResolution();
     void testCachyIconAndShadowQmlInstantiation();
     void testPhase2ControlsAndLayoutAudit();
+    void testPhase3ControlsAndLayoutAudit();
 
 private:
     CachyTheme m_theme;
@@ -375,6 +376,122 @@ void TestCoreComponents::testPhase2ControlsAndLayoutAudit()
                               Q_ARG(QVariant, QStringLiteral("info")),
                               Q_ARG(QVariant, 0));
     QCOMPARE(toast->property("active").toBool(), true);
+
+    const auto violations = LayoutAuditor::audit(window->contentItem());
+    QStringList messages;
+    for (const auto &v : violations) {
+        messages.append(v.toString());
+    }
+    QVERIFY2(violations.isEmpty(), qPrintable(messages.join(QLatin1Char('\n'))));
+}
+
+void TestCoreComponents::testPhase3ControlsAndLayoutAudit()
+{
+    QQmlEngine engine;
+    engine.addImportPath(QStringLiteral(CACHYOS_BUILD_QML_DIR));
+
+    QQmlComponent component(&engine);
+    component.setData(QByteArrayLiteral(R"QML(
+        import QtQuick
+        import QtQuick.Layouts
+        import CachyOS.UI
+
+        CachyWindow {
+            id: win
+            title: "Phase 3 Controls Audit"
+            width: 880
+            height: 640
+            contentPadded: true
+
+            ColumnLayout {
+                anchors.fill: parent
+                spacing: CachyTheme.spacingSmall
+
+                CachyBreadcrumbBar {
+                    objectName: "breadcrumbBar"
+                    Layout.fillWidth: true
+                    Layout.minimumWidth: 0
+                    path: "/home/cesar/Proyectos/cachyos-ui"
+                }
+
+                CachySplitView {
+                    objectName: "splitView"
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+                    orientation: Qt.Horizontal
+
+                    CachyListItem {
+                        objectName: "listItem"
+                        width: 260
+                        title: "CachyOS ISO image"
+                        subtitle: "2850 MB"
+                        iconName: "file"
+                        iconColor: CachyTheme.accentColor
+                        badgeText: "Active"
+                        badgeType: "accent"
+                        progressValue: 0.65
+                        statusText: "Downloading"
+                    }
+
+                    CachyGridItem {
+                        objectName: "gridItem"
+                        width: 120
+                        title: "Wallpapers"
+                        subtitle: "420 MB"
+                        iconName: "folder"
+                        iconColor: "#007AFF"
+                        selected: true
+                    }
+                }
+
+                CachyTableHeader {
+                    objectName: "tableHeader"
+                    Layout.fillWidth: true
+                    Layout.minimumWidth: 0
+                    sortRole: "name"
+                    columns: [
+                        { role: "name", title: "Nombre", width: 240, fillWidth: true },
+                        { role: "size", title: "Tamaño", width: 100 },
+                        { role: "status", title: "Estado", width: 120 }
+                    ]
+                }
+
+                CachyStatusBar {
+                    objectName: "statusBar"
+                    summaryText: "24 elementos • 142 GB disponibles"
+                    secondaryText: "↓ 12.4 MB/s ↑ 1.8 MB/s"
+                    leadingIcon: "info"
+                }
+
+                CachyFileDropArea {
+                    objectName: "fileDropArea"
+                    Layout.fillWidth: true
+                    Layout.minimumWidth: 0
+                    Layout.preferredHeight: 80
+                    placeholderTitle: "Arrastra archivos aquí"
+                    placeholderSubtitle: ".torrent, .iso"
+                    acceptedExtensions: ["torrent", "iso"]
+                }
+
+                CachyPlasmoidSurface {
+                    objectName: "plasmoidSurface"
+                    Layout.fillWidth: true
+                    Layout.minimumWidth: 0
+                    Layout.preferredHeight: 120
+                    title: "Quick Settings"
+                    subtitle: "Phase 3 audit"
+                    iconName: "settings"
+                }
+            }
+        }
+    )QML"), QUrl());
+
+    QVERIFY2(!component.isError(), qPrintable(component.errorString()));
+    QScopedPointer<QObject> obj(component.create());
+    auto *window = qobject_cast<QQuickWindow *>(obj.data());
+    QVERIFY(window != nullptr);
+    QVERIFY(QTest::qWaitForWindowExposed(window));
+    QCoreApplication::processEvents();
 
     const auto violations = LayoutAuditor::audit(window->contentItem());
     QStringList messages;
