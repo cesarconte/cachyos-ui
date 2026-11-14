@@ -87,7 +87,7 @@ Todas las aplicaciones deben recurrir a los tokens métricos y de color provisto
 | `marginWindow` | `18` | Margen perimetral continuo entre el borde de la ventana y los componentes |
 | `marginCard` | `14` | Padding interno universal dentro de tarjetas `CachyCard` y `CachyFormCard` |
 | `titleBarHeight` | `44` | Altura estándar de la barra de título / botones de semáforo |
-| `trafficLightMargin` | `18` | Distancia desde el borde izquierdo de la ventana al primer botón del semáforo |
+| `trafficLightMargin` | `16` | Distancia desde el borde izquierdo de la ventana al primer botón del semáforo |
 
 ### Espaciados, Radios y Animaciones
 

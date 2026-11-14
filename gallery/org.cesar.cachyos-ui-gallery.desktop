@@ -1,0 +1,16 @@
+[Desktop Entry]
+Name=Liquid Glass Settings
+Name[es]=Ajustes de Liquid Glass
+GenericName=Liquid Glass & Golden Gate Settings
+GenericName[es]=Control de Preferencias Liquid Glass
+Comment=Control opacity, blur and visual appearance of the Golden Gate Liquid Glass design system
+Comment[es]=Controla la opacidad, el desenfoque (blur) y la apariencia del efecto Liquid Glass
+Exec=cachyos-ui-gallery
+Icon=preferences-desktop-plasma-theme
+Terminal=false
+Type=Application
+Categories=Settings;DesktopSettings;Qt;KDE;
+StartupNotify=true
+StartupWMClass=cachyos-ui-gallery
+Keywords=liquid glass;blur;opacity;golden gate;cachyos;preferencias;ajustes;tema;
+X-KDE-SubstituteUID=false

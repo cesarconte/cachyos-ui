@@ -4,6 +4,7 @@
  */
 
 #include <QGuiApplication>
+#include <QIcon>
 #include <QQmlApplicationEngine>
 #include <QQuickWindow>
 
@@ -17,6 +18,8 @@ int main(int argc, char *argv[])
     QGuiApplication app(argc, argv);
     app.setApplicationName(QStringLiteral("cachyos-ui-gallery"));
     app.setOrganizationName(QStringLiteral("CachyOS"));
+    app.setDesktopFileName(QStringLiteral("org.cesar.cachyos-ui-gallery"));
+    app.setWindowIcon(QIcon::fromTheme(QStringLiteral("preferences-desktop-plasma-theme"), QIcon::fromTheme(QStringLiteral("preferences-system"))));
 
     QQmlApplicationEngine engine;
     engine.addImportPath(QStringLiteral("/home/cesar/Proyectos/cachyos-ui/build/src"));

@@ -19,3 +19,4 @@ target_link_libraries(cachyos-ui-gallery PRIVATE
 )
 
 install(TARGETS cachyos-ui-gallery ${KDE_INSTALL_TARGETS_DEFAULT_ARGS})
+install(FILES org.cesar.cachyos-ui-gallery.desktop DESTINATION ${KDE_INSTALL_APPDIR})

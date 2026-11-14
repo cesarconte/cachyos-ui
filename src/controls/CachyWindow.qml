@@ -217,7 +217,7 @@ Window {
                             id: leadingRow
                             objectName: "cachyHeaderLeading"
                             anchors.left: parent.left
-                            anchors.leftMargin: root.hasSidebar ? 14 : root.contentMargin
+                            anchors.leftMargin: root.hasSidebar ? 14 : 16
                             anchors.verticalCenter: parent.verticalCenter
                             height: parent.height
                             spacing: 12

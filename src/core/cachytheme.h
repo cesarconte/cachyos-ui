@@ -140,7 +140,7 @@ public:
     int marginWindow() const { return 18; }
     int marginCard() const { return 14; }
     int titleBarHeight() const { return 44; }
-    int trafficLightMargin() const { return 18; }
+    int trafficLightMargin() const { return 16; }
 
     int animFast() const { return 180; }
     int animNormal() const { return 260; }
