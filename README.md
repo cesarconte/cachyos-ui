@@ -256,5 +256,5 @@ CachyWindow {
 - [x] Librería de auditoría geométrica automatizada (`CachyOSUITesting` / `LayoutAuditor`) y suite de tests con `ctest`.
 - [x] Galería interactiva `cachyos-ui-gallery`.
 - [x] Paquete `PKGBUILD` y scripts de instalación limpia.
-- [x] Migración de las aplicaciones de `Proyectos/` (`kiri`, `kisland`, `plasma-control-center`, `kpeek`, etc.) a `CachyOS.UI`.
+- [x] Migración de las aplicaciones de `Proyectos/` (`kity`, `kisland`, `plasma-control-center`, `kpeek`, etc.) a `CachyOS.UI`.
 - [ ] Instalador visual GUI unificado con selector modular de componentes para instalaciones nuevas de CachyOS.
