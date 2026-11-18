@@ -19,6 +19,7 @@ Rectangle {
     property bool squircleIconBadge: false
     property string badgeText: ""
     property bool selected: false
+    property bool showText: true
     property color selectedHighlightColor: CachyPalette.isDark ? Qt.rgba(1, 1, 1, 0.14) : Qt.rgba(0, 0, 0, 0.09)
 
     signal clicked()
@@ -81,6 +82,7 @@ Rectangle {
         // Golden Gate Sidebar Label: Bold when actively selected
         Text {
             Layout.fillWidth: true
+            visible: root.showText
             text: root.text
             color: CachyPalette.text
             font.pixelSize: 13
@@ -92,7 +94,7 @@ Rectangle {
 
         // Optional trailing count badge (e.g. Shortcuts library counts)
         Text {
-            visible: root.badgeText.length > 0
+            visible: root.showText && root.badgeText.length > 0
             text: root.badgeText
             color: CachyPalette.textSecondary
             font.pixelSize: 12

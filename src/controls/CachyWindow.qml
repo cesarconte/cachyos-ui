@@ -41,7 +41,7 @@ Window {
     property alias headerLeading: headerLeadingArea.data
     property alias headerCenter: headerCenterArea.data
     property alias headerActions: headerTrailingArea.data
-    property alias overlay: overlayContainer.data
+    property alias overlay: overlayContainer
     property int cornerRadius: CachyTheme.radiusWindow
     property color backgroundColor: "transparent"
     property int contentMargin: CachyTheme.marginWindow

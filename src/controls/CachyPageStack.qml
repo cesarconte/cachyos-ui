@@ -81,20 +81,61 @@ Item {
 
     /// Pushes a page and returns it.
     function push(source, properties) {
-        const component = stack.toComponent(source);
-        if (!component) {
+        if (!source) {
             return null;
         }
-        const page = component.createObject(pagesHost, properties || {});
-        if (!page) {
-            console.warn("CachyPageStack failed to instantiate page:", component.errorString());
-            return null;
+        let page = null;
+        if (source.parent !== undefined) {
+            // It is already an instantiated Item (e.g. from Kirigami.PagePool)
+            page = source;
+            page.parent = pagesHost;
+            if (properties) {
+                for (let k in properties) {
+                    page[k] = properties[k];
+                }
+            }
+        } else {
+            const component = stack.toComponent(source);
+            if (!component) {
+                return null;
+            }
+            page = component.createObject(pagesHost, properties || {});
+            if (!page) {
+                console.warn("CachyPageStack failed to instantiate page:", component.errorString());
+                return null;
+            }
         }
         page.anchors.fill = pagesHost;
         page.visible = false;
         stack.currentIndex = pagesHost.children.length - 1;
         stack.updateVisibility();
         return page;
+    }
+
+    /// Replaces the current page on top of the stack with a new page.
+    function replace(source, properties) {
+        if (pagesHost.children.length > 0) {
+            stack.pop();
+        }
+        return stack.push(source, properties);
+    }
+
+    /// Navigates back in page history.
+    function goBack() {
+        if (stack.currentIndex > 0) {
+            stack.currentIndex--;
+            stack.updateVisibility();
+        } else if (stack.depth > 1) {
+            stack.pop();
+        }
+    }
+
+    /// Navigates forward in page history.
+    function goForward() {
+        if (stack.currentIndex < stack.depth - 1) {
+            stack.currentIndex++;
+            stack.updateVisibility();
+        }
     }
 
     /// Removes the page at the given index and destroys it.
