@@ -136,12 +136,21 @@ Window {
 
                             CachyTrafficLights {
                                 anchors.left: parent.left
-                                anchors.leftMargin: root.contentMargin
+                                anchors.leftMargin: root.sidebarWidth < 120
+                                    ? Math.max(8, Math.round((parent.width - implicitWidth) / 2))
+                                    : root.contentMargin
                                 anchors.verticalCenter: parent.verticalCenter
                                 window: root
                                 closable: root.closable
                                 minimizable: root.minimizable
                                 maximizable: root.maximizable
+
+                                Behavior on anchors.leftMargin {
+                                    NumberAnimation {
+                                        duration: CachyTheme.animFast
+                                        easing.type: Easing.OutCubic
+                                    }
+                                }
                             }
 
                             Item {

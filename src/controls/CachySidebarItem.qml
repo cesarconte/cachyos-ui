@@ -48,14 +48,15 @@ Rectangle {
 
     RowLayout {
         anchors.fill: parent
-        anchors.leftMargin: 10
-        anchors.rightMargin: 10
-        spacing: 10
+        anchors.leftMargin: root.showText ? 10 : 0
+        anchors.rightMargin: root.showText ? 10 : 0
+        spacing: root.showText ? 10 : 0
 
         // Golden Gate Colorful Sidebar Icon (Squircle badge in System Settings, colorful vector icon in Finder/Shortcuts)
         Rectangle {
             readonly property string resolvedIcon: root.iconName.length > 0 ? root.iconName : root.iconGlyph
             visible: resolvedIcon.length > 0
+            Layout.alignment: root.showText ? (Qt.AlignLeft | Qt.AlignVCenter) : Qt.AlignCenter
             Layout.preferredWidth: 22
             Layout.preferredHeight: 22
             radius: 6
@@ -100,5 +101,10 @@ Rectangle {
             font.pixelSize: 12
             font.weight: Font.Medium
         }
+    }
+
+    CachyTooltip {
+        visible: !root.showText && itemHover.hovered && root.text.length > 0
+        text: root.text
     }
 }
