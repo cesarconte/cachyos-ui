@@ -151,6 +151,7 @@ Window {
                                 anchors.verticalCenter: parent.verticalCenter
                                 height: parent.height
                                 width: childrenRect.width
+                                visible: root.sidebarWidth >= 120
                             }
                         }
 
