@@ -71,7 +71,7 @@ Item {
     // layer: the scrim on top of it dismisses the dialog on tap.
     Rectangle {
         anchors.fill: parent
-        color: CachyPalette.sheetBackground
+        color: CachyPalette.isDark ? Qt.rgba(0.12, 0.12, 0.15, 1.0) : Qt.rgba(0.97, 0.97, 0.99, 1.0)
     }
 
     // Scrim: dismisses the dialog on top.
