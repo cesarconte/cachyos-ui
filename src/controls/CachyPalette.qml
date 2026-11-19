@@ -126,4 +126,19 @@ QtObject {
     readonly property color dividerColor: isDark
         ? Qt.rgba(1, 1, 1, 0.10)
         : Qt.rgba(0, 0, 0, 0.08);
+
+    // ── Interaction & Accessibility ────────────────────────────────────────
+
+    /// Focus ring for accessible keyboard navigation.
+    readonly property color focusRing: CachyTheme.focusRingColor
+
+    /// Subtle hover overlay for interactive items.
+    readonly property color hoverOverlay: isDark
+        ? Qt.rgba(1, 1, 1, 0.08)
+        : Qt.rgba(0, 0, 0, 0.05);
+
+    /// Subtle pressed overlay for interactive items.
+    readonly property color pressedOverlay: isDark
+        ? Qt.rgba(1, 1, 1, 0.16)
+        : Qt.rgba(0, 0, 0, 0.10);
 }

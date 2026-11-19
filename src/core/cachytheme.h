@@ -34,6 +34,7 @@ class CachyTheme : public QObject
     Q_PROPERTY(QColor textSecondary READ textSecondary NOTIFY themeChanged)
     Q_PROPERTY(QColor textMuted READ textMuted NOTIFY themeChanged)
     Q_PROPERTY(QColor dividerColor READ dividerColor NOTIFY themeChanged)
+    Q_PROPERTY(QColor focusRingColor READ focusRingColor NOTIFY themeChanged)
 
     // Semantic status colours (macOS Golden Gate palette)
     Q_PROPERTY(QColor successColor READ successColor CONSTANT)
@@ -97,6 +98,7 @@ public:
     QColor textSecondary() const;
     QColor textMuted() const;
     QColor dividerColor() const;
+    QColor focusRingColor() const;
 
     // Semantic status colours: shared by every surface of the ecosystem
     // (applications and plasmoids alike) so that a "recording", a "warning"

@@ -76,6 +76,7 @@ private Q_SLOTS:
     void testCachyIconAndShadowQmlInstantiation();
     void testPhase2ControlsAndLayoutAudit();
     void testPhase3ControlsAndLayoutAudit();
+    void testPhaseAControlsAndLayoutAudit();
 
 private:
     CachyTheme m_theme;
@@ -456,6 +457,18 @@ void TestCoreComponents::testPhase3ControlsAndLayoutAudit()
                     ]
                 }
 
+                CachyTableView {
+                    objectName: "tableView"
+                    Layout.fillWidth: true
+                    Layout.minimumWidth: 0
+                    Layout.preferredHeight: 120
+                    columns: [
+                        { role: "name", title: "Nombre", width: 200, fillWidth: true },
+                        { role: "size", title: "Tamaño", width: 100 },
+                        { role: "status", title: "Estado", width: 120, type: "badge" }
+                    ]
+                }
+
                 CachyStatusBar {
                     objectName: "statusBar"
                     summaryText: "24 elementos • 142 GB disponibles"
@@ -482,6 +495,90 @@ void TestCoreComponents::testPhase3ControlsAndLayoutAudit()
                     subtitle: "Phase 3 audit"
                     iconName: "settings"
                 }
+            }
+        }
+    )QML"), QUrl());
+
+    QVERIFY2(!component.isError(), qPrintable(component.errorString()));
+    QScopedPointer<QObject> obj(component.create());
+    auto *window = qobject_cast<QQuickWindow *>(obj.data());
+    QVERIFY(window != nullptr);
+    QVERIFY(QTest::qWaitForWindowExposed(window));
+    QCoreApplication::processEvents();
+
+    const auto violations = LayoutAuditor::audit(window->contentItem());
+    QStringList messages;
+    for (const auto &v : violations) {
+        messages.append(v.toString());
+    }
+    QVERIFY2(violations.isEmpty(), qPrintable(messages.join(QLatin1Char('\n'))));
+}
+
+void TestCoreComponents::testPhaseAControlsAndLayoutAudit()
+{
+    QQmlEngine engine;
+    QQmlComponent component(&engine);
+    component.setData(QByteArrayLiteral(R"QML(
+        import QtQuick
+        import QtQuick.Layouts
+        import CachyOS.UI
+
+        CachyWindow {
+            id: win
+            width: 800
+            height: 900
+            visible: true
+
+            ColumnLayout {
+                anchors.fill: parent
+                anchors.margins: 16
+                spacing: 12
+
+                CachyTagField {
+                    Layout.fillWidth: true
+                    tags: ["CachyOS", "Wayland", "Vulkan", "Linux"]
+                }
+
+                RowLayout {
+                    Layout.fillWidth: true
+                    spacing: 12
+
+                    CachyDatePicker {
+                        Layout.preferredWidth: 280
+                        Layout.preferredHeight: 300
+                    }
+
+                    CachyTimePicker {
+                        Layout.preferredWidth: 260
+                        Layout.preferredHeight: 90
+                        is24Hour: false
+                    }
+                }
+
+                CachyWaveformSlider {
+                    Layout.fillWidth: true
+                    Layout.preferredHeight: 28
+                    position: 0.45
+                }
+
+                CachyMediaBar {
+                    Layout.fillWidth: true
+                    Layout.preferredHeight: 76
+                    trackTitle: "La Graciosa"
+                    trackArtist: "Quevedo, Elvis Crespo"
+                    isPlaying: true
+                    position: 0.35
+                    positionSeconds: 84
+                    durationSeconds: 240
+                }
+            }
+
+            CachyDrawer {
+                id: drawer
+                edge: Qt.RightEdge
+                drawerSize: 260
+                title: "Detalles del Medio"
+                opened: false
             }
         }
     )QML"), QUrl());

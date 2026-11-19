@@ -201,6 +201,11 @@ QColor CachyTheme::dividerColor() const
         : QColor::fromRgbF(0.0, 0.0, 0.0, 0.08);
 }
 
+QColor CachyTheme::focusRingColor() const
+{
+    return withAlpha(accentColor(), isDark() ? 0.65 : 0.50);
+}
+
 QString CachyTheme::distroName() const
 {
     // The distribution the application is running on, read from the platform

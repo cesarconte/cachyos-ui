@@ -89,9 +89,17 @@ qt_add_qml_module(cachyosui
         controls/CachyListItem.qml
         controls/CachyGridItem.qml
         controls/CachyTableHeader.qml
+        controls/CachyTableView.qml
         controls/CachySplitView.qml
         controls/CachyStatusBar.qml
         controls/CachyFileDropArea.qml
+        controls/CachyTreeView.qml
+        controls/CachyDatePicker.qml
+        controls/CachyTimePicker.qml
+        controls/CachyWaveformSlider.qml
+        controls/CachyMediaBar.qml
+        controls/CachyTagField.qml
+        controls/CachyDrawer.qml
 )
 
 target_include_directories(cachyosui PUBLIC

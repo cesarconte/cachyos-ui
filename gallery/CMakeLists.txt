@@ -11,12 +11,18 @@ qt_add_qml_module(cachyos-ui-gallery
 
 target_link_libraries(cachyos-ui-gallery PRIVATE
     cachyosui
+    CachyOSUITesting
     Qt6::Core
     Qt6::Gui
     Qt6::Qml
     Qt6::Quick
     Qt6::QuickControls2
+    Qt6::Test
 )
 
 install(TARGETS cachyos-ui-gallery ${KDE_INSTALL_TARGETS_DEFAULT_ARGS})
 install(FILES org.cesar.cachyos-ui-gallery.desktop DESTINATION ${KDE_INSTALL_APPDIR})
+
+if(BUILD_TESTING)
+    add_test(NAME test_gallery_audit COMMAND cachyos-ui-gallery --audit)
+endif()
