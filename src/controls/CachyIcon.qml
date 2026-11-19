@@ -22,6 +22,8 @@ Item {
 
     /// Icon name (e.g. "search", "chevron-left", "edit-copy") or explicit URL.
     property string name: ""
+    /// Compatibility alias for standard QtQuick / Kirigami icon source
+    property alias source: root.name
     /// Optional fallback icon name if `name` is not found.
     property string fallback: ""
     /// Logical width and height of the icon in pixels.
