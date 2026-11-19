@@ -16,6 +16,8 @@ Item {
 
     /// Label text of the row.
     property string label: ""
+    /// Subtitle or secondary description.
+    property string description: ""
     /// Model of the combo box.
     property alias model: combo.model
     /// Role name used when the model contains objects.
@@ -28,7 +30,7 @@ Item {
     signal activated(int index)
 
     Layout.fillWidth: true
-    implicitHeight: 40
+    implicitHeight: root.description.length > 0 ? 52 : 40
 
     Rectangle {
         anchors.fill: parent
@@ -42,13 +44,30 @@ Item {
         anchors.rightMargin: CachyTheme.spacingMedium
         spacing: CachyTheme.spacingMedium
 
-        Text {
+        ColumnLayout {
             Layout.fillWidth: true
             Layout.minimumWidth: 0
-            text: root.label
-            wrapMode: Text.WordWrap
-            font.pixelSize: 12
-            color: CachyPalette.text
+            spacing: 2
+
+            Text {
+                Layout.fillWidth: true
+                Layout.minimumWidth: 0
+                text: root.label
+                wrapMode: Text.WordWrap
+                font.pixelSize: 12
+                font.weight: Font.Medium
+                color: CachyPalette.text
+            }
+
+            Text {
+                Layout.fillWidth: true
+                Layout.minimumWidth: 0
+                visible: root.description.length > 0
+                text: root.description
+                wrapMode: Text.WordWrap
+                font.pixelSize: 11
+                color: CachyPalette.textMuted
+            }
         }
 
         CachyComboBox {
