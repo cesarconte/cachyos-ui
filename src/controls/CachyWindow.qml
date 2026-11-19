@@ -34,9 +34,26 @@ Window {
     default property alias contentData: contentHost.data
     property alias sidebar: sidebarHost.data
     property alias sidebarHeaderActions: sidebarHeaderTrailingArea.data
-    property int sidebarWidth: 240
+    property int sidebarWidthExpanded: 240
+    property int sidebarWidthCollapsed: 84
+    property bool sidebarCollapsible: false
+    property bool sidebarCollapsed: false
+    property int sidebarWidth: (sidebarCollapsible && sidebarCollapsed)
+        ? sidebarWidthCollapsed
+        : sidebarWidthExpanded
     property bool sidebarVisible: true
     readonly property bool hasSidebar: sidebarHost.children.length > 0 && root.sidebarVisible
+
+    Behavior on sidebarWidth {
+        NumberAnimation {
+            duration: CachyTheme.animFast
+            easing.type: Easing.OutCubic
+        }
+    }
+
+    function toggleSidebarCollapse() {
+        sidebarCollapsed = !sidebarCollapsed;
+    }
 
     property alias headerLeading: headerLeadingArea.data
     property alias headerCenter: headerCenterArea.data

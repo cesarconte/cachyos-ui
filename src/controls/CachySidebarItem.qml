@@ -19,7 +19,13 @@ Rectangle {
     property bool squircleIconBadge: false
     property string badgeText: ""
     property bool selected: false
-    property bool showText: true
+    property bool showText: {
+        let w = Window.window;
+        if (w && w.sidebarCollapsible !== undefined && w.sidebarCollapsible) {
+            return !w.sidebarCollapsed;
+        }
+        return true;
+    }
     property color selectedHighlightColor: CachyPalette.isDark ? Qt.rgba(1, 1, 1, 0.14) : Qt.rgba(0, 0, 0, 0.09)
 
     signal clicked()

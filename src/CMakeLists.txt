@@ -41,6 +41,7 @@ qt_add_qml_module(cachyosui
         controls/CachyProgressBar.qml
         controls/CachyDivider.qml
         controls/CachySidebarItem.qml
+        controls/CachySidebarToggleButton.qml
         controls/CachyToolbarButton.qml
         controls/CachyHeading.qml
         controls/CachyPlaceholderMessage.qml
