@@ -47,6 +47,7 @@ qt_add_qml_module(cachyosui
         controls/CachyPlaceholderMessage.qml
         controls/CachyFormLayout.qml
         controls/CachySelectableLabel.qml
+        controls/CachyLabel.qml
         controls/CachyInlineMessage.qml
         controls/CachySectionHeader.qml
         controls/CachyFormCard.qml

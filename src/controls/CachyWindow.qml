@@ -30,6 +30,9 @@ Window {
     property bool minimizable: true
     property bool maximizable: true
     property bool resizable: true
+    property var showTitle: null
+    readonly property bool isTitleVisible: (showTitle !== null) ? Boolean(showTitle) : (headerCenterArea.children.length === 0)
+    property int titleAlignment: Qt.AlignHCenter
     property alias windowTitle: titleLabel.text
     default property alias contentData: contentHost.data
     property alias sidebar: sidebarHost.data
@@ -310,8 +313,8 @@ Window {
                                 font.pixelSize: 13
                                 font.weight: Font.DemiBold
                                 elide: Text.ElideMiddle
-                                visible: headerCenterArea.children.length === 0
-                                horizontalAlignment: Text.AlignHCenter
+                                visible: root.isTitleVisible
+                                horizontalAlignment: root.titleAlignment
                             }
                         }
 
