@@ -151,7 +151,11 @@ Item {
         }
         page.visible = false;
         page.parent = null;
-        page.destroy();
+        try {
+            page.destroy();
+        } catch (e) {
+            // Indestructible / C++-managed page (e.g. from PagePool)
+        }
         stack.currentIndex = Math.max(0, Math.min(stack.currentIndex, pagesHost.children.length - 1));
         stack.updateVisibility();
 
@@ -179,7 +183,11 @@ Item {
             if (page !== stack.initialPageItem) {
                 page.visible = false;
                 page.parent = null;
-                page.destroy();
+                try {
+                    page.destroy();
+                } catch (e) {
+                    // Indestructible / C++-managed page (e.g. from PagePool)
+                }
             }
         }
         stack.currentIndex = 0;
