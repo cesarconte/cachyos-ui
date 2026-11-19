@@ -260,6 +260,7 @@ QString CachyTheme::iconUrl(const QString &name, const QString &fallback) const
         QStringLiteral("mimetypes"),
         QStringLiteral("preferences"),
         QStringLiteral("categories"),
+        QStringLiteral("emblems"),
     };
     static const QStringList breezeSizes = {
         QStringLiteral("24"),
