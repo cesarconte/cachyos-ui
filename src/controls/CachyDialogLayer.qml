@@ -34,8 +34,13 @@ Item {
         if (!component) {
             return null;
         }
+        if (component.status === Component.Error) {
+            console.warn("CachyDialogLayer failed to load component:", component.errorString());
+            return null;
+        }
         const dialog = component.createObject(root, properties || {});
         if (!dialog) {
+            console.warn("CachyDialogLayer: createObject returned null for component");
             return null;
         }
         // The dialogs are shown over the whole content of the window, as the

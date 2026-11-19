@@ -14,6 +14,7 @@ T.Button {
     id: control
 
     property bool primary: false
+    property alias accent: control.primary
     property bool destructive: false
     property string iconName: ""
 

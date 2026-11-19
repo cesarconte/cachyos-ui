@@ -205,7 +205,7 @@ Item {
         if (!component) {
             return null;
         }
-        const merged = Object.assign({}, properties || {}, dialogProperties || {});
+        const merged = Object.assign({ pageStack: stack }, properties || {}, dialogProperties || {});
         return stack.layers.push(component, merged);
     }
 

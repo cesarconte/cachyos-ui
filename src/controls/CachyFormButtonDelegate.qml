@@ -16,8 +16,10 @@ import QtQuick.Templates as T
 T.AbstractButton {
     id: root
 
+    property string description: ""
+
     Layout.fillWidth: true
-    implicitHeight: 40
+    implicitHeight: root.description.length > 0 ? 52 : 40
     padding: 0
 
     contentItem: RowLayout {
@@ -26,22 +28,47 @@ T.AbstractButton {
         spacing: CachyTheme.spacingSmall
 
         CachyIcon {
-            Layout.preferredWidth: 18
-            Layout.preferredHeight: 18
+            Layout.preferredWidth: 20
+            Layout.preferredHeight: 20
             name: root.icon.name
-            size: 18
+            size: 20
             color: CachyPalette.text
             visible: root.icon.name.length > 0 && valid
         }
 
-        Text {
+        ColumnLayout {
             Layout.fillWidth: true
             Layout.minimumWidth: 0
-            text: root.text
-            wrapMode: Text.WordWrap
-            font.pixelSize: 12
-            font.weight: Font.Medium
-            color: CachyPalette.text
+            spacing: 2
+
+            Text {
+                Layout.fillWidth: true
+                Layout.minimumWidth: 0
+                text: root.text
+                wrapMode: Text.WordWrap
+                font.pixelSize: 13
+                font.weight: Font.Medium
+                color: CachyPalette.text
+            }
+
+            Text {
+                Layout.fillWidth: true
+                Layout.minimumWidth: 0
+                visible: root.description.length > 0
+                text: root.description
+                wrapMode: Text.WordWrap
+                font.pixelSize: 11
+                color: CachyPalette.textMuted
+            }
+        }
+
+        CachyIcon {
+            Layout.preferredWidth: 14
+            Layout.preferredHeight: 14
+            name: "go-next-symbolic"
+            size: 14
+            color: CachyPalette.textMuted
+            opacity: 0.5
         }
     }
 
