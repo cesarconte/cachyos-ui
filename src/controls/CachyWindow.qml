@@ -54,8 +54,20 @@ Window {
         }
     }
 
+    function toggleSidebar() {
+        if (sidebarCollapsible) {
+            sidebarCollapsed = !sidebarCollapsed;
+        } else {
+            sidebarVisible = !sidebarVisible;
+        }
+    }
+
     function toggleSidebarCollapse() {
-        sidebarCollapsed = !sidebarCollapsed;
+        if (sidebarCollapsible) {
+            sidebarCollapsed = !sidebarCollapsed;
+        } else {
+            sidebarVisible = !sidebarVisible;
+        }
     }
 
     property alias headerLeading: headerLeadingArea.data
