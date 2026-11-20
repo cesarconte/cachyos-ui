@@ -313,6 +313,7 @@ QString CachyTheme::iconUrl(const QString &name, const QString &fallback) const
     static const QStringList breezeCategories = {
         QStringLiteral("actions"),
         QStringLiteral("apps"),
+        QStringLiteral("applets"),
         QStringLiteral("places"),
         QStringLiteral("emotes"),
         QStringLiteral("status"),
