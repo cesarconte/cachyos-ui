@@ -38,5 +38,7 @@
         <file>bell.svg</file>
         <file>volume.svg</file>
         <file>moon.svg</file>
+        <file>calendar.svg</file>
+        <file>clock.svg</file>
     </qresource>
 </RCC>
