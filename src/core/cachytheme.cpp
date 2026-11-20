@@ -8,6 +8,7 @@
 #include <QDir>
 #include <QFile>
 #include <QHash>
+#include <QIcon>
 #include <QSettings>
 #include <QSysInfo>
 #include <QStandardPaths>
@@ -255,69 +256,9 @@ QString CachyTheme::iconUrl(const QString &name, const QString &fallback) const
         return QStringLiteral("qrc") + builtinResource;
     }
 
-    const QStringList roots = QStandardPaths::standardLocations(QStandardPaths::GenericDataLocation);
-
-    // 2. The icon themes shipped with Plasma (Breeze) and the freedesktop
-    // fallback (hicolor) are searched explicitly. The symbolic variant is
-    // preferred: it is monochrome and can be tinted with the colour of the
-    // interface, so it follows the colour scheme of the desktop.
-    static const QStringList directories = {
-        QStringLiteral("/icons/hicolor/symbolic/apps/"),
-        QStringLiteral("/icons/breeze/symbolic/apps/"),
-        QStringLiteral("/icons/breeze/actions/scalable/"),
-        QStringLiteral("/icons/breeze/apps/scalable/"),
-        QStringLiteral("/icons/hicolor/scalable/apps/"),
-    };
-    // The remaining categories of the Breeze theme.
-    static const QStringList breezeCategories = {
-        QStringLiteral("actions"),
-        QStringLiteral("apps"),
-        QStringLiteral("places"),
-        QStringLiteral("emotes"),
-        QStringLiteral("status"),
-        QStringLiteral("devices"),
-        QStringLiteral("mimetypes"),
-        QStringLiteral("preferences"),
-        QStringLiteral("categories"),
-        QStringLiteral("emblems"),
-    };
-    static const QStringList breezeSizes = {
-        QStringLiteral("24"),
-        QStringLiteral("22"),
-        QStringLiteral("16"),
-        QStringLiteral("32"),
-        QStringLiteral("48"),
-        QStringLiteral("64"),
-        QStringLiteral("scalable"),
-    };
-    static const QStringList suffixes = {
-        QStringLiteral("-symbolic.svg"),
-        QStringLiteral(".svg"),
-    };
-
-    for (const QString &root : roots) {
-        for (const QString &directory : directories) {
-            for (const QString &suffix : suffixes) {
-                const QString candidate = root + directory + name + suffix;
-                if (QFile::exists(candidate)) {
-                    return QUrl::fromLocalFile(candidate).toString();
-                }
-            }
-        }
-        for (const QString &category : breezeCategories) {
-            for (const QString &size : breezeSizes) {
-                for (const QString &suffix : suffixes) {
-                    const QString candidate = root + QStringLiteral("/icons/breeze/") + category + QLatin1Char('/') + size + QLatin1Char('/') + name + suffix;
-                    if (QFile::exists(candidate)) {
-                        return QUrl::fromLocalFile(candidate).toString();
-                    }
-                }
-            }
-        }
-    }
-
-    // 3. Freedesktop alias fallback to embedded structural icons when the
-    // desktop icon theme is absent or incomplete.
+    // 2. Structural builtin alias check: canonical freedesktop names map directly
+    // to embedded CachyOS.UI vector icons with zero disk I/O, ensuring uniform
+    // macOS Golden Gate vector appearance across all environments.
     static const QHash<QString, QString> builtinAliases = {
         {QStringLiteral("dialog-information"), QStringLiteral("info")},
         {QStringLiteral("dialog-warning"), QStringLiteral("warning")},
@@ -337,6 +278,7 @@ QString CachyTheme::iconUrl(const QString &name, const QString &fallback) const
         {QStringLiteral("go-up"), QStringLiteral("chevron-up")},
         {QStringLiteral("go-down"), QStringLiteral("chevron-down")},
         {QStringLiteral("configure"), QStringLiteral("settings")},
+        {QStringLiteral("settings-configure"), QStringLiteral("settings")},
         {QStringLiteral("preferences-system"), QStringLiteral("settings")},
         {QStringLiteral("window-pin"), QStringLiteral("pin")},
         {QStringLiteral("user-trash"), QStringLiteral("trash")},
@@ -350,6 +292,80 @@ QString CachyTheme::iconUrl(const QString &name, const QString &fallback) const
         const QString aliasResource = QStringLiteral(":/CachyOS/UI/icons/") + alias + QStringLiteral(".svg");
         if (QFile::exists(aliasResource)) {
             return QStringLiteral("qrc") + aliasResource;
+        }
+    }
+
+    const QStringList roots = QStandardPaths::standardLocations(QStandardPaths::GenericDataLocation);
+
+    // 3. The active desktop theme (e.g. CachyOS), Breeze and Hicolor fallbacks
+    // are searched on disk. The symbolic variant is preferred: it is monochrome
+    // and can be tinted with CachyIcon MultiEffect colorization.
+    const QString activeTheme = QIcon::themeName().isEmpty() ? QStringLiteral("breeze") : QIcon::themeName();
+    QStringList themesToSearch = {activeTheme};
+    if (activeTheme != QLatin1String("CachyOS")) {
+        themesToSearch.append(QStringLiteral("CachyOS"));
+    }
+    if (activeTheme != QLatin1String("breeze") && activeTheme != QLatin1String("breeze-dark")) {
+        themesToSearch.append(QStringLiteral("breeze"));
+    }
+    themesToSearch.append(QStringLiteral("hicolor"));
+
+    static const QStringList breezeCategories = {
+        QStringLiteral("actions"),
+        QStringLiteral("apps"),
+        QStringLiteral("places"),
+        QStringLiteral("emotes"),
+        QStringLiteral("status"),
+        QStringLiteral("devices"),
+        QStringLiteral("mimetypes"),
+        QStringLiteral("preferences"),
+        QStringLiteral("categories"),
+        QStringLiteral("emblems"),
+    };
+    static const QStringList breezeSizes = {
+        QStringLiteral("scalable"),
+        QStringLiteral("symbolic/apps"),
+        QStringLiteral("actions/scalable"),
+        QStringLiteral("apps/scalable"),
+        QStringLiteral("24"),
+        QStringLiteral("22"),
+        QStringLiteral("16"),
+        QStringLiteral("32"),
+        QStringLiteral("48"),
+        QStringLiteral("64"),
+    };
+    static const QStringList suffixes = {
+        QStringLiteral("-symbolic.svg"),
+        QStringLiteral(".svg"),
+    };
+
+    for (const QString &root : roots) {
+        for (const QString &theme : themesToSearch) {
+            // First check top-level scalable / symbolic directories
+            const QStringList topDirs = {
+                QStringLiteral("/icons/") + theme + QStringLiteral("/apps/scalable/"),
+                QStringLiteral("/icons/") + theme + QStringLiteral("/symbolic/apps/"),
+                QStringLiteral("/icons/") + theme + QStringLiteral("/actions/scalable/")
+            };
+            for (const QString &sizeDir : topDirs) {
+                for (const QString &suffix : suffixes) {
+                    const QString candidate = root + sizeDir + name + suffix;
+                    if (QFile::exists(candidate)) {
+                        return QUrl::fromLocalFile(candidate).toString();
+                    }
+                }
+            }
+            // Next check categorized subdirectories
+            for (const QString &category : breezeCategories) {
+                for (const QString &size : breezeSizes) {
+                    for (const QString &suffix : suffixes) {
+                        const QString candidate = root + QStringLiteral("/icons/") + theme + QLatin1Char('/') + category + QLatin1Char('/') + size + QLatin1Char('/') + name + suffix;
+                        if (QFile::exists(candidate)) {
+                            return QUrl::fromLocalFile(candidate).toString();
+                        }
+                    }
+                }
+            }
         }
     }
 

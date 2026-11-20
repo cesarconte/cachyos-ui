@@ -30,8 +30,12 @@ Item {
     property int size: 16
     /// Tint color applied when `colored` is true.
     property color color: CachyPalette.text
-    /// When true (default), monochrome/symbolic icons are tinted with `color`.
-    /// Set to false for full-color application icons (e.g. in About pages).
+    /// When true (default), monochrome/symbolic icons are tinted with `color`
+    /// via MultiEffect colorization. ALWAYS keep `colored: true` when displaying
+    /// monochrome vector icons that must render in a specific color (e.g. #FFFFFF
+    /// on top of a colorful background card or squircle badge).
+    /// Set to false ONLY for multi-color branded icons (e.g. application logos in
+    /// About pages) that already have their own inherent multi-color artwork.
     property bool colored: true
 
     readonly property string resolvedSource: root.name.length > 0
