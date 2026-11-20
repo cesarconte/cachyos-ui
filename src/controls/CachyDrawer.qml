@@ -16,6 +16,8 @@ import CachyOS.UI
 Item {
     id: root
 
+    property bool auditBleed: true
+
     // ── Public Properties ──────────────────────────────────────────────────
     property int edge: Qt.RightEdge // Qt.LeftEdge, Qt.RightEdge, Qt.BottomEdge
     property int drawerSize: 320
@@ -29,12 +31,13 @@ Item {
     signal closed()
 
     function open() {
+        root.visible = true;
         root.opened = true;
     }
 
     function close() {
         root.opened = false;
-        root.closed();
+        closeTimer.restart();
     }
 
     function toggle() {
@@ -43,8 +46,17 @@ Item {
     }
 
     anchors.fill: parent
-    visible: root.opened || drawerAnimX.running || drawerAnimY.running
+    visible: false
     z: 90
+
+    Timer {
+        id: closeTimer
+        interval: CachyTheme.animNormal
+        onTriggered: {
+            root.visible = false;
+            root.closed();
+        }
+    }
 
     readonly property real closedX: {
         if (root.edge === Qt.LeftEdge) return -root.drawerSize;
@@ -89,6 +101,7 @@ Item {
     // Drawer Surface Card
     Rectangle {
         id: drawerCard
+        property bool auditBleed: true
         x: root.opened ? root.openedX : root.closedX
         y: root.opened ? root.openedY : root.closedY
 

@@ -78,8 +78,22 @@ void CachyTheme::setGlassOpacity(qreal value)
     Q_EMIT themeChanged();
 }
 
+void CachyTheme::setThemeMode(int mode)
+{
+    if (m_themeMode != mode) {
+        m_themeMode = mode;
+        Q_EMIT themeChanged();
+    }
+}
+
 bool CachyTheme::isDark() const
 {
+    if (m_themeMode == 1) {
+        return false;
+    }
+    if (m_themeMode == 2 || m_themeMode == 3) {
+        return true;
+    }
     if (auto *styleHints = QGuiApplication::styleHints()) {
         return styleHints->colorScheme() == Qt::ColorScheme::Dark;
     }

@@ -20,6 +20,7 @@ class CachyTheme : public QObject
     QML_SINGLETON
 
     Q_PROPERTY(bool isDark READ isDark NOTIFY themeChanged)
+    Q_PROPERTY(int themeMode READ themeMode WRITE setThemeMode NOTIFY themeChanged)
     Q_PROPERTY(qreal glassOpacity READ glassOpacity WRITE setGlassOpacity NOTIFY themeChanged)
     Q_PROPERTY(QColor accentColor READ accentColor NOTIFY themeChanged)
     Q_PROPERTY(QColor windowBackground READ windowBackground NOTIFY themeChanged)
@@ -82,6 +83,8 @@ public:
     ~CachyTheme() override = default;
 
     bool isDark() const;
+    int themeMode() const { return m_themeMode; }
+    void setThemeMode(int mode);
     qreal glassOpacity() const { return m_glassOpacity; }
     void setGlassOpacity(qreal value);
 
@@ -159,6 +162,7 @@ private:
     void loadSettings();
     void saveSettings();
 
+    int m_themeMode = 0; // 0 = Auto, 1 = Light, 2 = Dark
     qreal m_glassOpacity = 0.5; // 0.0 = Glassiest, 0.5 = Medium Glassy (Golden Gate default), 1.0 = Maximum Tint
     QFileSystemWatcher m_configWatcher;
     QString m_configPath;

@@ -33,19 +33,22 @@ Item {
     }
 
     function stepHour(delta: int) {
-        var maxH = root.is24Hour ? 24 : 12;
-        var minH = root.is24Hour ? 0 : 1;
-        var h = root.hour + delta;
-        if (h >= maxH) h = minH;
-        else if (h < minH) h = maxH - 1;
-        root.hour = h;
+        if (root.is24Hour) {
+            var h = (root.hour + delta) % 24;
+            if (h < 0) h += 24;
+            root.hour = h;
+        } else {
+            var h = root.hour + delta;
+            if (h > 12) h = 1;
+            else if (h < 1) h = 12;
+            root.hour = h;
+        }
         root.timeSelected(root.hour, root.minute);
     }
 
     function stepMinute(delta: int) {
-        var m = root.minute + delta;
-        if (m >= 60) m = 0;
-        else if (m < 0) m = 59;
+        var m = (root.minute + delta) % 60;
+        if (m < 0) m += 60;
         root.minute = m;
         root.timeSelected(root.hour, root.minute);
     }
@@ -66,9 +69,19 @@ Item {
                 Layout.preferredWidth: 64
                 Layout.preferredHeight: 70
                 radius: CachyTheme.radiusSmall
-                color: hourHover.containsMouse ? CachyPalette.cardBackgroundHover : Qt.rgba(0, 0, 0, 0.12)
+                color: hourCardHover.hovered ? CachyPalette.cardBackgroundHover : Qt.rgba(0, 0, 0, 0.12)
                 border.width: 1
                 border.color: CachyPalette.specularBorder
+
+                HoverHandler {
+                    id: hourCardHover
+                }
+
+                WheelHandler {
+                    onWheel: (wheel) => {
+                        root.stepHour(wheel.angleDelta.y > 0 ? 1 : -1);
+                    }
+                }
 
                 ColumnLayout {
                     anchors.fill: parent
@@ -124,14 +137,7 @@ Item {
                     }
                 }
 
-                MouseArea {
-                    id: hourHover
-                    anchors.fill: parent
-                    hoverEnabled: true
-                    onWheel: (wheel) => {
-                        root.stepHour(wheel.angleDelta.y > 0 ? 1 : -1);
-                    }
-                }
+
             }
 
             // ── Colon Separator ────────────────────────────────────────────
@@ -147,9 +153,19 @@ Item {
                 Layout.preferredWidth: 64
                 Layout.preferredHeight: 70
                 radius: CachyTheme.radiusSmall
-                color: minuteHover.containsMouse ? CachyPalette.cardBackgroundHover : Qt.rgba(0, 0, 0, 0.12)
+                color: minuteCardHover.hovered ? CachyPalette.cardBackgroundHover : Qt.rgba(0, 0, 0, 0.12)
                 border.width: 1
                 border.color: CachyPalette.specularBorder
+
+                HoverHandler {
+                    id: minuteCardHover
+                }
+
+                WheelHandler {
+                    onWheel: (wheel) => {
+                        root.stepMinute(wheel.angleDelta.y > 0 ? 1 : -1);
+                    }
+                }
 
                 ColumnLayout {
                     anchors.fill: parent
@@ -205,14 +221,7 @@ Item {
                     }
                 }
 
-                MouseArea {
-                    id: minuteHover
-                    anchors.fill: parent
-                    hoverEnabled: true
-                    onWheel: (wheel) => {
-                        root.stepMinute(wheel.angleDelta.y > 0 ? 1 : -1);
-                    }
-                }
+
             }
 
             // ── AM / PM Toggle (if !is24Hour) ──────────────────────────────

@@ -24,8 +24,8 @@ Item {
     // ── Public Signals ─────────────────────────────────────────────────────
     signal dateSelected(date selected)
 
-    implicitWidth: 280
-    implicitHeight: 310
+    implicitWidth: 320
+    implicitHeight: 320
 
     readonly property var monthNames: [
         CachyI18n.i18n("Enero"), CachyI18n.i18n("Febrero"), CachyI18n.i18n("Marzo"),

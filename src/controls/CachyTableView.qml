@@ -49,6 +49,14 @@ Item {
     signal contextMenuRequested(int index, real mouseX, real mouseY)
     signal sortRequested(string role, int order)
 
+    function getRowData(index) {
+        if (!root.model) return {};
+        if (typeof root.model.get === "function") {
+            return root.model.get(index);
+        }
+        return {};
+    }
+
     implicitWidth: 540
     implicitHeight: 320
 
@@ -81,9 +89,13 @@ Item {
                     root.sortRequested(role, order);
 
                     // Auto-sync with CachySortFilterProxyModel if present
-                    if (root.model && typeof root.model.sortRoleName !== "undefined") {
-                        root.model.sortRoleName = role;
-                        root.model.sortOrder = order;
+                    if (root.model) {
+                        if (typeof root.model.sortByRole === "function") {
+                            root.model.sortByRole(role, order);
+                        } else if (typeof root.model.sortRoleName !== "undefined") {
+                            root.model.sortRoleName = role;
+                            root.model.sortOrder = order;
+                        }
                     }
                 }
             }
@@ -302,10 +314,18 @@ Item {
                                     }
                                     root.selectedIndices = copy;
                                 }
-                                root.rowClicked(rowDelegate.index, rowDelegate.model);
+                                let rData = root.getRowData(rowDelegate.index);
+                                if (Object.keys(rData).length === 0 && rowDelegate.model) {
+                                    rData = rowDelegate.model;
+                                }
+                                root.rowClicked(rowDelegate.index, rData);
                             }
                             onDoubleTapped: {
-                                root.rowDoubleClicked(rowDelegate.index, rowDelegate.model);
+                                let rData = root.getRowData(rowDelegate.index);
+                                if (Object.keys(rData).length === 0 && rowDelegate.model) {
+                                    rData = rowDelegate.model;
+                                }
+                                root.rowDoubleClicked(rowDelegate.index, rData);
                             }
                         }
 

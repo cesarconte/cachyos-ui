@@ -45,7 +45,11 @@ QtObject {
     // ── Foreground ─────────────────────────────────────────────────────────
 
     /// Primary foreground: the colour of the surface the content sits on.
-    readonly property color text: Kirigami.Theme.textColor
+    readonly property color text: {
+        if (CachyTheme.themeMode === 1) return Qt.rgba(0, 0, 0, 0.90);
+        if (CachyTheme.themeMode === 2) return Qt.rgba(1, 1, 1, 0.95);
+        return Kirigami.Theme.textColor;
+    }
 
     /// Secondary foreground (labels, hints, column headers).
     readonly property color textSecondary: Qt.rgba(text.r, text.g, text.b, 0.72)
@@ -73,6 +77,8 @@ QtObject {
     /// is composited over the wallpaper first, so the alpha is resolved
     /// against a neutral backdrop before measuring its luminance.
     readonly property bool isDark: {
+        if (CachyTheme.themeMode === 1) return false;
+        if (CachyTheme.themeMode === 2) return true;
         const bg = Kirigami.Theme.backgroundColor;
         const r = bg.r * bg.a + 0.5 * (1 - bg.a);
         const g = bg.g * bg.a + 0.5 * (1 - bg.a);

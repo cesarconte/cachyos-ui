@@ -95,7 +95,7 @@ Window {
             id: backgroundRect
             anchors.fill: parent
             radius: root.cornerRadius
-            color: root.backgroundColor.a > 0 ? root.backgroundColor : CachyTheme.windowBackground
+            color: root.backgroundColor.a > 0 ? root.backgroundColor : (root.hasSidebar ? "transparent" : CachyTheme.windowBackground)
             visible: root.showWindowFrame
         }
 
@@ -205,10 +205,15 @@ Window {
                 // =============================================================
                 // B. Main Window Column (44px Titlebar/Toolbar + Content Area)
                 // =============================================================
-                ColumnLayout {
+                Rectangle {
+                    id: contentPane
                     Layout.fillWidth: true
                     Layout.fillHeight: true
-                    spacing: 0
+                    color: root.hasSidebar ? (root.backgroundColor.a > 0 ? root.backgroundColor : CachyTheme.windowBackground) : "transparent"
+
+                    ColumnLayout {
+                        anchors.fill: parent
+                        spacing: 0
 
                     // 3. CachyOS Titlebar / Toolbar (44px)
                     Item {
@@ -363,6 +368,7 @@ Window {
                     }
                 }
             }
+        }
         }
 
         // =====================================================================

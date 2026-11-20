@@ -179,7 +179,7 @@ CachyWindow {
                                 from: 0
                                 to: 100
                                 value: Math.round(CachyTheme.glassOpacity * 100)
-                                onValueChanged: CachyTheme.glassOpacity = value / 100.0
+                                onMoved: CachyTheme.glassOpacity = value / 100.0
                             }
 
                             RowLayout {
@@ -188,17 +188,26 @@ CachyWindow {
                                 CachyButton {
                                     text: "Cristal Puro (0%)"
                                     flat: true
-                                    onClicked: glassOpacitySlider.value = 0
+                                    onClicked: {
+                                        glassOpacitySlider.value = 0;
+                                        CachyTheme.glassOpacity = 0.0;
+                                    }
                                 }
                                 CachyButton {
                                     text: "Golden Gate (50%)"
                                     flat: true
-                                    onClicked: glassOpacitySlider.value = 50
+                                    onClicked: {
+                                        glassOpacitySlider.value = 50;
+                                        CachyTheme.glassOpacity = 0.5;
+                                    }
                                 }
                                 CachyButton {
                                     text: "Tinte Máximo (100%)"
                                     flat: true
-                                    onClicked: glassOpacitySlider.value = 100
+                                    onClicked: {
+                                        glassOpacitySlider.value = 100;
+                                        CachyTheme.glassOpacity = 1.0;
+                                    }
                                 }
                             }
                         }
@@ -207,7 +216,14 @@ CachyWindow {
                     CachySegmentedControl {
                         Layout.fillWidth: true
                         model: ["Automático", "Modo Claro", "Modo Oscuro", "Liquid Glass"]
-                        currentIndex: 3
+                        currentIndex: CachyTheme.themeMode
+                        onCurrentIndexChanged: {
+                            CachyTheme.themeMode = currentIndex;
+                            if (currentIndex === 3) {
+                                CachyTheme.glassOpacity = 0.5;
+                                glassOpacitySlider.value = 50;
+                            }
+                        }
                     }
 
                     CachyCard {
@@ -357,41 +373,42 @@ CachyWindow {
                         contentItem: ColumnLayout {
                             spacing: 12
                             Text {
-                                text: "Barra de Pestañas (CachyTabBar)"
+                                text: "Contenedor de Pestañas Sincronizado (CachyTabView)"
                                 font.pixelSize: 14
                                 font.weight: Font.Bold
                                 color: CachyTheme.textPrimary
                             }
-                            CachyTabBar {
-                                id: demoTabBar
-                                Layout.fillWidth: true
-                                CachyTabButton { text: "General"; iconName: "settings" }
-                                CachyTabButton { text: "Rendimiento"; iconName: "refresh" }
-                                CachyTabButton { text: "Redes"; iconName: "folder" }
-                            }
                             CachyTabView {
+                                id: demoTabView
                                 Layout.fillWidth: true
-                                Layout.preferredHeight: 120
-                                currentIndex: demoTabBar.currentIndex
+                                Layout.preferredHeight: 140
+                                tabs: [
+                                    { title: "General", iconName: "settings" },
+                                    { title: "Rendimiento", iconName: "refresh" },
+                                    { title: "Redes", iconName: "folder" }
+                                ]
                                 Item {
                                     Text {
                                         anchors.centerIn: parent
-                                        text: "Contenido de la vista General"
+                                        text: "⚙ Contenido de la vista General del Sistema"
                                         color: CachyTheme.textSecondary
+                                        font.pixelSize: 13
                                     }
                                 }
                                 Item {
                                     Text {
                                         anchors.centerIn: parent
-                                        text: "Métricas de rendimiento en tiempo real"
+                                        text: "⚡ Métricas de rendimiento en tiempo real (CPU BORE / GPU Vulkan)"
                                         color: CachyTheme.textSecondary
+                                        font.pixelSize: 13
                                     }
                                 }
                                 Item {
                                     Text {
                                         anchors.centerIn: parent
-                                        text: "Configuración de adaptadores de red"
+                                        text: "🌐 Configuración de adaptadores de red y conexiones activas"
                                         color: CachyTheme.textSecondary
+                                        font.pixelSize: 13
                                     }
                                 }
                             }
@@ -415,23 +432,35 @@ CachyWindow {
                         color: CachyTheme.textPrimary
                     }
 
+                    CachySortFilterProxyModel {
+                        id: tableProxyModel
+                        sortRoleName: "name"
+                        sortOrder: Qt.AscendingOrder
+                        source: ListModel {
+                            ListElement { name: "cachyos-desktop-2026.iso"; category: "ISO"; size: "2.8 GB"; progress: 1.0 }
+                            ListElement { name: "linux-cachyos-bore-kernel.tar.zst"; category: "Kernel"; size: "148 MB"; progress: 0.65 }
+                            ListElement { name: "kde-plasma-glass-wallpapers.zip"; category: "Artwork"; size: "420 MB"; progress: 0.35 }
+                            ListElement { name: "audiotube-extended-master.tar.gz"; category: "Código"; size: "24 MB"; progress: 0.90 }
+                        }
+                    }
+
                     CachyTableView {
                         id: demoTableView
                         Layout.fillWidth: true
                         Layout.preferredHeight: 180
+                        sortRole: "name"
+                        sortOrder: Qt.AscendingOrder
                         columns: [
                             { role: "name", title: "Archivo / Paquete", width: 220, fillWidth: true },
                             { role: "category", title: "Tipo", width: 100, type: "badge" },
                             { role: "size", title: "Tamaño", width: 90 },
                             { role: "progress", title: "Progreso", width: 120, type: "progress" }
                         ]
-                        model: ListModel {
-                            ListElement { name: "cachyos-desktop-2026.iso"; category: "ISO"; size: "2.8 GB"; progress: 1.0 }
-                            ListElement { name: "linux-cachyos-bore-kernel.tar.zst"; category: "Kernel"; size: "148 MB"; progress: 0.65 }
-                            ListElement { name: "kde-plasma-glass-wallpapers.zip"; category: "Artwork"; size: "420 MB"; progress: 0.35 }
-                            ListElement { name: "audiotube-extended-master.tar.gz"; category: "Código"; size: "24 MB"; progress: 0.90 }
+                        model: tableProxyModel
+                        onRowClicked: (idx, row) => {
+                            const name = row.name ?? (typeof row.get === "function" ? row.get("name") : ("Fila " + idx));
+                            toastNotification.show("Elemento seleccionado: " + name, "info");
                         }
-                        onRowClicked: (idx, row) => toastNotification.show("Fila seleccionada: " + row.name, "info")
                     }
 
                     CachyCard {
@@ -625,24 +654,30 @@ CachyWindow {
                                 font.weight: Font.Bold
                                 color: CachyTheme.textPrimary
                             }
-                            RowLayout {
+                            GridLayout {
+                                columns: 2
                                 Layout.fillWidth: true
-                                spacing: 10
+                                columnSpacing: 10
+                                rowSpacing: 10
                                 CachyButton {
+                                    Layout.fillWidth: true
                                     text: "Mostrar Toast Éxito"
                                     onClicked: toastNotification.show("¡Operación completada con éxito!", "success")
                                 }
                                 CachyButton {
+                                    Layout.fillWidth: true
                                     text: "Mostrar Toast Error"
                                     destructive: true
                                     onClicked: toastNotification.show("Error de conexión al servidor", "error")
                                 }
                                 CachyButton {
+                                    Layout.fillWidth: true
                                     text: "Abrir Diálogo Modal"
                                     primary: true
                                     onClicked: demoModalDialog.open()
                                 }
                                 CachyButton {
+                                    Layout.fillWidth: true
                                     text: "Abrir Panel Lateral"
                                     onClicked: demoSideDrawer.toggle()
                                 }

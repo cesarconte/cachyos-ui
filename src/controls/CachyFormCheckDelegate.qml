@@ -79,6 +79,9 @@ Item {
     }
 
     TapHandler {
-        onTapped: root.toggled(!root.checked)
+        onTapped: {
+            root.checked = !root.checked;
+            root.toggled(root.checked);
+        }
     }
 }
