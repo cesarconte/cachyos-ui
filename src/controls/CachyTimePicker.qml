@@ -39,8 +39,8 @@ Item {
             root.hour = h;
         } else {
             var h = root.hour + delta;
-            if (h > 12) h = 1;
-            else if (h < 1) h = 12;
+            while (h > 12) h -= 12;
+            while (h < 1) h += 12;
             root.hour = h;
         }
         root.timeSelected(root.hour, root.minute);
@@ -48,7 +48,7 @@ Item {
 
     function stepMinute(delta: int) {
         var m = (root.minute + delta) % 60;
-        if (m < 0) m += 60;
+        while (m < 0) m += 60;
         root.minute = m;
         root.timeSelected(root.hour, root.minute);
     }
@@ -66,20 +66,33 @@ Item {
 
             // ── Hour Stepper Card ──────────────────────────────────────────
             Rectangle {
+                id: hourCard
                 Layout.preferredWidth: 64
                 Layout.preferredHeight: 70
                 radius: CachyTheme.radiusSmall
-                color: hourCardHover.hovered ? CachyPalette.cardBackgroundHover : Qt.rgba(0, 0, 0, 0.12)
+                color: hourMouseArea.containsMouse ? CachyPalette.cardBackgroundHover : Qt.rgba(0, 0, 0, 0.12)
                 border.width: 1
-                border.color: CachyPalette.specularBorder
+                border.color: hourMouseArea.containsMouse ? CachyTheme.accentColor : CachyPalette.specularBorder
 
-                HoverHandler {
-                    id: hourCardHover
-                }
+                Behavior on color { ColorAnimation { duration: CachyTheme.animFast } }
+                Behavior on border.color { ColorAnimation { duration: CachyTheme.animFast } }
 
-                WheelHandler {
+                MouseArea {
+                    id: hourMouseArea
+                    anchors.fill: parent
+                    hoverEnabled: true
+                    cursorShape: Qt.PointingHandCursor
+                    acceptedButtons: Qt.LeftButton
                     onWheel: (wheel) => {
+                        wheel.accepted = true;
                         root.stepHour(wheel.angleDelta.y > 0 ? 1 : -1);
+                    }
+                    onClicked: (mouse) => {
+                        if (mouse.y < height / 2) {
+                            root.stepHour(1);
+                        } else {
+                            root.stepHour(-1);
+                        }
                     }
                 }
 
@@ -95,15 +108,7 @@ Item {
                             anchors.centerIn: parent
                             size: 14
                             name: "chevron-up"
-                            color: hourUpHover.containsMouse ? CachyTheme.accentColor : CachyPalette.textSecondary
-                        }
-
-                        MouseArea {
-                            id: hourUpHover
-                            anchors.fill: parent
-                            hoverEnabled: true
-                            cursorShape: Qt.PointingHandCursor
-                            onClicked: root.stepHour(1)
+                            color: (hourMouseArea.containsMouse && hourMouseArea.mouseY < 24) ? CachyTheme.accentColor : CachyPalette.textSecondary
                         }
                     }
 
@@ -124,20 +129,10 @@ Item {
                             anchors.centerIn: parent
                             size: 14
                             name: "chevron-down"
-                            color: hourDownHover.containsMouse ? CachyTheme.accentColor : CachyPalette.textSecondary
-                        }
-
-                        MouseArea {
-                            id: hourDownHover
-                            anchors.fill: parent
-                            hoverEnabled: true
-                            cursorShape: Qt.PointingHandCursor
-                            onClicked: root.stepHour(-1)
+                            color: (hourMouseArea.containsMouse && hourMouseArea.mouseY > 46) ? CachyTheme.accentColor : CachyPalette.textSecondary
                         }
                     }
                 }
-
-
             }
 
             // ── Colon Separator ────────────────────────────────────────────
@@ -150,20 +145,34 @@ Item {
 
             // ── Minute Stepper Card ────────────────────────────────────────
             Rectangle {
+                id: minuteCard
                 Layout.preferredWidth: 64
                 Layout.preferredHeight: 70
                 radius: CachyTheme.radiusSmall
-                color: minuteCardHover.hovered ? CachyPalette.cardBackgroundHover : Qt.rgba(0, 0, 0, 0.12)
+                color: minuteMouseArea.containsMouse ? CachyPalette.cardBackgroundHover : Qt.rgba(0, 0, 0, 0.12)
                 border.width: 1
-                border.color: CachyPalette.specularBorder
+                border.color: minuteMouseArea.containsMouse ? CachyTheme.accentColor : CachyPalette.specularBorder
 
-                HoverHandler {
-                    id: minuteCardHover
-                }
+                Behavior on color { ColorAnimation { duration: CachyTheme.animFast } }
+                Behavior on border.color { ColorAnimation { duration: CachyTheme.animFast } }
 
-                WheelHandler {
+                MouseArea {
+                    id: minuteMouseArea
+                    anchors.fill: parent
+                    hoverEnabled: true
+                    cursorShape: Qt.PointingHandCursor
+                    acceptedButtons: Qt.LeftButton
                     onWheel: (wheel) => {
-                        root.stepMinute(wheel.angleDelta.y > 0 ? 1 : -1);
+                        wheel.accepted = true;
+                        var step = (wheel.modifiers & Qt.ShiftModifier) ? 5 : 1;
+                        root.stepMinute(wheel.angleDelta.y > 0 ? step : -step);
+                    }
+                    onClicked: (mouse) => {
+                        if (mouse.y < height / 2) {
+                            root.stepMinute(1);
+                        } else {
+                            root.stepMinute(-1);
+                        }
                     }
                 }
 
@@ -179,15 +188,7 @@ Item {
                             anchors.centerIn: parent
                             size: 14
                             name: "chevron-up"
-                            color: minuteUpHover.containsMouse ? CachyTheme.accentColor : CachyPalette.textSecondary
-                        }
-
-                        MouseArea {
-                            id: minuteUpHover
-                            anchors.fill: parent
-                            hoverEnabled: true
-                            cursorShape: Qt.PointingHandCursor
-                            onClicked: root.stepMinute(1)
+                            color: (minuteMouseArea.containsMouse && minuteMouseArea.mouseY < 24) ? CachyTheme.accentColor : CachyPalette.textSecondary
                         }
                     }
 
@@ -208,20 +209,10 @@ Item {
                             anchors.centerIn: parent
                             size: 14
                             name: "chevron-down"
-                            color: minuteDownHover.containsMouse ? CachyTheme.accentColor : CachyPalette.textSecondary
-                        }
-
-                        MouseArea {
-                            id: minuteDownHover
-                            anchors.fill: parent
-                            hoverEnabled: true
-                            cursorShape: Qt.PointingHandCursor
-                            onClicked: root.stepMinute(-1)
+                            color: (minuteMouseArea.containsMouse && minuteMouseArea.mouseY > 46) ? CachyTheme.accentColor : CachyPalette.textSecondary
                         }
                     }
                 }
-
-
             }
 
             // ── AM / PM Toggle (if !is24Hour) ──────────────────────────────
