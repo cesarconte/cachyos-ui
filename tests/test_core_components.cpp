@@ -29,6 +29,7 @@ enum TorrentRole {
     NameRole = Qt::UserRole + 1,
     CategoryRole,
     SizeMBrole,
+    SizeStrRole,
 };
 
 class SampleModel : public QStandardItemModel
@@ -37,10 +38,10 @@ public:
     explicit SampleModel(QObject *parent = nullptr)
         : QStandardItemModel(parent)
     {
-        addEntry(QStringLiteral("cachyos-desktop-linux-2603.iso"), QStringLiteral("ISO"), 2850);
-        addEntry(QStringLiteral("archlinux-x86_64.iso"), QStringLiteral("ISO"), 1120);
-        addEntry(QStringLiteral("kde-plasma-wallpapers.tar.zst"), QStringLiteral("Artwork"), 420);
-        addEntry(QStringLiteral("linux-cachyos-bore-6.14.pkg.tar.zst"), QStringLiteral("Kernel"), 165);
+        addEntry(QStringLiteral("cachyos-desktop-linux-2603.iso"), QStringLiteral("ISO"), 2850, QStringLiteral("2.8 GB"));
+        addEntry(QStringLiteral("archlinux-x86_64.iso"), QStringLiteral("ISO"), 1120, QStringLiteral("1.1 GB"));
+        addEntry(QStringLiteral("kde-plasma-wallpapers.tar.zst"), QStringLiteral("Artwork"), 420, QStringLiteral("420 MB"));
+        addEntry(QStringLiteral("linux-cachyos-bore-6.14.pkg.tar.zst"), QStringLiteral("Kernel"), 165, QStringLiteral("148 MB"));
     }
 
     QHash<int, QByteArray> roleNames() const override
@@ -49,16 +50,18 @@ public:
             {NameRole, QByteArrayLiteral("name")},
             {CategoryRole, QByteArrayLiteral("category")},
             {SizeMBrole, QByteArrayLiteral("sizeMB")},
+            {SizeStrRole, QByteArrayLiteral("sizeStr")},
         };
     }
 
 private:
-    void addEntry(const QString &name, const QString &category, int sizeMB)
+    void addEntry(const QString &name, const QString &category, int sizeMB, const QString &sizeStr)
     {
         auto *item = new QStandardItem(name);
         item->setData(name, NameRole);
         item->setData(category, CategoryRole);
         item->setData(sizeMB, SizeMBrole);
+        item->setData(sizeStr, SizeStrRole);
         appendRow(item);
     }
 };
@@ -130,6 +133,20 @@ void TestCoreComponents::testSortFilterProxyModelSortingAndMapping()
     proxy.sortByRole(QStringLiteral("sizeMB"), Qt::DescendingOrder);
     QCOMPARE(proxy.get(0).value(QStringLiteral("sizeMB")).toInt(), 2850);
     QCOMPARE(proxy.get(3).value(QStringLiteral("sizeMB")).toInt(), 165);
+
+    // Sort by human-readable string sizes (sizeStr) ascending: 148 MB < 420 MB < 1.1 GB < 2.8 GB
+    proxy.sortByRole(QStringLiteral("sizeStr"), Qt::AscendingOrder);
+    QCOMPARE(proxy.get(0).value(QStringLiteral("sizeStr")).toString(), QStringLiteral("148 MB"));
+    QCOMPARE(proxy.get(1).value(QStringLiteral("sizeStr")).toString(), QStringLiteral("420 MB"));
+    QCOMPARE(proxy.get(2).value(QStringLiteral("sizeStr")).toString(), QStringLiteral("1.1 GB"));
+    QCOMPARE(proxy.get(3).value(QStringLiteral("sizeStr")).toString(), QStringLiteral("2.8 GB"));
+
+    // Sort by human-readable string sizes (sizeStr) descending: 2.8 GB > 1.1 GB > 420 MB > 148 MB
+    proxy.sortByRole(QStringLiteral("sizeStr"), Qt::DescendingOrder);
+    QCOMPARE(proxy.get(0).value(QStringLiteral("sizeStr")).toString(), QStringLiteral("2.8 GB"));
+    QCOMPARE(proxy.get(1).value(QStringLiteral("sizeStr")).toString(), QStringLiteral("1.1 GB"));
+    QCOMPARE(proxy.get(2).value(QStringLiteral("sizeStr")).toString(), QStringLiteral("420 MB"));
+    QCOMPARE(proxy.get(3).value(QStringLiteral("sizeStr")).toString(), QStringLiteral("148 MB"));
 
     // Out-of-bounds safety
     QVERIFY(proxy.get(-1).isEmpty());
