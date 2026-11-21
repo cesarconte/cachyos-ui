@@ -40,5 +40,13 @@
         <file>moon.svg</file>
         <file>calendar.svg</file>
         <file>clock.svg</file>
+        <file>flag.svg</file>
+        <file>inbox.svg</file>
+        <file>alarm.svg</file>
+        <file>share.svg</file>
+        <file>sidebar.svg</file>
+        <file>tag.svg</file>
+        <file>location.svg</file>
+        <file>message.svg</file>
     </qresource>
 </RCC>

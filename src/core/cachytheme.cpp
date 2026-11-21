@@ -96,9 +96,15 @@ bool CachyTheme::isDark() const
         return true;
     }
     if (auto *styleHints = QGuiApplication::styleHints()) {
-        return styleHints->colorScheme() == Qt::ColorScheme::Dark;
+        const auto scheme = styleHints->colorScheme();
+        if (scheme == Qt::ColorScheme::Dark) {
+            return true;
+        }
+        if (scheme == Qt::ColorScheme::Light) {
+            return false;
+        }
     }
-    return true;
+    return QGuiApplication::palette().color(QPalette::Window).lightnessF() < 0.5;
 }
 
 QColor CachyTheme::windowBackground() const

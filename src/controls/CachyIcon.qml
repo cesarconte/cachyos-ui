@@ -67,8 +67,11 @@ Item {
         // Lifting brightness to 1.0 normalizes dark symbolic icons (#232629)
         // and white builtin SVGs (#FFFFFF) to uniform white luminance before
         // colorization tints the alpha mask to the exact `root.color`.
+        // Note: MultiEffect blends toward colorizationColor scaled by its alpha,
+        // so pass full opaque RGB here and forward `root.color.a` via opacity.
         brightness: 1.0
         colorization: 1.0
-        colorizationColor: root.color
+        colorizationColor: Qt.rgba(root.color.r, root.color.g, root.color.b, 1.0)
+        opacity: root.color.a
     }
 }
