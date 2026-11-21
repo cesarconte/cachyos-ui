@@ -14,7 +14,7 @@ CachyToolbarButton {
     property Window targetWindow: Window.window
     readonly property bool isCollapsed: Boolean(root.targetWindow && (root.targetWindow.sidebarCollapsed || (root.targetWindow.sidebarVisible !== undefined && !root.targetWindow.sidebarVisible)))
 
-    iconName: root.isCollapsed ? "sidebar-expand-symbolic" : "sidebar-collapse-symbolic"
+    iconName: "sidebar"
     tooltipText: root.isCollapsed ? CachyI18n.i18n("Expand Sidebar") : CachyI18n.i18n("Collapse Sidebar")
     visible: Boolean(root.targetWindow && (root.targetWindow.sidebarCollapsible || root.targetWindow.hasSidebar !== undefined))
 

@@ -8,6 +8,8 @@
  * - Offscreen QML instantiation of CachyIcon and CachyWindowShadow
  */
 
+#include <functional>
+
 #include <QFile>
 #include <QGuiApplication>
 #include <QQmlComponent>
@@ -81,6 +83,7 @@ private Q_SLOTS:
     void testPhase3ControlsAndLayoutAudit();
     void testPhaseAControlsAndLayoutAudit();
     void testGoldenGateControlsAndLayoutAudit();
+    void testMenuAutoWidthAndFormDelegateWrap();
 
 private:
     CachyTheme m_theme;
@@ -197,6 +200,24 @@ void TestCoreComponents::testBuiltinVectorIconsResolution()
         QStringLiteral("tag"),
         QStringLiteral("location"),
         QStringLiteral("message"),
+        QStringLiteral("compose"),
+        QStringLiteral("folder-plus"),
+        QStringLiteral("checklist"),
+        QStringLiteral("table"),
+        QStringLiteral("paperclip"),
+        QStringLiteral("format-text"),
+        QStringLiteral("divider-horizontal"),
+        QStringLiteral("quote"),
+        QStringLiteral("sliders"),
+        QStringLiteral("crop"),
+        QStringLiteral("skip-back-15"),
+        QStringLiteral("skip-forward-15"),
+        QStringLiteral("heart"),
+        QStringLiteral("heart-filled"),
+        QStringLiteral("microphone"),
+        QStringLiteral("waveform"),
+        QStringLiteral("copy"),
+        QStringLiteral("eye"),
     };
 
     for (const QString &iconName : builtinIcons) {
@@ -739,6 +760,7 @@ void TestCoreComponents::testGoldenGateControlsAndLayoutAudit()
 
                 CachyFormCard {
                     Layout.fillWidth: true
+                    Layout.minimumWidth: 0
 
                     CachyFormCheckDelegate {
                         label: "Urgente"
@@ -746,8 +768,6 @@ void TestCoreComponents::testGoldenGateControlsAndLayoutAudit()
                     }
                 }
             }
-
-            Component.onCompleted: popover.openAt(anchorBtn)
         }
     )QML"), QUrl());
 
@@ -760,10 +780,256 @@ void TestCoreComponents::testGoldenGateControlsAndLayoutAudit()
 
     auto *popover = window->findChild<QObject *>(QStringLiteral("goldenGatePopover"));
     QVERIFY(popover != nullptr);
+    auto *anchorBtn = window->findChild<QQuickItem *>(QStringLiteral("popoverAnchor"));
+    QVERIFY(anchorBtn != nullptr);
+    QVERIFY(QMetaObject::invokeMethod(popover, "openAt", Q_ARG(QQuickItem *, anchorBtn)));
+    QCoreApplication::processEvents();
+
     QCOMPARE(popover->property("opened").toBool(), true);
+    QVERIFY(popover->property("height").toReal() >= 60.0);
     QVERIFY(popover->property("x").toReal() >= 12.0);
     QVERIFY(popover->property("y").toReal() >= 12.0);
     QVERIFY(popover->property("x").toReal() + popover->property("width").toReal() <= window->width() - 12.0);
+    const QPointF anchorTopRight = anchorBtn->mapToItem(window->contentItem(), QPointF(anchorBtn->width(), 0));
+    QVERIFY(popover->property("x").toReal() >= anchorTopRight.x());
+
+    const auto violations = LayoutAuditor::audit(window->contentItem());
+    QStringList messages;
+    for (const auto &v : violations) {
+        messages.append(v.toString());
+    }
+    QVERIFY2(violations.isEmpty(), qPrintable(messages.join(QLatin1Char('\n'))));
+}
+
+void TestCoreComponents::testMenuAutoWidthAndFormDelegateWrap()
+{
+    QQmlEngine engine;
+    engine.addImportPath(QStringLiteral(CACHYOS_BUILD_QML_DIR));
+
+    QQmlComponent component(&engine);
+    component.setData(QByteArrayLiteral(R"QML(
+        import QtQuick
+        import QtQuick.Layouts
+        import CachyOS.UI
+
+        CachyWindow {
+            id: win
+            title: "Menu Auto Width Audit"
+            width: 800
+            height: 600
+            contentPadded: false
+
+            function openRightMenu(): void {
+                longMenu.popup(rightAnchor, 0, rightAnchor.height + 6);
+            }
+
+            function openRepeaterMenu(): void {
+                dynamicMenu.popup(leftAnchor, 0, leftAnchor.height + 6);
+            }
+
+            contentData: [
+                Item {
+                    anchors.fill: parent
+
+                    CachyToolbarButton {
+                        id: leftAnchor
+                        objectName: "leftAnchor"
+                        x: 24
+                        y: 12
+                        iconName: "list"
+                    }
+
+                    CachyToolbarButton {
+                        id: rightAnchor
+                        objectName: "rightAnchor"
+                        x: parent.width - width - 16
+                        y: 12
+                        iconName: "more-horizontal"
+                    }
+
+                    CachyComboBox {
+                        id: narrowCombo
+                        objectName: "narrowCombo"
+                        x: 24
+                        y: 80
+                        width: 150
+                        model: ["Corto", "Transcribir con Whisper.cpp automáticamente"]
+                    }
+                }
+            ]
+
+            CachyMenu {
+                id: longMenu
+                objectName: "longMenu"
+
+                CachyMenuItem {
+                    text: "Importar archivo WAV…"
+                    iconName: "upload"
+                }
+                CachyMenuItem {
+                    text: "Transcribir con Whisper.cpp"
+                    iconName: "message"
+                }
+                CachyMenuItem {
+                    text: "Resumir con IA (Ollama)"
+                    iconName: "sparkles"
+                }
+                CachyMenuItem {
+                    text: "Insertar divisor horizontal"
+                    shortcutText: "Ctrl+L"
+                    iconName: "divider-horizontal"
+                }
+                CachyMenuItem {
+                    visible: false
+                    text: "Elemento oculto extremadamente largo que no debe ensanchar el menú visible en pantalla"
+                    iconName: "trash"
+                }
+            }
+
+            CachyMenu {
+                id: dynamicMenu
+                objectName: "dynamicMenu"
+
+                Repeater {
+                    model: ["Recordatorios", "Recordatorios del proyecto de trabajo"]
+                    delegate: CachyMenuItem {
+                        required property string modelData
+                        text: modelData
+                        checkable: true
+                        checked: modelData === "Recordatorios"
+                    }
+                }
+            }
+
+            CachyPopover {
+                id: wrapPopover
+                objectName: "wrapPopover"
+                preferredEdge: Qt.RightEdge
+                preferredWidth: 288
+
+                CachyFormCard {
+                    Layout.fillWidth: true
+                    Layout.minimumWidth: 0
+
+                    CachyFormCheckDelegate {
+                        objectName: "wrappedCheckDelegate"
+                        label: "Transcribir al finalizar"
+                        description: "Ejecuta Whisper.cpp automáticamente tras detener la grabación en cursos y notas"
+                        checked: true
+                    }
+                    CachyFormDelegateSeparator {}
+                    CachyFormButtonDelegate {
+                        objectName: "wrappedButtonDelegate"
+                        text: "Exportar a Kity Knowledge RAG"
+                        description: "Indexa el documento completo para búsquedas semánticas locales"
+                        icon.name: "sparkles"
+                    }
+                }
+            }
+        }
+    )QML"), QUrl());
+
+    QVERIFY2(!component.isError(), qPrintable(component.errorString()));
+    QScopedPointer<QObject> obj(component.create());
+    auto *window = qobject_cast<QQuickWindow *>(obj.data());
+    QVERIFY(window != nullptr);
+    QVERIFY(QTest::qWaitForWindowExposed(window));
+    QCoreApplication::processEvents();
+
+    auto assertNoTruncatedText = [](QQuickItem *rootItem, const char *label) {
+        QVERIFY(rootItem != nullptr);
+        int visibleTexts = 0;
+        std::function<void(QQuickItem *)> visit = [&](QQuickItem *item) {
+            if (!item || !item->isVisible()) {
+                return;
+            }
+            if (item->inherits("QQuickText")) {
+                const QVariant truncatedVar = item->property("truncated");
+                if (truncatedVar.isValid()) {
+                    ++visibleTexts;
+                    QVERIFY2(!truncatedVar.toBool(),
+                             qPrintable(QStringLiteral("%1 truncated text: '%2' (w=%3, impW=%4)")
+                                            .arg(QLatin1String(label))
+                                            .arg(item->property("text").toString())
+                                            .arg(item->width())
+                                            .arg(item->implicitWidth())));
+                }
+            }
+            for (QQuickItem *child : item->childItems()) {
+                visit(child);
+            }
+        };
+        visit(rootItem);
+        QVERIFY2(visibleTexts > 0, label);
+    };
+
+    // 1. Long static CachyMenu near right edge: expands > 200px, clamps within window, 0 truncation
+    QVERIFY(QMetaObject::invokeMethod(window, "openRightMenu"));
+    QTest::qWait(40);
+    auto *longMenu = window->findChild<QObject *>(QStringLiteral("longMenu"));
+    QVERIFY(longMenu != nullptr);
+    QCOMPARE(longMenu->property("opened").toBool(), true);
+    QVERIFY2(longMenu->property("width").toReal() > 200.0,
+             qPrintable(QStringLiteral("Expected menu width > 200, got %1").arg(longMenu->property("width").toReal())));
+    QVERIFY(longMenu->property("width").toReal() < 340.0); // hidden item must not bloat width
+    const QQuickItem *menuParent = longMenu->property("parent").value<QQuickItem *>();
+    QVERIFY(menuParent != nullptr);
+    const QPointF menuTopLeft = menuParent->mapToScene(QPointF(longMenu->property("x").toReal(), longMenu->property("y").toReal()));
+    const qreal menuRight = menuTopLeft.x() + longMenu->property("width").toReal();
+    QVERIFY2(menuTopLeft.x() >= 6.0,
+             qPrintable(QStringLiteral("Expected menu scene x >= 6, got x=%1, localX=%2, w=%3")
+                            .arg(menuTopLeft.x())
+                            .arg(longMenu->property("x").toReal())
+                            .arg(longMenu->property("width").toReal())));
+    QVERIFY2(menuRight <= window->width() - 6.0,
+             qPrintable(QStringLiteral("Expected menu scene right <= %1, got %2 (x=%3, w=%4)")
+                            .arg(window->width() - 6.0)
+                            .arg(menuRight)
+                            .arg(menuTopLeft.x())
+                            .arg(longMenu->property("width").toReal())));
+    assertNoTruncatedText(qvariant_cast<QQuickItem *>(longMenu->property("contentItem")), "longMenu");
+    QVERIFY(QMetaObject::invokeMethod(longMenu, "close"));
+    QTest::qWait(20);
+
+    // 2. Repeater-populated CachyMenu
+    QVERIFY(QMetaObject::invokeMethod(window, "openRepeaterMenu"));
+    QTest::qWait(40);
+    auto *dynamicMenu = window->findChild<QObject *>(QStringLiteral("dynamicMenu"));
+    QVERIFY(dynamicMenu != nullptr);
+    QCOMPARE(dynamicMenu->property("opened").toBool(), true);
+    QVERIFY(dynamicMenu->property("width").toReal() > 200.0);
+    assertNoTruncatedText(qvariant_cast<QQuickItem *>(dynamicMenu->property("contentItem")), "dynamicMenu");
+    QVERIFY(QMetaObject::invokeMethod(dynamicMenu, "close"));
+    QTest::qWait(20);
+
+    // 3. Wrapped FormDelegates inside narrow CachyPopover
+    auto *wrapPopover = window->findChild<QObject *>(QStringLiteral("wrapPopover"));
+    auto *leftAnchor = window->findChild<QQuickItem *>(QStringLiteral("leftAnchor"));
+    QVERIFY(wrapPopover != nullptr && leftAnchor != nullptr);
+    QVERIFY(QMetaObject::invokeMethod(wrapPopover, "openAt", Q_ARG(QQuickItem *, leftAnchor)));
+    QTest::qWait(40);
+    QCOMPARE(wrapPopover->property("opened").toBool(), true);
+    auto *wrappedCheck = window->findChild<QQuickItem *>(QStringLiteral("wrappedCheckDelegate"));
+    auto *wrappedButton = window->findChild<QQuickItem *>(QStringLiteral("wrappedButtonDelegate"));
+    QVERIFY(wrappedCheck != nullptr && wrappedButton != nullptr);
+    QVERIFY(wrappedCheck->implicitHeight() > 52.0);
+    QVERIFY(wrappedButton->implicitHeight() > 52.0);
+    assertNoTruncatedText(qvariant_cast<QQuickItem *>(wrapPopover->property("contentItem")), "wrapPopover");
+    QVERIFY(QMetaObject::invokeMethod(wrapPopover, "close"));
+    QTest::qWait(20);
+
+    // 4. Narrow CachyComboBox with wide popup option expands popup beyond control.width
+    auto *narrowCombo = window->findChild<QQuickItem *>(QStringLiteral("narrowCombo"));
+    QVERIFY(narrowCombo != nullptr);
+    auto *comboPopup = qvariant_cast<QObject *>(narrowCombo->property("popup"));
+    QVERIFY(comboPopup != nullptr);
+    QVERIFY(QMetaObject::invokeMethod(comboPopup, "open"));
+    QTest::qWait(40);
+    QCOMPARE(comboPopup->property("opened").toBool(), true);
+    QVERIFY(comboPopup->property("width").toReal() > narrowCombo->width());
+    assertNoTruncatedText(qvariant_cast<QQuickItem *>(comboPopup->property("contentItem")), "comboPopup");
+    QVERIFY(QMetaObject::invokeMethod(comboPopup, "close"));
+    QTest::qWait(20);
 
     const auto violations = LayoutAuditor::audit(window->contentItem());
     QStringList messages;

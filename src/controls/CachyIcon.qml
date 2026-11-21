@@ -42,11 +42,13 @@ Item {
         ? CachyTheme.iconUrl(root.name, root.fallback)
         : ""
     readonly property bool valid: root.resolvedSource.length > 0
+    readonly property bool isBuiltinIcon: root.resolvedSource.startsWith("qrc:/CachyOS/UI/icons/")
 
     implicitWidth: root.size
     implicitHeight: root.size
     width: root.size
     height: root.size
+    layer.enabled: !root.isBuiltinIcon && root.colored
 
     Image {
         id: sourceImage
@@ -69,7 +71,7 @@ Item {
         // colorization tints the alpha mask to the exact `root.color`.
         // Note: MultiEffect blends toward colorizationColor scaled by its alpha,
         // so pass full opaque RGB here and forward `root.color.a` via opacity.
-        brightness: 1.0
+        brightness: root.isBuiltinIcon ? 0.0 : 1.0
         colorization: 1.0
         colorizationColor: Qt.rgba(root.color.r, root.color.g, root.color.b, 1.0)
         opacity: root.color.a

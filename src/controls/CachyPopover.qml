@@ -34,13 +34,24 @@ T.Popup {
     property int activeEdge: root.preferredEdge
     property real arrowPos: 40
 
-    readonly property Window hostWindow: contentFlickable.itemWindow
+    readonly property Window hostWindow: (root.anchorItem && root.anchorItem.Window.window)
+        ? root.anchorItem.Window.window
+        : contentFlickable.itemWindow
     readonly property Item hostOverlay: (root.hostWindow && root.hostWindow.overlayItem)
         ? root.hostWindow.overlayItem
         : contentFlickable.qqcOverlay
 
+    readonly property int effectiveWidth: {
+        const winW = root.hostOverlay
+            ? root.hostOverlay.width
+            : (root.hostWindow ? root.hostWindow.width : 800);
+        return Math.min(root.preferredWidth, Math.max(200, Math.round(winW) - 28));
+    }
+
     parent: root.hostOverlay
-    width: root.preferredWidth
+    implicitWidth: root.effectiveWidth
+    implicitHeight: contentFlickable.implicitHeight + topPadding + bottomPadding
+    width: root.effectiveWidth
     padding: 12
     modal: false
     focus: true
@@ -50,8 +61,16 @@ T.Popup {
 
     function openAt(targetItem: Item) {
         root.anchorItem = targetItem;
+        if (root.hostOverlay && root.parent !== root.hostOverlay) {
+            root.parent = root.hostOverlay;
+        }
         root.updateGeometry();
         root.open();
+    }
+
+    onOpened: {
+        root.updateGeometry();
+        Qt.callLater(root.updateGeometry);
     }
 
     function updateGeometry() {
@@ -70,10 +89,8 @@ T.Popup {
             return;
         }
 
-        const anchorRect = root.anchorItem.mapRectToItem(
-            root.hostOverlay,
-            Qt.rect(0, 0, root.anchorItem.width, root.anchorItem.height)
-        );
+        const topLeft = root.anchorItem.mapToItem(root.hostOverlay, 0, 0);
+        const anchorRect = Qt.rect(topLeft.x, topLeft.y, root.anchorItem.width, root.anchorItem.height);
         const centerX = anchorRect.x + (anchorRect.width / 2);
         const centerY = anchorRect.y + (anchorRect.height / 2);
 
@@ -132,6 +149,14 @@ T.Popup {
         function onHeightChanged() {
             if (root.opened) root.updateGeometry();
         }
+    }
+
+    Connections {
+        target: root.opened ? root.anchorItem : null
+        function onXChanged() { root.updateGeometry(); }
+        function onYChanged() { root.updateGeometry(); }
+        function onWidthChanged() { root.updateGeometry(); }
+        function onHeightChanged() { root.updateGeometry(); }
     }
 
     background: Item {
@@ -206,7 +231,7 @@ T.Popup {
             ? root.hostOverlay.height
             : (root.hostWindow ? root.hostWindow.height : 600)
 
-        implicitWidth: root.preferredWidth - (root.padding * 2)
+        implicitWidth: root.width - (root.padding * 2)
         implicitHeight: Math.min(contentColumn.implicitHeight, root.maxHeight - (root.padding * 2), Math.max(80, availableWinH - 52))
         contentWidth: width
         contentHeight: contentColumn.implicitHeight

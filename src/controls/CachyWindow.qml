@@ -25,6 +25,7 @@ Window {
 
     property bool showTrafficLights: true
     property bool showTitleBarDivider: true
+    property bool showContentTitleBar: true
     property bool showWindowFrame: true
     property bool closable: true
     property bool minimizable: true
@@ -110,7 +111,7 @@ Window {
             radius: root.cornerRadius
             color: root.hasSidebar
                 ? (root.backgroundColor.a > 0 ? root.backgroundColor : "transparent")
-                : (root.backgroundColor.a > 0 ? root.backgroundColor : CachyTheme.windowBackground)
+                : (root.backgroundColor.a > 0 ? root.backgroundColor : CachyPalette.windowBackground)
             visible: root.showWindowFrame
         }
 
@@ -151,7 +152,7 @@ Window {
                     visible: root.hasSidebar
                     Layout.preferredWidth: root.hasSidebar ? root.sidebarWidth : 0
                     Layout.fillHeight: true
-                    color: CachyTheme.sidebarBackground
+                    color: CachyPalette.sidebarBackground
 
                     ColumnLayout {
                         anchors.fill: parent
@@ -224,11 +225,11 @@ Window {
                     id: contentPane
                     Layout.fillWidth: true
                     Layout.fillHeight: true
-                    color: root.hasSidebar
-                        ? (root.contentBackground.a > 0
-                            ? root.contentBackground
-                            : (root.backgroundColor.a > 0 ? root.backgroundColor : CachyTheme.windowBackground))
-                        : "transparent"
+                    color: (root.contentBackground.a > 0)
+                        ? root.contentBackground
+                        : (root.hasSidebar
+                            ? (root.backgroundColor.a > 0 ? root.backgroundColor : CachyPalette.windowBackground)
+                            : "transparent")
 
                     ColumnLayout {
                         anchors.fill: parent
@@ -239,8 +240,8 @@ Window {
                         id: titleBar
                         Layout.fillWidth: true
                         Layout.minimumWidth: 0
-                        Layout.preferredHeight: root.showTrafficLights ? CachyTheme.titleBarHeight : 0
-                        visible: root.showTrafficLights
+                        Layout.preferredHeight: (root.showTrafficLights && root.showContentTitleBar) ? CachyTheme.titleBarHeight : 0
+                        visible: root.showTrafficLights && root.showContentTitleBar
                         z: 10
 
                         // Titlebar Drag Handler (moves the frameless window)

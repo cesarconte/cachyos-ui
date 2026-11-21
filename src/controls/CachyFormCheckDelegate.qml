@@ -26,7 +26,7 @@ Item {
     signal toggled(bool checked)
 
     Layout.fillWidth: true
-    implicitHeight: root.description.length > 0 ? 52 : 40
+    implicitHeight: Math.max(root.description.length > 0 ? 52 : 40, Math.ceil(contentRow.implicitHeight) + 16)
 
     Rectangle {
         anchors.fill: parent
@@ -35,7 +35,10 @@ Item {
     }
 
     RowLayout {
-        anchors.fill: parent
+        id: contentRow
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.verticalCenter: parent.verticalCenter
         anchors.leftMargin: CachyTheme.spacingMedium
         anchors.rightMargin: CachyTheme.spacingMedium
         spacing: CachyTheme.spacingMedium

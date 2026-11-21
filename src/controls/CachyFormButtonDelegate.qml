@@ -19,12 +19,14 @@ T.AbstractButton {
     property string description: ""
 
     Layout.fillWidth: true
-    implicitHeight: root.description.length > 0 ? 52 : 40
-    padding: 0
+    implicitHeight: Math.max(root.description.length > 0 ? 52 : 40, Math.ceil(contentRow.implicitHeight) + topPadding + bottomPadding)
+    leftPadding: CachyTheme.spacingMedium
+    rightPadding: CachyTheme.spacingMedium
+    topPadding: 8
+    bottomPadding: 8
 
     contentItem: RowLayout {
-        anchors.leftMargin: CachyTheme.spacingMedium
-        anchors.rightMargin: CachyTheme.spacingMedium
+        id: contentRow
         spacing: CachyTheme.spacingSmall
 
         CachyIcon {

@@ -28,7 +28,7 @@ T.MenuItem {
         return CachyPalette.text;
     }
 
-    implicitWidth: Math.max(160, row.implicitWidth + leftPadding + rightPadding)
+    implicitWidth: Math.max(160, Math.ceil(row.implicitWidth) + leftPadding + rightPadding + 4)
     implicitHeight: 30
     leftPadding: 10
     rightPadding: 10
@@ -61,6 +61,7 @@ T.MenuItem {
         }
 
         Text {
+            id: labelText
             Layout.fillWidth: true
             Layout.minimumWidth: 0
             text: control.text
@@ -71,6 +72,7 @@ T.MenuItem {
         }
 
         Text {
+            Layout.leftMargin: 12
             visible: control.shortcutText.length > 0
             text: control.shortcutText
             font.pixelSize: 11

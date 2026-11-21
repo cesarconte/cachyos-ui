@@ -30,6 +30,7 @@ T.ComboBox {
     delegate: T.ItemDelegate {
         id: itemDelegate
         width: ListView.view ? ListView.view.width : control.width
+        implicitWidth: Math.ceil(delegateRow.implicitWidth) + 8
         implicitHeight: 30
 
         required property var model
@@ -56,6 +57,7 @@ T.ComboBox {
         }
 
         contentItem: RowLayout {
+            id: delegateRow
             spacing: 8
 
             CachyIcon {
@@ -134,11 +136,29 @@ T.ComboBox {
 
     popup: T.Popup {
         y: control.height + 4
-        width: Math.max(control.width, 160)
+        width: {
+            const hostWin = control.Window.window;
+            const maxAllowed = hostWin && hostWin.width > 0
+                ? Math.max(control.width, hostWin.width - 24)
+                : 480;
+            return Math.min(maxAllowed, Math.max(control.width, 160, Math.ceil(comboListView.maxDelegateWidth) + 10));
+        }
         implicitHeight: Math.min(260, contentItem.implicitHeight + 10)
         padding: 5
 
         contentItem: ListView {
+            id: comboListView
+            readonly property real maxDelegateWidth: {
+                let maxW = 0;
+                const visItems = comboListView.contentItem.visibleChildren;
+                for (let i = 0; i < visItems.length; ++i) {
+                    const child = visItems[i];
+                    if (child && child.visible && child.implicitWidth > maxW) {
+                        maxW = child.implicitWidth;
+                    }
+                }
+                return maxW;
+            }
             clip: true
             implicitHeight: contentHeight
             model: control.popup.visible ? control.delegateModel : null

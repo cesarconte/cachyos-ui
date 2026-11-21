@@ -48,5 +48,23 @@
         <file>tag.svg</file>
         <file>location.svg</file>
         <file>message.svg</file>
+        <file>compose.svg</file>
+        <file>folder-plus.svg</file>
+        <file>checklist.svg</file>
+        <file>table.svg</file>
+        <file>paperclip.svg</file>
+        <file>format-text.svg</file>
+        <file>divider-horizontal.svg</file>
+        <file>quote.svg</file>
+        <file>sliders.svg</file>
+        <file>crop.svg</file>
+        <file>skip-back-15.svg</file>
+        <file>skip-forward-15.svg</file>
+        <file>heart.svg</file>
+        <file>heart-filled.svg</file>
+        <file>microphone.svg</file>
+        <file>waveform.svg</file>
+        <file>copy.svg</file>
+        <file>eye.svg</file>
     </qresource>
 </RCC>

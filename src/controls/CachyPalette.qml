@@ -108,6 +108,11 @@ QtObject {
         ? Qt.rgba(0.11, 0.11, 0.14, 0.24 + (glassOpacity * 0.44))
         : Qt.rgba(0.96, 0.97, 1.00, 0.30 + (glassOpacity * 0.46))
 
+    /// Edge-to-edge Golden Gate sidebar surface.
+    readonly property color sidebarBackground: isDark
+        ? Qt.rgba(0.08, 0.08, 0.11, 0.18 + (glassOpacity * 0.36))
+        : Qt.rgba(0.91, 0.93, 0.97, 0.22 + (glassOpacity * 0.40))
+
     /// Dense material for floating panels (popovers, sheets, menus).
     readonly property color sheetBackground: isDark
         ? Qt.rgba(0.12, 0.12, 0.15, 0.88 + (glassOpacity * 0.10))

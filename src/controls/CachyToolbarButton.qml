@@ -20,6 +20,7 @@ Rectangle {
     property bool pillStyle: true
     /// Filled with the accent colour: the primary action of a surface.
     property bool primary: false
+    property color accentColor: CachyTheme.accentColor
 
     signal clicked()
     /// Emitted when a checkable button is toggled. It carries the intended new
@@ -29,15 +30,18 @@ Rectangle {
     signal toggled(bool checked)
 
     implicitWidth: root.text.length > 0
-        ? contentRow.implicitWidth + 18
-        : (root.pillStyle ? implicitHeight : 28)
-    implicitHeight: 28
+        ? contentRow.implicitWidth + (root.pillStyle ? 18 : 14)
+        : (root.pillStyle ? 28 : 26)
+    implicitHeight: root.pillStyle ? 28 : 22
     radius: height / 2
 
-    readonly property bool isHovered: btnHover.hovered
-    readonly property bool isPressed: btnTap.pressed
+    opacity: root.enabled ? 1.0 : 0.38
+    Behavior on opacity { NumberAnimation { duration: 120 } }
 
-    scale: root.isPressed ? 0.94 : (root.isHovered ? 1.03 : 1.0)
+    readonly property bool isHovered: root.enabled && btnHover.hovered
+    readonly property bool isPressed: root.enabled && btnTap.pressed
+
+    scale: root.enabled ? (root.isPressed ? 0.94 : (root.isHovered ? 1.03 : 1.0)) : 1.0
     Behavior on scale {
         NumberAnimation {
             duration: 140
@@ -46,26 +50,27 @@ Rectangle {
     }
 
     color: {
-        if (root.primary) return CachyTheme.accentColor;
-        if (root.checked) return Qt.rgba(CachyTheme.accentColor.r, CachyTheme.accentColor.g, CachyTheme.accentColor.b, 0.22);
+        if (root.primary) return root.accentColor;
+        if (root.checked) return Qt.rgba(root.accentColor.r, root.accentColor.g, root.accentColor.b, 0.22);
         if (root.isPressed) return CachyPalette.isDark ? Qt.rgba(1, 1, 1, 0.18) : Qt.rgba(0, 0, 0, 0.14);
         if (root.isHovered) return CachyPalette.isDark ? Qt.rgba(1, 1, 1, 0.12) : Qt.rgba(0, 0, 0, 0.08);
         if (root.pillStyle) return CachyPalette.surfacePill;
         return "transparent";
     }
 
-    border.width: (root.pillStyle || root.checked || root.isHovered || root.primary) ? 1 : 0
-    border.color: root.primary ? CachyTheme.accentColor : (root.checked ? CachyTheme.accentColor : CachyPalette.specularBorder)
+    border.width: (root.pillStyle || root.primary) ? 1 : 0
+    border.color: root.primary ? root.accentColor : (root.checked ? root.accentColor : CachyPalette.specularBorder)
 
     Behavior on color { ColorAnimation { duration: 120 } }
 
     HoverHandler {
         id: btnHover
-        cursorShape: Qt.PointingHandCursor
+        cursorShape: root.enabled ? Qt.PointingHandCursor : Qt.ArrowCursor
     }
 
     TapHandler {
         id: btnTap
+        enabled: root.enabled
         onTapped: {
             if (root.checkable) {
                 root.toggled(!root.checked);
@@ -84,22 +89,22 @@ Rectangle {
             id: iconHolder
             anchors.verticalCenter: parent.verticalCenter
             name: root.iconName
-            size: 16
-            color: root.primary ? "#FFFFFF" : (root.checked ? CachyTheme.accentColor : CachyPalette.text)
+            size: root.pillStyle ? 15 : 14
+            color: root.primary ? "#FFFFFF" : (root.checked ? root.accentColor : CachyPalette.text)
             visible: root.iconName.length > 0 && valid
         }
 
         Text {
             visible: root.text.length > 0
             text: root.text
-            color: root.primary ? "#FFFFFF" : (root.checked ? CachyTheme.accentColor : CachyPalette.text)
+            color: root.primary ? "#FFFFFF" : (root.checked ? root.accentColor : CachyPalette.text)
             font.pixelSize: 13
             font.weight: Font.Medium
             anchors.verticalCenter: parent.verticalCenter
         }
     }
 
-    ToolTip.visible: root.isHovered && root.tooltipText.length > 0
+    ToolTip.visible: btnHover.hovered && root.tooltipText.length > 0
     ToolTip.text: root.tooltipText
     ToolTip.delay: 450
 }

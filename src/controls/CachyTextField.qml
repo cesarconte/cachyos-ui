@@ -75,6 +75,20 @@ T.TextField {
         visible: !control.isSearch && control.leadingIcon.length > 0 && CachyTheme.iconUrl(control.leadingIcon).length === 0
     }
 
+    // Placeholder text for QtQuick.Templates.TextField
+    Text {
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.leftMargin: control.leftPadding
+        anchors.rightMargin: control.rightPadding
+        anchors.verticalCenter: parent.verticalCenter
+        text: control.placeholderText
+        font: control.font
+        color: control.placeholderTextColor
+        elide: Text.ElideRight
+        visible: control.length === 0 && !control.preeditText && control.placeholderText.length > 0
+    }
+
     // Clear Button (Vector Quick Clean) - Capa z: 10 interactiva
     Rectangle {
         id: clearBtn

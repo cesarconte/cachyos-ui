@@ -141,6 +141,12 @@ void LayoutAuditor::auditItem(QQuickItem *item, QList<Violation> &out)
         return;
     }
 
+    // Qt Quick's MultiEffect spawns internal QQuickShaderEffect / QGfxSourceProxyME
+    // padding nodes larger than the host box when shadowEnabled is true.
+    if (declaresBleed(item) && item->inherits("QQuickMultiEffect")) {
+        return;
+    }
+
     QQuickItem *parent = item->parentItem();
     const bool rendered = item->width() > 0.0 && item->height() > 0.0;
     const bool measurable = rendered && parent && parent->width() > 0.0 && parent->height() > 0.0
