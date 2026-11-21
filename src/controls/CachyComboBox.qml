@@ -8,6 +8,7 @@
 pragma ComponentBehavior: Bound
 
 import QtQuick
+import QtQuick.Effects
 import QtQuick.Layouts
 import QtQuick.Templates as T
 import QtQuick.Controls as QQC2
@@ -48,7 +49,7 @@ T.ComboBox {
         highlighted: control.highlightedIndex === itemDelegate.index
 
         background: Rectangle {
-            radius: CachyTheme.radiusSmall - 2
+            radius: CachyTheme.radiusSmall
             color: itemDelegate.highlighted || itemHover.hovered
                 ? CachyTheme.withAlpha(CachyTheme.accentColor, 0.20)
                 : "transparent"
@@ -92,12 +93,22 @@ T.ComboBox {
         }
     }
 
-    indicator: CachyIcon {
+    indicator: Column {
         x: control.width - width - 10
         y: Math.round((control.height - height) / 2)
-        name: "chevron-down"
-        size: 14
-        color: control.enabled ? CachyPalette.textSecondary : CachyPalette.textMuted
+        spacing: -2
+
+        CachyIcon {
+            name: "chevron-up"
+            size: 9
+            color: control.enabled ? CachyPalette.textSecondary : CachyPalette.textMuted
+        }
+
+        CachyIcon {
+            name: "chevron-down"
+            size: 9
+            color: control.enabled ? CachyPalette.textSecondary : CachyPalette.textMuted
+        }
     }
 
     contentItem: Text {
@@ -140,11 +151,27 @@ T.ComboBox {
             }
         }
 
-        background: Rectangle {
-            radius: CachyTheme.radiusMedium
-            color: CachyPalette.sheetBackground
-            border.width: 1
-            border.color: CachyPalette.specularBorder
+        background: Item {
+            Rectangle {
+                id: comboPopupBg
+                anchors.fill: parent
+                radius: 14
+                color: CachyPalette.sheetBackground
+                border.width: 1
+                border.color: CachyPalette.specularBorder
+                visible: false
+            }
+
+            MultiEffect {
+                property bool auditBleed: true
+                anchors.fill: comboPopupBg
+                source: comboPopupBg
+                shadowEnabled: true
+                shadowBlur: 0.55
+                shadowVerticalOffset: 4
+                shadowHorizontalOffset: 0
+                shadowColor: Qt.rgba(0, 0, 0, CachyPalette.isDark ? 0.50 : 0.20)
+            }
         }
     }
 

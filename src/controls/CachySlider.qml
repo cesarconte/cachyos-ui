@@ -21,14 +21,14 @@ T.Slider {
         x: control.leftPadding
         y: control.topPadding + Math.round((control.availableHeight - height) / 2)
         width: control.availableWidth
-        height: 6
-        radius: 3
-        color: CachyPalette.isDark ? Qt.rgba(1, 1, 1, 0.16) : Qt.rgba(0, 0, 0, 0.10)
+        height: 4
+        radius: 2
+        color: CachyPalette.isDark ? Qt.rgba(1, 1, 1, 0.16) : Qt.rgba(0, 0, 0, 0.12)
 
         Rectangle {
             width: Math.max(0, control.visualPosition * parent.width)
             height: parent.height
-            radius: 3
+            radius: 2
             color: control.enabled ? control.accentColor : CachyPalette.textMuted
         }
     }
@@ -36,14 +36,14 @@ T.Slider {
     handle: Rectangle {
         x: control.leftPadding + Math.round(control.visualPosition * (control.availableWidth - width))
         y: control.topPadding + Math.round((control.availableHeight - height) / 2)
-        width: 20
-        height: 20
-        radius: 10
+        width: 22
+        height: 14
+        radius: 7
         color: "#FFFFFF"
         border.width: 0.5
-        border.color: Qt.rgba(0, 0, 0, 0.20)
+        border.color: Qt.rgba(0, 0, 0, 0.18)
 
-        scale: control.pressed ? 1.08 : (handleHover.hovered ? 1.04 : 1.0)
+        scale: control.pressed ? 1.06 : (handleHover.hovered ? 1.03 : 1.0)
         Behavior on scale {
             NumberAnimation { duration: CachyTheme.animFast; easing.type: Easing.OutQuad }
         }

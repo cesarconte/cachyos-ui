@@ -18,7 +18,7 @@ Item {
     property bool minimizable: true
     property bool maximizable: true
 
-    // macOS Tahoe (26): 14pt buttons, 22pt centre-to-centre (8pt gap), 16pt left inset
+    // macOS 27 Golden Gate: 14pt buttons, 22pt centre-to-centre (8pt gap), 16pt left inset
     implicitWidth: 58 // 3 * 14 + 2 * 8
     implicitHeight: 14
 
@@ -61,9 +61,24 @@ Item {
             color: closeBtn.innerColor
             border.width: 0.5
             border.color: closeBtn.outerColor
+            scale: closeBtn.isPressed ? 0.92 : (root.rowHovered ? 1.05 : 1.0)
 
             Behavior on color { ColorAnimation { duration: 120 } }
             Behavior on border.color { ColorAnimation { duration: 120 } }
+            Behavior on scale { NumberAnimation { duration: 110; easing.type: Easing.OutCubic } }
+
+            // Golden Gate subtle Aqua specular top highlight
+            Rectangle {
+                anchors.fill: parent
+                anchors.margins: 1
+                radius: parent.radius - 1
+                visible: root.closable && (root.active || closeBtn.isHovered)
+                gradient: Gradient {
+                    GradientStop { position: 0.0; color: Qt.rgba(1, 1, 1, 0.36) }
+                    GradientStop { position: 0.55; color: Qt.rgba(1, 1, 1, 0.0) }
+                    GradientStop { position: 1.0; color: Qt.rgba(0, 0, 0, 0.06) }
+                }
+            }
 
             Shape {
                 anchors.fill: parent
@@ -126,9 +141,24 @@ Item {
             color: minBtn.innerColor
             border.width: 0.5
             border.color: minBtn.outerColor
+            scale: minBtn.isPressed ? 0.92 : (root.rowHovered ? 1.05 : 1.0)
 
             Behavior on color { ColorAnimation { duration: 120 } }
             Behavior on border.color { ColorAnimation { duration: 120 } }
+            Behavior on scale { NumberAnimation { duration: 110; easing.type: Easing.OutCubic } }
+
+            // Golden Gate subtle Aqua specular top highlight
+            Rectangle {
+                anchors.fill: parent
+                anchors.margins: 1
+                radius: parent.radius - 1
+                visible: root.minimizable && (root.active || minBtn.isHovered)
+                gradient: Gradient {
+                    GradientStop { position: 0.0; color: Qt.rgba(1, 1, 1, 0.36) }
+                    GradientStop { position: 0.55; color: Qt.rgba(1, 1, 1, 0.0) }
+                    GradientStop { position: 1.0; color: Qt.rgba(0, 0, 0, 0.06) }
+                }
+            }
 
             Shape {
                 anchors.fill: parent
@@ -182,9 +212,24 @@ Item {
             color: maxBtn.innerColor
             border.width: 0.5
             border.color: maxBtn.outerColor
+            scale: maxBtn.isPressed ? 0.92 : (root.rowHovered ? 1.05 : 1.0)
 
             Behavior on color { ColorAnimation { duration: 120 } }
             Behavior on border.color { ColorAnimation { duration: 120 } }
+            Behavior on scale { NumberAnimation { duration: 110; easing.type: Easing.OutCubic } }
+
+            // Golden Gate subtle Aqua specular top highlight
+            Rectangle {
+                anchors.fill: parent
+                anchors.margins: 1
+                radius: parent.radius - 1
+                visible: root.maximizable && (root.active || maxBtn.isHovered)
+                gradient: Gradient {
+                    GradientStop { position: 0.0; color: Qt.rgba(1, 1, 1, 0.36) }
+                    GradientStop { position: 0.55; color: Qt.rgba(1, 1, 1, 0.0) }
+                    GradientStop { position: 1.0; color: Qt.rgba(0, 0, 0, 0.06) }
+                }
+            }
 
             Shape {
                 anchors.fill: parent

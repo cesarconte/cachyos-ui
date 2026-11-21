@@ -64,7 +64,6 @@ if(QMLTESTRUNNER_EXECUTABLE)
                 -input ${CMAKE_CURRENT_SOURCE_DIR}/tst_toolbarbutton.qml
                 -import ${CMAKE_BINARY_DIR}/src
                 -import ${CMAKE_INSTALL_PREFIX}/lib/qt6/qml
-                -import $ENV{HOME}/.local/lib/qt6/qml
     )
     set_tests_properties(test_toolbarbutton PROPERTIES
         ENVIRONMENT "QT_QPA_PLATFORM=offscreen;QT_QUICK_CONTROLS_STYLE=Basic"

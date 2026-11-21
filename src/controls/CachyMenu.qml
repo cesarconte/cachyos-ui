@@ -8,6 +8,7 @@
 pragma ComponentBehavior: Bound
 
 import QtQuick
+import QtQuick.Effects
 import QtQuick.Templates as T
 import CachyOS.UI
 
@@ -30,12 +31,29 @@ T.Menu {
         spacing: 2
     }
 
-    background: Rectangle {
+    background: Item {
         implicitWidth: 180
         implicitHeight: 36
-        radius: CachyTheme.radiusMedium
-        color: CachyPalette.sheetBackground
-        border.width: 1
-        border.color: CachyPalette.specularBorder
+
+        Rectangle {
+            id: menuBgCard
+            anchors.fill: parent
+            radius: 14
+            color: CachyPalette.sheetBackground
+            border.width: 1
+            border.color: CachyPalette.specularBorder
+            visible: false
+        }
+
+        MultiEffect {
+            property bool auditBleed: true
+            anchors.fill: menuBgCard
+            source: menuBgCard
+            shadowEnabled: true
+            shadowBlur: 0.55
+            shadowVerticalOffset: 4
+            shadowHorizontalOffset: 0
+            shadowColor: Qt.rgba(0, 0, 0, CachyPalette.isDark ? 0.50 : 0.20)
+        }
     }
 }

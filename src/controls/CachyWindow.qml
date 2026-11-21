@@ -77,6 +77,7 @@ Window {
     readonly property Item overlayItem: overlayContainer
     property int cornerRadius: CachyTheme.radiusWindow
     property color backgroundColor: "transparent"
+    property color contentBackground: "transparent"
     property int contentMargin: CachyTheme.marginWindow
     property bool contentPadded: false
 
@@ -107,7 +108,9 @@ Window {
             id: backgroundRect
             anchors.fill: parent
             radius: root.cornerRadius
-            color: root.backgroundColor.a > 0 ? root.backgroundColor : (root.hasSidebar ? "transparent" : CachyTheme.windowBackground)
+            color: root.hasSidebar
+                ? (root.backgroundColor.a > 0 ? root.backgroundColor : "transparent")
+                : (root.backgroundColor.a > 0 ? root.backgroundColor : CachyTheme.windowBackground)
             visible: root.showWindowFrame
         }
 
@@ -221,7 +224,11 @@ Window {
                     id: contentPane
                     Layout.fillWidth: true
                     Layout.fillHeight: true
-                    color: root.hasSidebar ? (root.backgroundColor.a > 0 ? root.backgroundColor : CachyTheme.windowBackground) : "transparent"
+                    color: root.hasSidebar
+                        ? (root.contentBackground.a > 0
+                            ? root.contentBackground
+                            : (root.backgroundColor.a > 0 ? root.backgroundColor : CachyTheme.windowBackground))
+                        : "transparent"
 
                     ColumnLayout {
                         anchors.fill: parent

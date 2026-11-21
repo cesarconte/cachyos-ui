@@ -16,18 +16,19 @@ T.Button {
     property bool primary: false
     property alias accent: control.primary
     property bool destructive: false
+    property bool pillStyle: false
     property string iconName: ""
 
     readonly property string effectiveIconName: control.iconName.length > 0 ? control.iconName : control.icon.name
     readonly property color effectiveContentColor: {
         if (!control.enabled) return CachyPalette.textMuted;
         if (control.primary || control.destructive) return "#FFFFFF";
-        if (control.flat) return CachyPalette.isDark ? "#409CFF" : CachyTheme.accentColor;
+        if (control.flat) return CachyPalette.isDark ? "#5AB0FF" : CachyTheme.accentColor;
         return CachyPalette.text;
     }
 
-    leftPadding: control.text.length > 0 ? 16 : 10
-    rightPadding: control.text.length > 0 ? 16 : 10
+    leftPadding: control.text.length > 0 ? (control.pillStyle ? 18 : 16) : 10
+    rightPadding: control.text.length > 0 ? (control.pillStyle ? 18 : 16) : 10
     topPadding: 6
     bottomPadding: 6
 
@@ -40,7 +41,7 @@ T.Button {
     }
 
     background: Rectangle {
-        radius: CachyTheme.radiusSmall
+        radius: control.pillStyle ? Math.round(height / 2) : CachyTheme.radiusSmall
         color: {
             if (control.flat) {
                 return btnHover.hovered ? CachyTheme.withAlpha(CachyTheme.accentColor, 0.15) : "transparent";
@@ -65,6 +66,18 @@ T.Button {
 
         Behavior on color {
             ColorAnimation { duration: CachyTheme.animFast }
+        }
+
+        // Golden Gate Liquid Glass top specular sheen
+        Rectangle {
+            anchors.fill: parent
+            anchors.margins: 1
+            radius: Math.max(0, parent.radius - 1)
+            visible: !control.flat
+            gradient: Gradient {
+                GradientStop { position: 0.0; color: Qt.rgba(1, 1, 1, (control.primary || control.destructive) ? 0.24 : 0.14) }
+                GradientStop { position: 0.55; color: Qt.rgba(1, 1, 1, 0.0) }
+            }
         }
     }
 

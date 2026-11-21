@@ -36,7 +36,7 @@ T.MenuItem {
     bottomPadding: 4
 
     background: Rectangle {
-        radius: CachyTheme.radiusSmall - 2
+        radius: CachyTheme.radiusSmall
         color: {
             if (!control.enabled) return "transparent";
             if (control.highlighted || itemHover.hovered) {

@@ -15,8 +15,9 @@ CachyTextField {
     id: control
 
     isSearch: true
+    pillStyle: true
     implicitWidth: 240
-    implicitHeight: 30
+    implicitHeight: 28
 
     Keys.onEscapePressed: control.clear()
 }

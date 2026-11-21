@@ -15,7 +15,8 @@ CachyWindow {
     title: "CachyOS.UI — Catálogo de Componentes Golden Gate"
     width: CachyTheme.windowWidthSettings
     height: CachyTheme.windowHeightSettings
-    sidebarWidth: 230
+    sidebarWidthExpanded: 248
+    showTitleBarDivider: false
 
     property int activeNavIndex: 0
 
@@ -31,11 +32,22 @@ CachyWindow {
     ]
 
     headerActions: [
-        CachyToolbarButton {
+        CachyToolbarGroup {
             anchors.verticalCenter: parent.verticalCenter
-            text: "Info"
-            iconName: "info"
-            onClicked: aboutDialog.open()
+
+            CachyToolbarButton {
+                pillStyle: false
+                iconName: "search"
+                tooltipText: qsTr("Buscar")
+                onClicked: toastNotification.show("Búsqueda rápida Golden Gate", "info")
+            }
+
+            CachyToolbarButton {
+                pillStyle: false
+                text: "Info"
+                iconName: "info"
+                onClicked: aboutDialog.open()
+            }
         }
     ]
 
@@ -76,6 +88,7 @@ CachyWindow {
                         iconName: modelData.icon
                         iconColor: modelData.color
                         squircleIconBadge: true
+                        accentSelected: true
                         selected: root.activeNavIndex === index
                         onClicked: root.activeNavIndex = index
                     }
@@ -274,6 +287,12 @@ CachyWindow {
                                 CachyButton { text: "Secundario" }
                                 CachyButton { text: "Plano"; flat: true }
                                 CachyButton { text: "Eliminar"; destructive: true }
+                            }
+                            RowLayout {
+                                Layout.fillWidth: true
+                                spacing: 10
+                                CachyButton { text: "Cápsula Primaria"; primary: true; pillStyle: true }
+                                CachyButton { text: "Cápsula Secundaria"; pillStyle: true }
                             }
                         }
                     }
@@ -681,6 +700,12 @@ CachyWindow {
                                     text: "Abrir Panel Lateral"
                                     onClicked: demoSideDrawer.toggle()
                                 }
+                                CachyButton {
+                                    id: demoPopoverTrigger
+                                    Layout.fillWidth: true
+                                    text: "Abrir Popover Golden Gate"
+                                    onClicked: demoPopover.openAt(demoPopoverTrigger)
+                                }
                             }
                         }
                     }
@@ -739,6 +764,51 @@ CachyWindow {
         id: aboutDialog
         title: "Acerca de CachyOS.UI"
         subtitle: "Ecosistema declarativo nativo C++23/QML sobre KDE Plasma 6 y Wayland con lenguaje visual Golden Gate / Liquid Glass."
+    }
+
+    // Golden Gate Floating Popover
+    CachyPopover {
+        id: demoPopover
+        preferredEdge: Qt.TopEdge
+        preferredWidth: 280
+
+        RowLayout {
+            Layout.fillWidth: true
+            spacing: 8
+
+            CachyIcon {
+                name: "info"
+                size: 15
+                color: CachyTheme.accentColor
+            }
+            Text {
+                Layout.fillWidth: true
+                Layout.minimumWidth: 0
+                text: "Inspector Golden Gate"
+                font.pixelSize: 13
+                font.weight: Font.DemiBold
+                color: CachyPalette.text
+                elide: Text.ElideRight
+            }
+        }
+
+        Text {
+            Layout.fillWidth: true
+            Layout.minimumWidth: 0
+            text: "Popover Liquid Glass con puntero direccional y acotado automático dentro de la ventana."
+            font.pixelSize: 12
+            color: CachyPalette.textSecondary
+            wrapMode: Text.WordWrap
+        }
+
+        CachyFormCard {
+            Layout.fillWidth: true
+
+            CachyFormCheckDelegate {
+                label: "Modo cápsula"
+                checked: true
+            }
+        }
     }
 
     // Off-Canvas Drawer Overlay

@@ -102,6 +102,7 @@ Item {
                 CachyButton {
                     visible: root.showCancelButton
                     text: root.cancelText
+                    pillStyle: true
                     onClicked: root.close()
                 }
 
@@ -115,6 +116,7 @@ Item {
                         enabled: modelData.enabled !== false
                         visible: modelData.visible !== false
                         primary: true
+                        pillStyle: true
                         onClicked: modelData.trigger()
                     }
                 }

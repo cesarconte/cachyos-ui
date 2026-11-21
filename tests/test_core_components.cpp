@@ -80,6 +80,7 @@ private Q_SLOTS:
     void testPhase2ControlsAndLayoutAudit();
     void testPhase3ControlsAndLayoutAudit();
     void testPhaseAControlsAndLayoutAudit();
+    void testGoldenGateControlsAndLayoutAudit();
 
 private:
     CachyTheme m_theme;
@@ -188,6 +189,14 @@ void TestCoreComponents::testBuiltinVectorIconsResolution()
         QStringLiteral("upload"),
         QStringLiteral("pause"),
         QStringLiteral("play"),
+        QStringLiteral("flag"),
+        QStringLiteral("inbox"),
+        QStringLiteral("alarm"),
+        QStringLiteral("share"),
+        QStringLiteral("sidebar"),
+        QStringLiteral("tag"),
+        QStringLiteral("location"),
+        QStringLiteral("message"),
     };
 
     for (const QString &iconName : builtinIcons) {
@@ -606,6 +615,155 @@ void TestCoreComponents::testPhaseAControlsAndLayoutAudit()
     QVERIFY(window != nullptr);
     QVERIFY(QTest::qWaitForWindowExposed(window));
     QCoreApplication::processEvents();
+
+    const auto violations = LayoutAuditor::audit(window->contentItem());
+    QStringList messages;
+    for (const auto &v : violations) {
+        messages.append(v.toString());
+    }
+    QVERIFY2(violations.isEmpty(), qPrintable(messages.join(QLatin1Char('\n'))));
+}
+
+void TestCoreComponents::testGoldenGateControlsAndLayoutAudit()
+{
+    QQmlEngine engine;
+    engine.addImportPath(QStringLiteral(CACHYOS_BUILD_QML_DIR));
+
+    QQmlComponent component(&engine);
+    component.setData(QByteArrayLiteral(R"QML(
+        import QtQuick
+        import QtQuick.Layouts
+        import CachyOS.UI
+
+        CachyWindow {
+            id: win
+            width: 880
+            height: 640
+            visible: true
+            showTitle: false
+            showTitleBarDivider: false
+            contentBackground: CachyTheme.windowBackground
+
+            sidebar: [
+                ColumnLayout {
+                    anchors.fill: parent
+                    anchors.margins: 12
+                    spacing: 8
+
+                    CachySearchField {
+                        Layout.fillWidth: true
+                        placeholderText: "Buscar..."
+                    }
+
+                    CachySidebarItem {
+                        text: "Ajustes"
+                        iconName: "settings"
+                        iconColor: "#007AFF"
+                        squircleIconBadge: true
+                        accentSelected: true
+                        selected: true
+                    }
+
+                    CachySidebarItem {
+                        text: "Recordatorios"
+                        iconName: "list"
+                        iconColor: "#34C759"
+                        circularIconBadge: true
+                        badgeText: "4"
+                        selected: false
+                    }
+
+                    Item { Layout.fillHeight: true }
+                }
+            ]
+
+            headerActions: [
+                CachyToolbarGroup {
+                    anchors.verticalCenter: parent.verticalCenter
+
+                    CachyToolbarButton {
+                        pillStyle: false
+                        iconName: "share"
+                    }
+                    CachyToolbarButton {
+                        pillStyle: false
+                        iconName: "add"
+                    }
+                }
+            ]
+
+            ColumnLayout {
+                anchors.fill: parent
+                anchors.margins: CachyTheme.marginWindow
+                spacing: CachyTheme.spacingMedium
+
+                CachySegmentedControl {
+                    Layout.fillWidth: true
+                    model: ["Día", "Semana", "Mes", "Año"]
+                    currentIndex: 1
+                }
+
+                RowLayout {
+                    Layout.fillWidth: true
+                    spacing: CachyTheme.spacingSmall
+
+                    CachyButton {
+                        id: anchorBtn
+                        objectName: "popoverAnchor"
+                        text: "Detalles"
+                        primary: true
+                        pillStyle: true
+                    }
+
+                    Item { Layout.fillWidth: true }
+                }
+
+                Item { Layout.fillHeight: true }
+            }
+
+            CachyPopover {
+                id: popover
+                objectName: "goldenGatePopover"
+                preferredEdge: Qt.RightEdge
+                preferredWidth: 280
+
+                Text {
+                    Layout.fillWidth: true
+                    Layout.minimumWidth: 0
+                    text: "Inspector Golden Gate"
+                    font.pixelSize: 13
+                    font.weight: Font.DemiBold
+                    color: CachyPalette.text
+                    elide: Text.ElideRight
+                }
+
+                CachyFormCard {
+                    Layout.fillWidth: true
+
+                    CachyFormCheckDelegate {
+                        label: "Urgente"
+                        checked: true
+                    }
+                }
+            }
+
+            Component.onCompleted: popover.openAt(anchorBtn)
+        }
+    )QML"), QUrl());
+
+    QVERIFY2(!component.isError(), qPrintable(component.errorString()));
+    QScopedPointer<QObject> obj(component.create());
+    auto *window = qobject_cast<QQuickWindow *>(obj.data());
+    QVERIFY(window != nullptr);
+    QVERIFY(QTest::qWaitForWindowExposed(window));
+    QCoreApplication::processEvents();
+
+    auto *popover = window->findChild<QObject *>(QStringLiteral("goldenGatePopover"));
+    QVERIFY(popover != nullptr);
+    QCOMPARE(popover->property("opened").toBool(), true);
+    QVERIFY(popover->property("x").toReal() >= 12.0);
+    QVERIFY(popover->property("y").toReal() >= 12.0);
+    QVERIFY(popover->property("x").toReal() + popover->property("width").toReal() <= window->width() - 12.0);
 
     const auto violations = LayoutAuditor::audit(window->contentItem());
     QStringList messages;

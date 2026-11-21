@@ -58,12 +58,14 @@ Toda ventana del sistema comparte estrictamente la misma arquitectura física:
 2. **Desenfoque Wayland (KWin):** Activado automáticamente cuando `showWindowFrame: true` mediante `CachyWindowBlur` con `QRegion` vectorial redondeada para evitar esquinas en ángulo recto.
 3. **Barra Lateral *Edge-to-Edge* Opcional (`sidebar`):**
    - Cuando se puebla la propiedad `sidebar` y `sidebarVisible: true`, la ventana divide su interior mediante una máscara `MultiEffect` de `20 px` de radio.
-   - El panel lateral (`CachyTheme.sidebarBackground`) aloja el semáforo en su propia cabecera de `44 px` y se separa del área principal con un divisor vertical duro de `1 px` (`CachyTheme.hardDividerColor`).
-4. **Barra de Título Canónica (44 px):**
+   - El panel lateral (`CachyTheme.sidebarBackground`) aloja el semáforo y opcionalmente `sidebarHeaderActions` en su propia cabecera de `44 px`, separándose del área principal con un divisor vertical duro de `1 px` (`CachyTheme.hardDividerColor`).
+   - El panel de contenido derecho puede definir una superficie propia mediante `contentBackground` (por defecto `CachyTheme.windowBackground`) sin alterar la translucidez Liquid Glass de la barra lateral.
+   - Los ítems de navegación (`CachySidebarItem`) admiten insignias *squircle* (`squircleIconBadge`, estilo *Ajustes*), insignias circulares (`circularIconBadge`, estilo *Recordatorios* / *Contraseñas*) y selección en píldora acentuada (`accentSelected`) o neutra translúcida.
+4. **Barra de Título / Herramientas Canónica (44 px):**
    - **Grupo izquierdo (`headerLeading`):** Situado a `CachyTheme.marginWindow` (`18 px`) del borde izquierdo (o a `14 px` del divisor de la barra lateral). Incluye el semáforo cuando no hay barra lateral.
    - **Banda central (`headerCenter` / `title`):** Calculada dinámicamente como el espacio libre exacto entre el grupo izquierdo y el derecho (`bandLeft` a `bandRight`), garantizando matemáticamente cero colisiones con las acciones de cabecera.
-   - **Acciones derechas (`headerActions`):** Contenedor anclado a `CachyTheme.marginWindow` (`18 px`) del borde derecho.
-   - **Divisor inferior duro (`1 px`):** Visible por defecto (`showTitleBarDivider: true`) con `CachyTheme.hardDividerColor`.
+   - **Acciones derechas (`headerActions`):** Contenedor anclado a `CachyTheme.marginWindow` (`18 px`) del borde derecho. En el patrón Golden Gate las acciones relacionadas se agrupan en cápsulas `CachyToolbarGroup` junto a campos de búsqueda cápsula (`CachySearchField`, `pillStyle: true`).
+   - **Divisor inferior duro (`1 px`):** Activo con `showTitleBarDivider: true` (`CachyTheme.hardDividerColor`). Para aplicaciones de estilo Golden Gate con barra de herramientas flotante (*Recordatorios*, *Notas*, *Mail*, *Música*, *Ajustes*), establecer `showTitleBarDivider: false` para que las cápsulas floten directamente sobre el contenido.
 5. **Área de Contenido:** Con `contentPadded: true`, el contenido queda automáticamente protegido con un margen perimetral exacto de `18 px` (`CachyTheme.marginWindow`) **en los cuatro lados**, garantizando alineación vertical estricta 1:1 con el semáforo y las herramientas superiores.
    - El divisor de la cabecera separa el *chrome* del contenido, pero **el contenido es una superficie flotante y debe respirar**: nunca queda pegado al divisor.
    - La **única** superficie que llega al divisor es la barra lateral *edge-to-edge*, por definición.
@@ -163,11 +165,7 @@ El color de primer plano debe describir **la superficie donde se dibuja**:
 - En un plasmoide, esa superficie la pinta Plasma → el **tema de escritorio**
   (su archivo `colors`).
 
-`CachyTheme.isDark()` decide con `QStyleHints::colorScheme()`, que solo
-refleja el segundo caso. Con el tema `macOS-GoldenGate` el tema de escritorio
-es **siempre oscuro con primer plano blanco** (`ForegroundNormal=252,252,252`)
-en todos sus grupos, de modo que usar `CachyTheme.textPrimary` en un
-plasmoide produce **texto negro sobre superficie oscura**.
+`CachyTheme.isDark()` evalúa `QStyleHints::colorScheme()` (`Dark`/`Light`) y, cuando el esquema es `Unknown`, recurre a la luminancia de `QPalette::Window`, lo cual en aplicaciones funciona bien pero en plasmoides solo refleja el segundo caso. Con el tema `macOS-GoldenGate` el tema de escritorio es **siempre oscuro con primer plano blanco** (`ForegroundNormal=252,252,252`) en todos sus grupos, de modo que usar `CachyTheme.textPrimary` en un plasmoide produce **texto negro sobre superficie oscura**.
 
 `CachyPalette` (singleton) resuelve la paleta efectiva y es la **única**
 fuente de color de primer plano del ecosistema:
@@ -191,6 +189,7 @@ contraste mínimo.
 SVG se pinta con su clase `ColorScheme-Text` interna (`#232629`) y aparece
 negro. `CachyPlasmoidIcon` resuelve el icono en el tema de Plasma (el
 elegido por el usuario) y lo tiñe con el primer plano del anfitrión.
+En aplicaciones y controles, `CachyIcon` normaliza los iconos monocromos y preserva el canal alfa del color indicado trasladando `color.a` a la propiedad `opacity` del `MultiEffect` (evitando así que tintes semitransparentes como `CachyPalette.textMuted` mezclen blanco puro residual).
 
 ### 4.4 Métricas
 
@@ -211,15 +210,23 @@ elegido por el usuario) y lo tiñe con el primer plano del anfitrión.
 
 ---
 
-## 6. Replicación Pixel-Perfect CachyOS / Liquid Glass
+## 6. Replicación Pixel-Perfect macOS 27 Golden Gate / Liquid Glass
 
 1. **Semáforo Vectorial Oficial (`CachyTrafficLights`):**
-   - `13 px` de diámetro por botón, `8 px` de espacio entre círculos (`55 px` de ancho total), situado a `18 px` (`CachyTheme.marginWindow`) del borde izquierdo.
-   - Glifos vectoriales trazados con `QtQuick.Shapes` (Cerrar `✕`, Minimizar `─`, Maximizar dos flechas diagonales opuestas `⤢`).
-   - Efecto de revelación simultánea al pasar el ratón por la zona de los 3 botones y expansión elástica (`scale: 1.18` con `Easing.OutBack`) al presionar.
+   - `14 px` de diámetro por botón, `8 px` de espacio entre círculos (`58 px` de ancho total), situado a `16 px` (`CachyTheme.trafficLightMargin`) o `18 px` (`CachyTheme.marginWindow`) del borde izquierdo.
+   - Glifos vectoriales trazados con `QtQuick.Shapes` (Cerrar `✕`, Minimizar `─`, Maximizar dos triángulos opuestos `⤢`), reflejo especular superior sutil estilo Golden Gate y escala táctil suave (`1.05` en hover, `0.92` al pulsar).
 2. **Borde Especular Continuo de 1 px:**
    - La ventana dibuja sobre las esquinas de `20 px` un borde continuo de `1 px` con `specularBorder`.
 3. **Desenfoque y Contraste Real Wayland (KWin):**
    - Manejado por `CachyWindowBlur` mediante `KWindowEffects::enableBlurBehind` y `enableBackgroundContrast` con una región poligonal redondeada (`QRegion`), asegurando cero artefactos en las esquinas bajo Wayland.
-4. **Respuesta Táctil:**
+4. **Cápsulas de Barra de Herramientas y Controles Pill:**
+   - `CachyToolbarGroup` agrupa acciones relacionadas dentro de una cápsula `surfacePill` (`28 px` de alto).
+   - `CachySearchField` y `CachySegmentedControl` adoptan forma cápsula (`pillStyle: true` por defecto), y `CachyButton` incorpora `pillStyle: true` para pies de diálogo (`CachyDialog`) y hojas de confirmación, con reflejo especular superior Liquid Glass en botones sólidos.
+   - `CachySwitch` (`38×22 px`) usa el color de acento del sistema (`CachyTheme.accentColor`) con tirador blanco en píldora horizontal y soporte de etiqueta `text`.
+   - `CachySlider` usa pista de `4 px` con tirador en píldora horizontal (`22×14 px`), y `CachyComboBox` usa doble chevrón apilado macOS con popup sombreado.
+5. **Popovers Flotantes, Menús y Tarjetas Resumen:**
+   - `CachyPopover` y `CachyMenu` proyectan sombra suave mediante `MultiEffect` (marcados con `auditBleed: true` para `LayoutAuditor`) sobre `CachyPalette.sheetBackground` con radio `14 px`.
+   - `CachyPopover` se ancla en `Window.overlayItem` (`openAt(targetItem)`), volteando y acotando automáticamente su posición dentro de la ventana con puntero direccional hacia el botón disparador y soporte de `autoCloseLocked` para submenús anidados.
+   - Para vistas resumen en barra lateral (*Recordatorios*, *Contraseñas*), usar tarjetas cuadradas/rectangulares de radio `11–12 px` con degradado o insignia circular superior izquierda, contador superior derecho y etiqueta inferior izquierda.
+6. **Respuesta Táctil:**
    - Los botones tienen escala elástica al interactuar (`CachyButton`: `0.96` / `1.01`; `CachyToolbarButton`: `0.94` / `1.03`) sin superar la tolerancia (`2.0 px`) verificada por `LayoutAuditor`.

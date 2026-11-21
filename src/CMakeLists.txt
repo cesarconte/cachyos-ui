@@ -100,6 +100,8 @@ qt_add_qml_module(cachyosui
         controls/CachyMediaBar.qml
         controls/CachyTagField.qml
         controls/CachyDrawer.qml
+        controls/CachyToolbarGroup.qml
+        controls/CachyPopover.qml
 )
 
 target_include_directories(cachyosui PUBLIC

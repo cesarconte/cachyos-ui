@@ -14,6 +14,7 @@ Item {
 
     property var model: []
     property int currentIndex: 0
+    property bool pillStyle: true
 
     // Canonical segment metrics.
     //
@@ -40,7 +41,7 @@ Item {
     Rectangle {
         id: bg
         anchors.fill: parent
-        radius: CachyTheme.radiusSmall
+        radius: root.pillStyle ? Math.round(height / 2) : CachyTheme.radiusSmall
         color: CachyPalette.isDark ? Qt.rgba(0, 0, 0, 0.28) : Qt.rgba(0, 0, 0, 0.08)
         border.width: 1
         border.color: CachyPalette.specularBorder
@@ -52,7 +53,7 @@ Item {
             height: parent.height - 6
             width: root.model.length > 0 ? (parent.width - 6) / root.model.length : 0
             x: 3 + (root.currentIndex * width)
-            radius: CachyTheme.radiusSmall - 2
+            radius: root.pillStyle ? Math.round(height / 2) : (CachyTheme.radiusSmall - 2)
             color: CachyPalette.isDark ? Qt.rgba(1, 1, 1, 0.18) : "#FFFFFF"
             border.width: 0.5
             border.color: CachyPalette.specularBorder

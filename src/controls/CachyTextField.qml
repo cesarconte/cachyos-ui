@@ -15,12 +15,13 @@ T.TextField {
     property string leadingIcon: ""
     property bool showClearButton: true
     property bool isSearch: false
+    property bool pillStyle: false
 
     implicitWidth: Math.max(180, contentWidth + leftPadding + rightPadding)
     implicitHeight: 32
 
-    leftPadding: (control.isSearch || control.leadingIcon.length > 0) ? 32 : 12
-    rightPadding: (control.showClearButton && control.length > 0) ? 32 : 12
+    leftPadding: (control.isSearch || control.leadingIcon.length > 0) ? 32 : (control.pillStyle ? 14 : 12)
+    rightPadding: (control.showClearButton && control.length > 0) ? 32 : (control.pillStyle ? 14 : 12)
     topPadding: 6
     bottomPadding: 6
 
@@ -32,9 +33,11 @@ T.TextField {
     font.pixelSize: 13
 
     background: Rectangle {
-        radius: CachyTheme.radiusSmall
-        color: CachyPalette.isDark ? Qt.rgba(0, 0, 0, 0.32) : Qt.rgba(0, 0, 0, 0.06)
-        border.width: control.activeFocus ? 2 : 1
+        radius: control.pillStyle ? Math.round(height / 2) : CachyTheme.radiusSmall
+        color: control.pillStyle
+            ? (control.activeFocus ? CachyPalette.cardBackgroundHover : CachyPalette.surfacePill)
+            : (CachyPalette.isDark ? Qt.rgba(0, 0, 0, 0.32) : Qt.rgba(0, 0, 0, 0.06))
+        border.width: control.activeFocus ? (control.pillStyle ? 1.5 : 2) : 1
         border.color: control.activeFocus
             ? CachyTheme.accentColor
             : (fieldHover.hovered ? CachyTheme.withAlpha(CachyPalette.specularBorder, 0.40) : CachyPalette.specularBorder)

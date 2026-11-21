@@ -40,6 +40,16 @@ T.CheckBox {
             ColorAnimation { duration: CachyTheme.animFast }
         }
 
+        Rectangle {
+            anchors.fill: parent
+            radius: parent.radius
+            visible: control.checked
+            gradient: Gradient {
+                GradientStop { position: 0.0; color: Qt.rgba(1, 1, 1, 0.22) }
+                GradientStop { position: 0.55; color: Qt.rgba(1, 1, 1, 0.0) }
+            }
+        }
+
         CachyIcon {
             anchors.centerIn: parent
             name: "check"
