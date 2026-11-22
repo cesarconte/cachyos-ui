@@ -123,4 +123,18 @@ Item {
             }
         }
     }
+
+    WheelHandler {
+        target: root
+        acceptedDevices: PointerDevice.Mouse | PointerDevice.TouchPad
+        enabled: root.interactive
+        onWheel: (event) => {
+            let delta = event.angleDelta.y !== 0 ? event.angleDelta.y : event.angleDelta.x;
+            if (delta === 0) return;
+            let step = 0.05;
+            let p = Math.max(0.0, Math.min(1.0, root.position + (delta > 0 ? step : -step)));
+            root.position = p;
+            root.seekRequested(p);
+        }
+    }
 }

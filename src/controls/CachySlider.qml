@@ -53,4 +53,20 @@ T.Slider {
             cursorShape: Qt.PointingHandCursor
         }
     }
+
+    WheelHandler {
+        target: control
+        acceptedDevices: PointerDevice.Mouse | PointerDevice.TouchPad
+        onWheel: (event) => {
+            let delta = event.angleDelta.y !== 0 ? event.angleDelta.y : event.angleDelta.x;
+            if (delta === 0) return;
+            let step = (control.to - control.from) / 20.0;
+            if (control.stepSize > 0) step = control.stepSize;
+            let newVal = control.value + (delta > 0 ? step : -step);
+            let minVal = Math.min(control.to, control.from);
+            let maxVal = Math.max(control.to, control.from);
+            control.value = Math.max(minVal, Math.min(maxVal, newVal));
+            control.moved();
+        }
+    }
 }
