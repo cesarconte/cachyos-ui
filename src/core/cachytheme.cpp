@@ -119,6 +119,18 @@ QColor CachyTheme::windowBackground() const
     }
 }
 
+QColor CachyTheme::contentBackground() const
+{
+    // Canonical macOS Golden Gate grouped window content canvas.
+    // 100% opaque to guarantee zero wallpaper bleedthrough and crisp
+    // contrast across notes, lists, grouped settings and charts.
+    if (isDark()) {
+        return QColor(28, 28, 30); // #1C1C1E, 100% opaque
+    } else {
+        return QColor(242, 242, 247); // #F2F2F7, 100% opaque
+    }
+}
+
 QColor CachyTheme::sidebarBackground() const
 {
     // Edge-to-edge sidebar in Golden Gate: slightly deeper/more translucent than main content
@@ -293,6 +305,16 @@ QString CachyTheme::iconUrl(const QString &name, const QString &fallback) const
         {QStringLiteral("view-list-details"), QStringLiteral("list")},
         {QStringLiteral("media-playback-start"), QStringLiteral("play")},
         {QStringLiteral("media-playback-pause"), QStringLiteral("pause")},
+        {QStringLiteral("office-chart-bar"), QStringLiteral("chart-bar")},
+        {QStringLiteral("view-financial-transfer"), QStringLiteral("chart-bar")},
+        {QStringLiteral("preferences-system-time"), QStringLiteral("hourglass")},
+        {QStringLiteral("chronometer"), QStringLiteral("hourglass")},
+        {QStringLiteral("notifications-disabled"), QStringLiteral("bell-off")},
+        {QStringLiteral("security-high"), QStringLiteral("shield-check")},
+        {QStringLiteral("user-identity"), QStringLiteral("user")},
+        {QStringLiteral("accessories-text-editor"), QStringLiteral("book")},
+        {QStringLiteral("applications-other"), QStringLiteral("apps")},
+        {QStringLiteral("system-run"), QStringLiteral("apps")},
     };
     if (const QString alias = builtinAliases.value(name); !alias.isEmpty()) {
         const QString aliasResource = QStringLiteral(":/CachyOS/UI/icons/") + alias + QStringLiteral(".svg");

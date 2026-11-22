@@ -15,6 +15,7 @@ Item {
     property var model: []
     property int currentIndex: 0
     property bool pillStyle: true
+    property bool accentSelected: false
 
     // Canonical segment metrics.
     //
@@ -54,9 +55,11 @@ Item {
             width: root.model.length > 0 ? (parent.width - 6) / root.model.length : 0
             x: 3 + (root.currentIndex * width)
             radius: root.pillStyle ? Math.round(height / 2) : (CachyTheme.radiusSmall - 2)
-            color: CachyPalette.isDark ? Qt.rgba(1, 1, 1, 0.18) : "#FFFFFF"
+            color: root.accentSelected
+                ? CachyTheme.accentColor
+                : (CachyPalette.isDark ? Qt.rgba(1, 1, 1, 0.18) : "#FFFFFF")
             border.width: 0.5
-            border.color: CachyPalette.specularBorder
+            border.color: root.accentSelected ? Qt.rgba(1, 1, 1, 0.20) : CachyPalette.specularBorder
 
             Behavior on x {
                 NumberAnimation { duration: CachyTheme.animNormal; easing.type: Easing.OutCubic }
@@ -89,7 +92,9 @@ Item {
                         text: segmentItem.modelData
                         font.pixelSize: 12
                         font.weight: root.currentIndex === segmentItem.index ? Font.DemiBold : Font.Normal
-                        color: root.currentIndex === segmentItem.index ? CachyPalette.text : CachyPalette.textSecondary
+                        color: root.currentIndex === segmentItem.index
+                            ? (root.accentSelected ? "#FFFFFF" : CachyPalette.text)
+                            : CachyPalette.textSecondary
                     }
 
                     HoverHandler {

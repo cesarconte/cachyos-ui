@@ -66,5 +66,14 @@
         <file>waveform.svg</file>
         <file>copy.svg</file>
         <file>eye.svg</file>
+        <file>hourglass.svg</file>
+        <file>chart-bar.svg</file>
+        <file>briefcase.svg</file>
+        <file>user.svg</file>
+        <file>book.svg</file>
+        <file>bed.svg</file>
+        <file>bell-off.svg</file>
+        <file>shield-check.svg</file>
+        <file>apps.svg</file>
     </qresource>
 </RCC>

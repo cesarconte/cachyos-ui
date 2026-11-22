@@ -24,6 +24,7 @@ class CachyTheme : public QObject
     Q_PROPERTY(qreal glassOpacity READ glassOpacity WRITE setGlassOpacity NOTIFY themeChanged)
     Q_PROPERTY(QColor accentColor READ accentColor NOTIFY themeChanged)
     Q_PROPERTY(QColor windowBackground READ windowBackground NOTIFY themeChanged)
+    Q_PROPERTY(QColor contentBackground READ contentBackground NOTIFY themeChanged)
     Q_PROPERTY(QColor sidebarBackground READ sidebarBackground NOTIFY themeChanged)
     Q_PROPERTY(QColor surfacePill READ surfacePill NOTIFY themeChanged)
     Q_PROPERTY(QColor cardBackground READ cardBackground NOTIFY themeChanged)
@@ -90,6 +91,7 @@ public:
 
     QColor accentColor() const { return QColor(10, 132, 255); } // #0A84FF
     QColor windowBackground() const;
+    QColor contentBackground() const;
     QColor sidebarBackground() const;
     QColor surfacePill() const;
     QColor cardBackground() const;

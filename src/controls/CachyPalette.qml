@@ -88,15 +88,15 @@ QtObject {
 
     readonly property real glassOpacity: CachyTheme.glassOpacity
 
-    /// Translucent card surface.
+    /// Solid card surface for grouped lists/settings over contentBackground.
     readonly property color cardBackground: isDark
-        ? Qt.rgba(1, 1, 1, 0.06 + (glassOpacity * 0.08))
-        : Qt.rgba(1, 1, 1, 0.45 + (glassOpacity * 0.32))
+        ? "#2C2C2E"
+        : "#FFFFFF"
 
-    /// Translucent card surface in its hovered state.
+    /// Solid card surface in its hovered state.
     readonly property color cardBackgroundHover: isDark
-        ? Qt.rgba(1, 1, 1, 0.12 + (glassOpacity * 0.08))
-        : Qt.rgba(1, 1, 1, 0.72 + (glassOpacity * 0.20))
+        ? "#3A3A3C"
+        : "#F8F8FA"
 
     /// Translucent pill surface (toolbar buttons).
     readonly property color surfacePill: isDark
@@ -107,6 +107,11 @@ QtObject {
     readonly property color windowBackground: isDark
         ? Qt.rgba(0.11, 0.11, 0.14, 0.24 + (glassOpacity * 0.44))
         : Qt.rgba(0.96, 0.97, 1.00, 0.30 + (glassOpacity * 0.46))
+
+    /// Canonical Golden Gate window content canvas (solid, 100% opaque surface for notes, editors, and grouped settings).
+    readonly property color contentBackground: isDark
+        ? "#1C1C1E"
+        : "#F2F2F7"
 
     /// Edge-to-edge Golden Gate sidebar surface.
     readonly property color sidebarBackground: isDark

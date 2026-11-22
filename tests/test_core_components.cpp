@@ -218,6 +218,15 @@ void TestCoreComponents::testBuiltinVectorIconsResolution()
         QStringLiteral("waveform"),
         QStringLiteral("copy"),
         QStringLiteral("eye"),
+        QStringLiteral("hourglass"),
+        QStringLiteral("chart-bar"),
+        QStringLiteral("briefcase"),
+        QStringLiteral("user"),
+        QStringLiteral("book"),
+        QStringLiteral("bed"),
+        QStringLiteral("bell-off"),
+        QStringLiteral("shield-check"),
+        QStringLiteral("apps"),
     };
 
     for (const QString &iconName : builtinIcons) {
@@ -231,6 +240,10 @@ void TestCoreComponents::testBuiltinVectorIconsResolution()
     // Fallback resolution when primary icon does not exist
     const QString fallbackUrl = m_theme.iconUrl(QStringLiteral("non-existent-icon-999"), QStringLiteral("search"));
     QCOMPARE(fallbackUrl, QStringLiteral("qrc:/CachyOS/UI/icons/search.svg"));
+
+    // Alias resolution for Golden Gate canonical names
+    const QString aliasChartUrl = m_theme.iconUrl(QStringLiteral("office-chart-bar"));
+    QCOMPARE(aliasChartUrl, QStringLiteral("qrc:/CachyOS/UI/icons/chart-bar.svg"));
 }
 
 void TestCoreComponents::testCachyIconAndShadowQmlInstantiation()
@@ -431,6 +444,9 @@ void TestCoreComponents::testPhase2ControlsAndLayoutAudit()
         messages.append(v.toString());
     }
     QVERIFY2(violations.isEmpty(), qPrintable(messages.join(QLatin1Char('\n'))));
+
+    // Verify contentBackground is dense and solid (opacity >= 0.94)
+    QVERIFY(m_theme.contentBackground().alphaF() >= 0.94);
 }
 
 void TestCoreComponents::testPhase3ControlsAndLayoutAudit()
@@ -559,6 +575,9 @@ void TestCoreComponents::testPhase3ControlsAndLayoutAudit()
         messages.append(v.toString());
     }
     QVERIFY2(violations.isEmpty(), qPrintable(messages.join(QLatin1Char('\n'))));
+
+    // Verify contentBackground is dense and solid (opacity >= 0.94)
+    QVERIFY(m_theme.contentBackground().alphaF() >= 0.94);
 }
 
 void TestCoreComponents::testPhaseAControlsAndLayoutAudit()
@@ -643,6 +662,9 @@ void TestCoreComponents::testPhaseAControlsAndLayoutAudit()
         messages.append(v.toString());
     }
     QVERIFY2(violations.isEmpty(), qPrintable(messages.join(QLatin1Char('\n'))));
+
+    // Verify contentBackground is dense and solid (opacity >= 0.94)
+    QVERIFY(m_theme.contentBackground().alphaF() >= 0.94);
 }
 
 void TestCoreComponents::testGoldenGateControlsAndLayoutAudit()
@@ -663,7 +685,7 @@ void TestCoreComponents::testGoldenGateControlsAndLayoutAudit()
             visible: true
             showTitle: false
             showTitleBarDivider: false
-            contentBackground: CachyTheme.windowBackground
+            contentBackground: CachyTheme.contentBackground
 
             sidebar: [
                 ColumnLayout {
@@ -799,6 +821,9 @@ void TestCoreComponents::testGoldenGateControlsAndLayoutAudit()
         messages.append(v.toString());
     }
     QVERIFY2(violations.isEmpty(), qPrintable(messages.join(QLatin1Char('\n'))));
+
+    // Verify contentBackground is dense and solid (opacity >= 0.94)
+    QVERIFY(m_theme.contentBackground().alphaF() >= 0.94);
 }
 
 void TestCoreComponents::testMenuAutoWidthAndFormDelegateWrap()
@@ -1037,6 +1062,9 @@ void TestCoreComponents::testMenuAutoWidthAndFormDelegateWrap()
         messages.append(v.toString());
     }
     QVERIFY2(violations.isEmpty(), qPrintable(messages.join(QLatin1Char('\n'))));
+
+    // Verify contentBackground is dense and solid (opacity >= 0.94)
+    QVERIFY(m_theme.contentBackground().alphaF() >= 0.94);
 }
 
 QTEST_MAIN(TestCoreComponents)

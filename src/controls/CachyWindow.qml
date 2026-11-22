@@ -228,7 +228,7 @@ Window {
                     color: (root.contentBackground.a > 0)
                         ? root.contentBackground
                         : (root.hasSidebar
-                            ? (root.backgroundColor.a > 0 ? root.backgroundColor : CachyPalette.windowBackground)
+                            ? (root.backgroundColor.a > 0 ? root.backgroundColor : CachyPalette.contentBackground)
                             : "transparent")
 
                     ColumnLayout {
