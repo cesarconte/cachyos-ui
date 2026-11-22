@@ -100,7 +100,15 @@ CachyScrollablePage {
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
             text: CachyI18n.i18n("Close")
-            onClicked: root.closeRequested()
+            pillStyle: true
+            onClicked: {
+                root.closeRequested();
+                if (root.pageStack && root.pageStack.layers && root.pageStack.layers.depth > 0) {
+                    root.pageStack.layers.pop();
+                } else if (root.parent && typeof root.parent.pop === "function") {
+                    root.parent.pop();
+                }
+            }
         }
     }
 }

@@ -22,12 +22,12 @@ Item {
     property list<Item> dialogs: []
 
     /// Number of open dialogs.
-    readonly property int depth: root.dialogs.length
+    property int depth: 0
 
     /// The dialog on top.
     readonly property Item currentDialog: root.dialogs.length > 0 ? root.dialogs[root.dialogs.length - 1] : null
 
-    visible: root.dialogs.length > 0
+    visible: root.depth > 0
 
     /// Opens a dialog and returns it.
     function push(component, properties) {
@@ -47,15 +47,18 @@ Item {
         // modal layers of the toolkit of the desktop do.
         dialog.anchors.fill = root;
         root.dialogs.push(dialog);
+        root.depth = root.dialogs.length;
         return dialog;
     }
 
     /// Closes the dialog on top.
     function pop() {
         if (root.dialogs.length === 0) {
+            root.depth = 0;
             return;
         }
         const dialog = root.dialogs.pop();
+        root.depth = root.dialogs.length;
         dialog.destroy();
     }
 
@@ -65,6 +68,7 @@ Item {
             const dialog = root.dialogs.pop();
             dialog.destroy();
         }
+        root.depth = 0;
     }
 
     // Solid backdrop so the page underneath does not show through the modal

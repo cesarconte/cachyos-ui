@@ -29,7 +29,7 @@ Item {
     readonly property Item currentItem: stack.depth > 0 ? pagesHost.children[stack.currentIndex] : null
 
     /// Number of pages in the stack.
-    readonly property int depth: pagesHost.children.length
+    property int depth: pagesHost.children.length
 
     /// The pages of the stack, in order.
     readonly property var items: pagesHost.children
@@ -55,6 +55,7 @@ Item {
     /// Shows the current page and hides the others.
     function updateVisibility() {
         const pages = pagesHost.children;
+        stack.depth = pages.length;
         for (let index = 0; index < pages.length; ++index) {
             pages[index].visible = (index === stack.currentIndex);
         }
