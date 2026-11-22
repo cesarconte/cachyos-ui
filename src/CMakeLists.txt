@@ -32,6 +32,7 @@ qt_add_qml_module(cachyosui
         controls/CachyIcon.qml
         controls/CachyWindow.qml
         controls/CachyCard.qml
+        controls/CachyCapsuleSlider.qml
         controls/CachySlider.qml
         controls/CachySwitch.qml
         controls/CachyButton.qml
