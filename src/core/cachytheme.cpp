@@ -348,20 +348,19 @@ QString CachyTheme::iconUrl(const QString &name, const QString &fallback) const
         return name;
     }
 
-    // 1. Embedded CachyOS.UI structural vector icons (qrc:/CachyOS/UI/icons/*.svg):
-    // always available in memory with zero disk I/O for standard design system
-    // controls (chevrons, sliders, waveforms, window buttons).
-    const QString builtinResource = QStringLiteral(":/CachyOS/UI/icons/") + name + QStringLiteral(".svg");
-    if (QFile::exists(builtinResource)) {
-        return QStringLiteral("qrc") + builtinResource;
-    }
-
-    // 2. Resolve from active system icon theme (e.g. MacTahoe, Breeze, etc.)
+    // 1. Resolve from active system icon theme (e.g. MacTahoe, Breeze, etc.)
     // via KIconLoader. This ensures user-selected icon themes in System Settings
     // (such as MacTahoe folders, places, and mimetypes) take top precedence.
     const QString themeIconPath = findThemeIconPath(name);
     if (!themeIconPath.isEmpty()) {
         return QUrl::fromLocalFile(themeIconPath).toString();
+    }
+
+    // 2. Embedded CachyOS.UI structural vector icons (qrc:/CachyOS/UI/icons/*.svg):
+    // fallback for standard design system controls (chevrons, sliders, waveforms, window buttons).
+    const QString builtinResource = QStringLiteral(":/CachyOS/UI/icons/") + name + QStringLiteral(".svg");
+    if (QFile::exists(builtinResource)) {
+        return QStringLiteral("qrc") + builtinResource;
     }
 
     // 3. Structural builtin alias check: map canonical freedesktop names
