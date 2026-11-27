@@ -6,6 +6,7 @@
 pragma ComponentBehavior: Bound
 
 import QtQuick
+import QtQuick.Controls
 import QtQuick.Layouts
 import CachyOS.UI
 
@@ -33,7 +34,9 @@ Item {
                 widest = item.implicitWidth;
             }
         }
-        return widest > 0 ? widest + 24 : 44;
+        if (widest <= 0) return 32;
+        if (widest <= 20) return 32;
+        return widest + 24;
     }
 
     implicitWidth: root.model.length > 0 ? (root.model.length * root.segmentWidth) + 8 : 28
@@ -87,19 +90,45 @@ Item {
                     required property var modelData
                     required property int index
 
-                    Text {
+                    readonly property bool isObj: typeof modelData === "object" && modelData !== null
+                    readonly property string itemText: isObj ? String(modelData.text ?? modelData.title ?? "") : String(modelData ?? "")
+                    readonly property string itemIcon: isObj ? String(modelData.icon ?? modelData.iconName ?? "") : ""
+                    readonly property string tooltipText: isObj ? String(modelData.tooltip ?? "") : ""
+
+                    Row {
                         anchors.centerIn: parent
-                        text: segmentItem.modelData
-                        font.pixelSize: 12
-                        font.weight: root.currentIndex === segmentItem.index ? Font.DemiBold : Font.Normal
-                        color: root.currentIndex === segmentItem.index
-                            ? (root.accentSelected ? "#FFFFFF" : CachyPalette.text)
-                            : CachyPalette.textSecondary
+                        spacing: 4
+
+                        CachyIcon {
+                            anchors.verticalCenter: parent.verticalCenter
+                            visible: segmentItem.itemIcon.length > 0
+                            name: segmentItem.itemIcon
+                            size: 15
+                            color: root.currentIndex === segmentItem.index
+                                ? (root.accentSelected ? "#FFFFFF" : CachyPalette.text)
+                                : CachyPalette.textSecondary
+                        }
+
+                        Text {
+                            anchors.verticalCenter: parent.verticalCenter
+                            visible: segmentItem.itemText.length > 0
+                            text: segmentItem.itemText
+                            font.pixelSize: 12
+                            font.weight: root.currentIndex === segmentItem.index ? Font.DemiBold : Font.Normal
+                            color: root.currentIndex === segmentItem.index
+                                ? (root.accentSelected ? "#FFFFFF" : CachyPalette.text)
+                                : CachyPalette.textSecondary
+                        }
                     }
 
                     HoverHandler {
+                        id: segHover
                         cursorShape: Qt.PointingHandCursor
                     }
+
+                    ToolTip.visible: segHover.hovered && segmentItem.tooltipText.length > 0
+                    ToolTip.text: segmentItem.tooltipText
+                    ToolTip.delay: 450
 
                     TapHandler {
                         onTapped: root.currentIndex = segmentItem.index
@@ -120,10 +149,20 @@ Item {
         Repeater {
             model: root.model
 
-            Text {
+            Item {
+                id: metricItem
                 required property var modelData
-                font.pixelSize: 12
-                text: modelData
+                readonly property bool isObj: typeof modelData === "object" && modelData !== null
+                readonly property string itemText: isObj ? String(modelData.text ?? modelData.title ?? "") : String(modelData ?? "")
+                readonly property string itemIcon: isObj ? String(modelData.icon ?? modelData.iconName ?? "") : ""
+
+                Text {
+                    id: mText
+                    font.pixelSize: 12
+                    text: metricItem.itemText
+                }
+
+                implicitWidth: (metricItem.itemIcon.length > 0 ? 18 : 0) + (metricItem.itemText.length > 0 ? mText.implicitWidth + (metricItem.itemIcon.length > 0 ? 4 : 0) : 0)
             }
         }
     }
