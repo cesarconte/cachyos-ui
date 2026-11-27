@@ -93,6 +93,7 @@ Rectangle {
                 name: root.iconName
                 size: root.iconSize
                 color: root.iconColor
+                colored: false
             }
 
             CachyBadge {

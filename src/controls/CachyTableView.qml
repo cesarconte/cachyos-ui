@@ -200,6 +200,14 @@ Item {
                                         }
                                         return "";
                                     }
+                                    readonly property string iconValue: {
+                                        if (rowDelegate.model && modelData.iconRole) {
+                                            if (typeof rowDelegate.model[modelData.iconRole] !== "undefined") {
+                                                return String(rowDelegate.model[modelData.iconRole]);
+                                            }
+                                        }
+                                        return String(cellItem.rawValue ?? "");
+                                    }
 
                                     Layout.fillWidth: cellItem.isFill
                                     Layout.minimumWidth: cellItem.isFill ? 60 : cellItem.colWidth
@@ -230,7 +238,7 @@ Item {
 
                                         CachyIcon {
                                             size: 16
-                                            name: String(cellItem.rawValue ?? "")
+                                            name: cellItem.iconValue
                                             color: rowDelegate.isSelected ? CachyTheme.accentColor : CachyPalette.text
                                         }
 

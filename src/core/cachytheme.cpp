@@ -278,9 +278,19 @@ static QString findThemeIconPath(const QString &iconName)
     if (iconName.isEmpty()) {
         return QString();
     }
-    // Prefer symbolic variant for UI actions and toolbar items (as per KDE design guidelines)
-    if (!iconName.endsWith(QLatin1String("-symbolic"))) {
-        const QString symbolicName = iconName + QStringLiteral("-symbolic");
+
+    const bool isExplicitSymbolic = iconName.endsWith(QLatin1String("-symbolic"));
+    // Freedesktop action icons in toolbars/menus typically prefer symbolic variants for MultiEffect tinting
+    const bool isAction = iconName.startsWith(QLatin1String("edit-")) ||
+                          iconName.startsWith(QLatin1String("document-")) ||
+                          iconName.startsWith(QLatin1String("window-")) ||
+                          iconName.startsWith(QLatin1String("view-")) ||
+                          iconName.startsWith(QLatin1String("go-")) ||
+                          iconName.startsWith(QLatin1String("format-")) ||
+                          iconName.startsWith(QLatin1String("tools-"));
+
+    if (isExplicitSymbolic || isAction) {
+        const QString symbolicName = isExplicitSymbolic ? iconName : (iconName + QStringLiteral("-symbolic"));
         QString path = KIconLoader::global()->iconPath(symbolicName, KIconLoader::Panel, true);
         if (path.isEmpty()) {
             path = KIconLoader::global()->iconPath(symbolicName, KIconLoader::Toolbar, true);
@@ -293,16 +303,37 @@ static QString findThemeIconPath(const QString &iconName)
         }
     }
 
-    // Search regular icon across standard groups
-    QString path = KIconLoader::global()->iconPath(iconName, KIconLoader::Toolbar, true);
+    // Search regular full-color icon across standard groups: Desktop, Place, MimeType, Toolbar, Panel, Small
+    QString path = KIconLoader::global()->iconPath(iconName, KIconLoader::Desktop, true);
+    if (path.isEmpty()) {
+        path = KIconLoader::global()->iconPath(iconName, KIconLoader::Place, true);
+    }
+    if (path.isEmpty()) {
+        path = KIconLoader::global()->iconPath(iconName, KIconLoader::MimeType, true);
+    }
+    if (path.isEmpty()) {
+        path = KIconLoader::global()->iconPath(iconName, KIconLoader::Toolbar, true);
+    }
     if (path.isEmpty()) {
         path = KIconLoader::global()->iconPath(iconName, KIconLoader::Panel, true);
     }
     if (path.isEmpty()) {
         path = KIconLoader::global()->iconPath(iconName, KIconLoader::Small, true);
     }
-    if (path.isEmpty()) {
-        path = KIconLoader::global()->iconPath(iconName, KIconLoader::Desktop, true);
+    if (!path.isEmpty()) {
+        return path;
+    }
+
+    // Fallback to symbolic variant if regular icon was not found
+    if (!isExplicitSymbolic && !isAction) {
+        const QString symbolicName = iconName + QStringLiteral("-symbolic");
+        path = KIconLoader::global()->iconPath(symbolicName, KIconLoader::Panel, true);
+        if (path.isEmpty()) {
+            path = KIconLoader::global()->iconPath(symbolicName, KIconLoader::Toolbar, true);
+        }
+        if (path.isEmpty()) {
+            path = KIconLoader::global()->iconPath(symbolicName, KIconLoader::Desktop, true);
+        }
     }
     return path;
 }
@@ -327,7 +358,7 @@ QString CachyTheme::iconUrl(const QString &name, const QString &fallback) const
 
     // 2. Resolve from active system icon theme (e.g. MacTahoe, Breeze, etc.)
     // via KIconLoader. This ensures user-selected icon themes in System Settings
-    // are faithfully and dynamically applied across all applications.
+    // (such as MacTahoe folders, places, and mimetypes) take top precedence.
     const QString themeIconPath = findThemeIconPath(name);
     if (!themeIconPath.isEmpty()) {
         return QUrl::fromLocalFile(themeIconPath).toString();

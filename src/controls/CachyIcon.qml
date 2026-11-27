@@ -30,13 +30,10 @@ Item {
     property int size: 16
     /// Tint color applied when `colored` is true.
     property color color: CachyPalette.text
-    /// When true (default), monochrome/symbolic icons are tinted with `color`
-    /// via MultiEffect colorization. ALWAYS keep `colored: true` when displaying
-    /// monochrome vector icons that must render in a specific color (e.g. #FFFFFF
-    /// on top of a colorful background card or squircle badge).
-    /// Set to false ONLY for multi-color branded icons (e.g. application logos in
-    /// About pages) that already have their own inherent multi-color artwork.
-    property bool colored: true
+    /// When true, monochrome/symbolic icons are tinted with `color` via MultiEffect colorization.
+    /// By default, automatically enabled for built-in outline icons and symbolic icons,
+    /// but disabled for full-color theme artwork (such as MacTahoe folders, places, and mimetypes).
+    property bool colored: root.isBuiltinIcon || root.name.endsWith("-symbolic") || root.resolvedSource.includes("/symbolic/")
 
     readonly property string resolvedSource: (CachyTheme.iconThemeName.length >= 0 && root.name.length > 0)
         ? CachyTheme.iconUrl(root.name, root.fallback)
