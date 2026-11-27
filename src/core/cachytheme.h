@@ -46,6 +46,7 @@ class CachyTheme : public QObject
     // Platform identification (distribution and desktop shell) shown by the apps
     Q_PROPERTY(QString distroName READ distroName CONSTANT)
     Q_PROPERTY(QString desktopShell READ desktopShell CONSTANT)
+    Q_PROPERTY(QString iconThemeName READ iconThemeName NOTIFY iconThemeChanged)
 
     // Traffic light window buttons
     Q_PROPERTY(QColor closeButton READ closeButton CONSTANT)
@@ -114,6 +115,7 @@ public:
 
     QString distroName() const;
     QString desktopShell() const;
+    QString iconThemeName() const;
 
     /// Resolves a name of the Plasma icon theme into the URL of its file.
     ///
@@ -158,6 +160,7 @@ public:
 
 Q_SIGNALS:
     void themeChanged();
+    void iconThemeChanged();
 
 private:
     void onColorSchemeChanged();

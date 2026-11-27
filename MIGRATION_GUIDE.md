@@ -239,7 +239,7 @@ porque un applet tiene mucho menos sitio que una ventana:
 `CachyOS.UI` instala el auditor como paquete CMake reutilizable:
 
 ```cmake
-list(APPEND CMAKE_PREFIX_PATH "$ENV{HOME}/.local" "/usr/local")
+list(APPEND CMAKE_PREFIX_PATH "/usr" "/usr/local")
 find_package(CachyOSUITesting REQUIRED)
 
 add_executable(test_layout_audit test_layout_audit.cpp)
@@ -291,7 +291,7 @@ El caso de referencia completo está en
 - [ ] Cero desbordes: verificado por `ctest` (auditoría de layout en verde).
 - [ ] `ctest` completo en verde.
 - [ ] Capturas reales verificadas (tamaño mínimo, por defecto, ancho, oscuro).
-- [ ] Compilado e instalado en `~/.local`.
+- [ ] Compilado e instalado en `/usr`.
 - [ ] Commit semántico (`Conventional Commits`) y `git push`.
 
 **Plasmoid (además de lo anterior):**
@@ -316,7 +316,7 @@ El caso de referencia completo está en
 cd cachyos-ui
 cmake -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/
 cmake --build build -j"$(nproc)"
-DESTDIR=$HOME/.local cmake --install build
+sudo -n cmake --install build --prefix /usr
 ```
 
 Esto instala el módulo QML `CachyOS.UI` en `~/.local/lib/qt6/qml/CachyOS/UI`

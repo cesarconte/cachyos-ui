@@ -38,7 +38,7 @@ Item {
     /// About pages) that already have their own inherent multi-color artwork.
     property bool colored: true
 
-    readonly property string resolvedSource: root.name.length > 0
+    readonly property string resolvedSource: (CachyTheme.iconThemeName.length >= 0 && root.name.length > 0)
         ? CachyTheme.iconUrl(root.name, root.fallback)
         : ""
     readonly property bool valid: root.resolvedSource.length > 0

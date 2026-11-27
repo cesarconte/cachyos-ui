@@ -33,6 +33,7 @@ find_package(KF6 ${KF_MIN_VERSION} REQUIRED COMPONENTS
     CoreAddons
     I18n
     WindowSystem
+    IconThemes
 )
 
 add_subdirectory(src)

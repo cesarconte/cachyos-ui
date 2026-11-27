@@ -119,6 +119,7 @@ target_link_libraries(cachyosui PUBLIC
     KF6::WindowSystem
     KF6::CoreAddons
     KF6::I18n
+    KF6::IconThemes
 )
 
 set_target_properties(cachyosui PROPERTIES

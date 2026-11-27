@@ -34,8 +34,8 @@ T.Slider {
         radius: height / 2
         clip: true
         color: CachyPalette.isDark ? Qt.rgba(1, 1, 1, 0.14) : Qt.rgba(0, 0, 0, 0.08)
-        border.width: 1
-        border.color: control.visualFocus ? control.accentColor : CachyPalette.specularBorder
+        border.width: control.visualFocus ? 1 : 0
+        border.color: control.visualFocus ? control.accentColor : "transparent"
 
         Behavior on color {
             ColorAnimation { duration: CachyTheme.animFast }
@@ -72,17 +72,6 @@ T.Slider {
                 color: control.fillIconColor
                 visible: control.iconName.length > 0
             }
-        }
-
-        // Specular top highlight (Liquid Glass)
-        Rectangle {
-            anchors.top: parent.top
-            anchors.left: parent.left
-            anchors.right: parent.right
-            anchors.margins: 1
-            height: 1
-            radius: 0.5
-            color: Qt.rgba(1, 1, 1, 0.20)
         }
     }
 

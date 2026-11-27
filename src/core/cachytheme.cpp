@@ -16,6 +16,8 @@
 #include <QtMath>
 
 #include <kcoreaddons.h>
+#include <KIconLoader>
+#include <KIconTheme>
 
 static void ensureBuiltinIconsInitialized()
 {
@@ -46,6 +48,15 @@ CachyTheme::CachyTheme(QObject *parent)
     if (auto *styleHints = QGuiApplication::styleHints()) {
         connect(styleHints, &QStyleHints::colorSchemeChanged, this, &CachyTheme::onColorSchemeChanged);
     }
+
+    connect(KIconLoader::global(), &KIconLoader::iconLoaderSettingsChanged, this, [this]() {
+        Q_EMIT themeChanged();
+        Q_EMIT iconThemeChanged();
+    });
+    connect(KIconLoader::global(), &KIconLoader::iconChanged, this, [this](int) {
+        Q_EMIT themeChanged();
+        Q_EMIT iconThemeChanged();
+    });
 }
 
 void CachyTheme::loadSettings()
@@ -257,26 +268,74 @@ QString CachyTheme::desktopShell() const
     return QStringLiteral("Plasma %1").arg(major.isEmpty() ? QStringLiteral("6") : major);
 }
 
+QString CachyTheme::iconThemeName() const
+{
+    return KIconTheme::current();
+}
+
+static QString findThemeIconPath(const QString &iconName)
+{
+    if (iconName.isEmpty()) {
+        return QString();
+    }
+    // Prefer symbolic variant for UI actions and toolbar items (as per KDE design guidelines)
+    if (!iconName.endsWith(QLatin1String("-symbolic"))) {
+        const QString symbolicName = iconName + QStringLiteral("-symbolic");
+        QString path = KIconLoader::global()->iconPath(symbolicName, KIconLoader::Panel, true);
+        if (path.isEmpty()) {
+            path = KIconLoader::global()->iconPath(symbolicName, KIconLoader::Toolbar, true);
+        }
+        if (path.isEmpty()) {
+            path = KIconLoader::global()->iconPath(symbolicName, KIconLoader::Desktop, true);
+        }
+        if (!path.isEmpty()) {
+            return path;
+        }
+    }
+
+    // Search regular icon across standard groups
+    QString path = KIconLoader::global()->iconPath(iconName, KIconLoader::Toolbar, true);
+    if (path.isEmpty()) {
+        path = KIconLoader::global()->iconPath(iconName, KIconLoader::Panel, true);
+    }
+    if (path.isEmpty()) {
+        path = KIconLoader::global()->iconPath(iconName, KIconLoader::Small, true);
+    }
+    if (path.isEmpty()) {
+        path = KIconLoader::global()->iconPath(iconName, KIconLoader::Desktop, true);
+    }
+    return path;
+}
+
 QString CachyTheme::iconUrl(const QString &name, const QString &fallback) const
 {
     if (name.isEmpty()) {
         return QString();
     }
 
-    if (name.startsWith( QStringLiteral("qrc:/")) || name.startsWith(QStringLiteral("file://"))) {
+    if (name.startsWith(QStringLiteral("qrc:/")) || name.startsWith(QStringLiteral("file://"))) {
         return name;
     }
 
-    // 1. Embedded CachyOS.UI structural vector icons (FishUI style): always
-    // available in memory with zero disk I/O and immune to missing themes.
+    // 1. Embedded CachyOS.UI structural vector icons (qrc:/CachyOS/UI/icons/*.svg):
+    // always available in memory with zero disk I/O for standard design system
+    // controls (chevrons, sliders, waveforms, window buttons).
     const QString builtinResource = QStringLiteral(":/CachyOS/UI/icons/") + name + QStringLiteral(".svg");
     if (QFile::exists(builtinResource)) {
         return QStringLiteral("qrc") + builtinResource;
     }
 
-    // 2. Structural builtin alias check: canonical freedesktop names map directly
-    // to embedded CachyOS.UI vector icons with zero disk I/O, ensuring uniform
-    // macOS Golden Gate vector appearance across all environments.
+    // 2. Resolve from active system icon theme (e.g. MacTahoe, Breeze, etc.)
+    // via KIconLoader. This ensures user-selected icon themes in System Settings
+    // are faithfully and dynamically applied across all applications.
+    const QString themeIconPath = findThemeIconPath(name);
+    if (!themeIconPath.isEmpty()) {
+        return QUrl::fromLocalFile(themeIconPath).toString();
+    }
+
+    // 3. Structural builtin alias check: map canonical freedesktop names
+    // to embedded CachyOS.UI vector icons as fallback if the active desktop theme
+    // does not provide the icon.
     static const QHash<QString, QString> builtinAliases = {
         {QStringLiteral("dialog-information"), QStringLiteral("info")},
         {QStringLiteral("dialog-warning"), QStringLiteral("warning")},
@@ -323,83 +382,7 @@ QString CachyTheme::iconUrl(const QString &name, const QString &fallback) const
         }
     }
 
-    const QStringList roots = QStandardPaths::standardLocations(QStandardPaths::GenericDataLocation);
-
-    // 3. The active desktop theme (e.g. CachyOS), Breeze and Hicolor fallbacks
-    // are searched on disk. The symbolic variant is preferred: it is monochrome
-    // and can be tinted with CachyIcon MultiEffect colorization.
-    const QString activeTheme = QIcon::themeName().isEmpty() ? QStringLiteral("breeze") : QIcon::themeName();
-    QStringList themesToSearch = {activeTheme};
-    if (activeTheme != QLatin1String("CachyOS")) {
-        themesToSearch.append(QStringLiteral("CachyOS"));
-    }
-    if (activeTheme != QLatin1String("breeze") && activeTheme != QLatin1String("breeze-dark")) {
-        themesToSearch.append(QStringLiteral("breeze"));
-    }
-    themesToSearch.append(QStringLiteral("hicolor"));
-
-    static const QStringList breezeCategories = {
-        QStringLiteral("actions"),
-        QStringLiteral("apps"),
-        QStringLiteral("applets"),
-        QStringLiteral("places"),
-        QStringLiteral("emotes"),
-        QStringLiteral("status"),
-        QStringLiteral("devices"),
-        QStringLiteral("mimetypes"),
-        QStringLiteral("preferences"),
-        QStringLiteral("categories"),
-        QStringLiteral("emblems"),
-    };
-    static const QStringList breezeSizes = {
-        QStringLiteral("scalable"),
-        QStringLiteral("symbolic/apps"),
-        QStringLiteral("actions/scalable"),
-        QStringLiteral("apps/scalable"),
-        QStringLiteral("24"),
-        QStringLiteral("22"),
-        QStringLiteral("16"),
-        QStringLiteral("32"),
-        QStringLiteral("48"),
-        QStringLiteral("64"),
-    };
-    static const QStringList suffixes = {
-        QStringLiteral("-symbolic.svg"),
-        QStringLiteral(".svg"),
-    };
-
-    for (const QString &root : roots) {
-        for (const QString &theme : themesToSearch) {
-            // First check top-level scalable / symbolic directories
-            const QStringList topDirs = {
-                QStringLiteral("/icons/") + theme + QStringLiteral("/apps/scalable/"),
-                QStringLiteral("/icons/") + theme + QStringLiteral("/symbolic/apps/"),
-                QStringLiteral("/icons/") + theme + QStringLiteral("/actions/scalable/")
-            };
-            for (const QString &sizeDir : topDirs) {
-                for (const QString &suffix : suffixes) {
-                    const QString candidate = root + sizeDir + name + suffix;
-                    if (QFile::exists(candidate)) {
-                        return QUrl::fromLocalFile(candidate).toString();
-                    }
-                }
-            }
-            // Next check categorized subdirectories
-            for (const QString &category : breezeCategories) {
-                for (const QString &size : breezeSizes) {
-                    for (const QString &suffix : suffixes) {
-                        const QString candidate = root + QStringLiteral("/icons/") + theme + QLatin1Char('/') + category + QLatin1Char('/') + size + QLatin1Char('/') + name + suffix;
-                        if (QFile::exists(candidate)) {
-                            return QUrl::fromLocalFile(candidate).toString();
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    // 4. The icon does not exist: the fallback is resolved instead, so the
-    // interface never shows a hole where an icon was expected.
+    // 4. Fallback lookup if specified
     if (!fallback.isEmpty() && fallback != name) {
         return iconUrl(fallback);
     }

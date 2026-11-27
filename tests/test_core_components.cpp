@@ -241,8 +241,8 @@ void TestCoreComponents::testBuiltinVectorIconsResolution()
     const QString fallbackUrl = m_theme.iconUrl(QStringLiteral("non-existent-icon-999"), QStringLiteral("search"));
     QCOMPARE(fallbackUrl, QStringLiteral("qrc:/CachyOS/UI/icons/search.svg"));
 
-    // Alias resolution for Golden Gate canonical names
-    const QString aliasChartUrl = m_theme.iconUrl(QStringLiteral("office-chart-bar"));
+    // Alias resolution for Golden Gate canonical names (fallback to embedded SVG)
+    const QString aliasChartUrl = m_theme.iconUrl(QStringLiteral("view-financial-transfer"));
     QCOMPARE(aliasChartUrl, QStringLiteral("qrc:/CachyOS/UI/icons/chart-bar.svg"));
 }
 
